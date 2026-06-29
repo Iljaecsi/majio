@@ -1,0 +1,910 @@
+/* ============================================ */
+/* ГЛОБАЛЬНЫЕ СТИЛИ И СБРОС                      */
+/* ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent; /* Убираем подсветку на мобильных */
+}
+
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%; /* Запрещаем изменение размера шрифта на iOS */
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: #0a0e27;
+    min-height: 100vh;
+    min-height: 100dvh; /* Для современных браузеров */
+    overflow-x: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================ */
+/* АНИМИРОВАННЫЙ ФОН С ПЛАВАЮЩИМИ КРУГАМИ        */
+/* ============================================ */
+.bg-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none; /* Чтобы не мешать взаимодействию */
+}
+
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    animation: float 20s infinite ease-in-out;
+}
+
+/* Разные круги с разными цветами и позициями */
+.c1 {
+    width: 600px;
+    height: 600px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    top: -200px;
+    right: -200px;
+    animation-delay: 0s;
+}
+
+.c2 {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    bottom: -100px;
+    left: -100px;
+    animation-delay: -5s;
+}
+
+.c3 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: -10s;
+}
+
+.c4 {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    bottom: 20%;
+    right: 20%;
+    animation-delay: -15s;
+}
+
+/* Анимация плавания кругов */
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(50px, -50px) scale(1.1); }
+    50% { transform: translate(-30px, 30px) scale(0.9); }
+    75% { transform: translate(20px, -20px) scale(1.05); }
+}
+
+/* ============================================ */
+/* ОСНОВНОЙ КОНТЕЙНЕР                            */
+/* ============================================ */
+.container {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* ============================================ */
+/* ШАПКА (ХЕДЕР)                                */
+/* ============================================ */
+.creative-header {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
+    border-radius: 30px 30px 0 0;
+    padding: 30px 40px 0;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+}
+
+/* Декоративный элемент - световое пятно */
+.creative-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* Логотип */
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo-icon {
+    width: 70px;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 10px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    animation: pulse 3s infinite;
+    flex-shrink: 0;
+}
+
+/* Анимация пульсации логотипа */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.logo-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.logo-text h1 {
+    color: white;
+    font-size: 3em;
+    font-weight: 900;
+    letter-spacing: -1px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+    background: linear-gradient(135deg, #ffffff, #FFD93D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.tagline {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.1em;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+/* Блок статистики */
+.header-stats {
+    display: flex;
+    gap: 30px;
+    background: rgba(255,255,255,0.15);
+    padding: 15px 25px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    flex-shrink: 0;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2em;
+    font-weight: 900;
+    color: white;
+    line-height: 1.2;
+}
+
+.stat-label {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Волна-разделитель */
+.wave-divider {
+    position: relative;
+    margin-top: 30px;
+    margin-bottom: -1px;
+}
+
+.wave-divider svg {
+    width: 100%;
+    display: block;
+    height: auto;
+}
+
+/* ============================================ */
+/* ЭФФЕКТ СТЕКЛА (GLASS MORPHISM)               */
+/* ============================================ */
+.glass-morphism {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.glass-morphism:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================ */
+/* ЗАГОЛОВКИ ФОРМЫ                              */
+/* ============================================ */
+.form-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.form-header h2 {
+    font-size: 1.8em;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Бейдж "Новое" */
+.badge {
+    background: linear-gradient(135deg, #FF6B6B, #f093fb);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.7em;
+    font-weight: 700;
+    text-transform: uppercase;
+    animation: glow 2s infinite;
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(240, 147, 251, 0.3); }
+    50% { box-shadow: 0 0 25px rgba(240, 147, 251, 0.6); }
+}
+
+/* ============================================ */
+/* FLOATING LABELS (ПЛАВАЮЩИЕ ПОДПИСИ)          */
+/* ============================================ */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.floating-label {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.floating-label input {
+    width: 100%;
+    padding: 15px 15px 5px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+    background: white;
+    height: 60px;
+    -webkit-appearance: none; /* Убираем стандартные стили на iOS */
+    appearance: none;
+}
+
+/* Убираем стрелки у number полей */
+.floating-label input[type="number"]::-webkit-inner-spin-button,
+.floating-label input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.floating-label input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.floating-label input:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.floating-label label {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+/* Состояние когда поле заполнено или в фокусе */
+.floating-label input:focus ~ label,
+.floating-label input:valid ~ label {
+    top: 10px;
+    transform: translateY(0);
+    font-size: 12px;
+    color: #667eea;
+    font-weight: 600;
+}
+
+.floating-label .focus-border {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    transition: all 0.3s ease;
+}
+
+.floating-label input:focus ~ .focus-border {
+    width: 100%;
+    left: 0;
+}
+
+/* ============================================ */
+/* КАРТОЧКИ СЧЕТЧИКОВ                            */
+/* ============================================ */
+.meter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.meter-card {
+    padding: 20px;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.meter-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.meter-card .meter-icon {
+    font-size: 2em;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Стили для инпутов внутри карточек */
+.meter-card .floating-label input {
+    background: rgba(255,255,255,0.9);
+    border-color: rgba(255,255,255,0.5);
+}
+
+.meter-card .floating-label input:focus {
+    border-color: white;
+}
+
+.meter-card .floating-label label {
+    color: rgba(0,0,0,0.6);
+}
+
+.meter-card .floating-label input:focus ~ label,
+.meter-card .floating-label input:valid ~ label {
+    color: white;
+}
+
+/* ============================================ */
+/* КНОПКА ОТПРАВКИ                              */
+/* ============================================ */
+.submit-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 1.2em;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Эффект бегущей волны */
+.submit-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: rotate(45deg) translateX(-100%);
+    transition: all 0.6s ease;
+}
+
+.submit-btn:hover::before {
+    transform: rotate(45deg) translateX(100%);
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.btn-text {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-icon {
+    font-size: 1.5em;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.submit-btn:hover .btn-icon {
+    transform: translateX(8px);
+}
+
+/* ============================================ */
+/* ТАБЛИЦА                                      */
+/* ============================================ */
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.table-header h2 {
+    font-size: 1.8em;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.table-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.control-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.control-btn.export {
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    color: #0a0e27;
+}
+
+.control-btn.export:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(67, 233, 123, 0.3);
+}
+
+.control-btn.clear {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+}
+
+.control-btn.clear:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+}
+
+/* Обертка таблицы для горизонтальной прокрутки */
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: 16px;
+    -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+    min-width: 600px; /* Минимальная ширина для читаемости */
+}
+
+thead {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+thead th {
+    padding: 15px 20px;
+    font-weight: 700;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+thead th:first-child {
+    border-radius: 12px 0 0 12px;
+}
+
+thead th:last-child {
+    border-radius: 0 12px 12px 0;
+}
+
+tbody tr {
+    background: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+tbody tr:hover {
+    transform: scale(1.01);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+tbody td {
+    padding: 15px 20px;
+    color: #333;
+    font-weight: 500;
+}
+
+tbody tr td:first-child {
+    border-radius: 12px 0 0 12px;
+}
+
+tbody tr td:last-child {
+    border-radius: 0 12px 12px 0;
+}
+
+/* Кнопка удаления */
+.delete-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    font-size: 12px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.delete-btn:hover {
+    transform: scale(1.2) rotate(90deg);
+}
+
+.delete-btn:active {
+    transform: scale(0.9);
+}
+
+/* Пустое сообщение */
+.empty-message {
+    text-align: center;
+    color: #999;
+    padding: 40px;
+    font-style: italic;
+    font-size: 1.1em;
+}
+
+.empty-message::before {
+    content: '🏠 ';
+}
+
+/* ============================================ */
+/* ПОДВАЛ (ФУТЕР)                               */
+/* ============================================ */
+.creative-footer {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 0 0 30px 30px;
+    padding: 30px 40px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-top: none;
+    text-align: center;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.footer-content p {
+    color: #666;
+    font-size: 0.95em;
+}
+
+.footer-content strong {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.footer-tech {
+    color: #999;
+    font-size: 0.85em;
+}
+
+/* ============================================ */
+/* АДАПТИВНОСТЬ ДЛЯ ПЛАНШЕТОВ                   */
+/* ============================================ */
+@media (max-width: 768px) {
+    .container { 
+        padding: 10px; 
+    }
+    
+    .creative-header { 
+        padding: 20px 20px 0; 
+        border-radius: 20px 20px 0 0;
+    }
+    
+    .glass-morphism { 
+        padding: 20px; 
+    }
+    
+    .logo-text h1 { 
+        font-size: 2.2em; 
+    }
+    
+    .logo-icon {
+        width: 55px;
+        height: 55px;
+        padding: 8px;
+    }
+    
+    .header-stats { 
+        padding: 10px 15px; 
+        gap: 15px; 
+    }
+    
+    .stat-number { 
+        font-size: 1.5em; 
+    }
+    
+    .form-row { 
+        grid-template-columns: 1fr; 
+    }
+    
+    .meter-grid { 
+        grid-template-columns: 1fr; 
+    }
+    
+    .table-header { 
+        flex-direction: column; 
+        align-items: stretch; 
+    }
+    
+    .table-controls { 
+        justify-content: stretch; 
+    }
+    
+    .control-btn { 
+        flex: 1; 
+        justify-content: center; 
+    }
+    
+    .footer-content { 
+        flex-direction: column; 
+        text-align: center; 
+    }
+    
+    .creative-footer {
+        border-radius: 0 0 20px 20px;
+        padding: 20px;
+    }
+    
+    .form-header h2 {
+        font-size: 1.4em;
+    }
+    
+    .table-header h2 {
+        font-size: 1.4em;
+    }
+}
+
+/* ============================================ */
+/* АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ ТЕЛЕФОНОВ        */
+/* ============================================ */
+@media (max-width: 480px) {
+    .logo-section { 
+        flex-direction: column; 
+        text-align: center; 
+        width: 100%;
+    }
+    
+    .header-stats { 
+        width: 100%; 
+        justify-content: center; 
+    }
+    
+    .logo-text h1 {
+        font-size: 1.8em;
+    }
+    
+    .tagline {
+        font-size: 0.9em;
+    }
+    
+    .logo-icon {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .form-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .submit-btn {
+        font-size: 1em;
+        padding: 15px;
+    }
+    
+    .meter-card {
+        padding: 15px;
+    }
+    
+    thead th,
+    tbody td {
+        padding: 10px 12px;
+        font-size: 0.85em;
+    }
+    
+    .delete-btn {
+        padding: 4px 10px;
+        font-size: 11px;
+    }
+    
+    .control-btn {
+        padding: 8px 15px;
+        font-size: 0.85em;
+    }
+    
+    .empty-message {
+        padding: 25px;
+        font-size: 0.95em;
+    }
+    
+    .creative-header {
+        padding: 15px 15px 0;
+    }
+}
+
+/* ============================================ */
+/* ДЛЯ ОЧЕНЬ МАЛЕНЬКИХ ЭКРАНОВ (до 360px)       */
+/* ============================================ */
+@media (max-width: 360px) {
+    .logo-text h1 {
+        font-size: 1.5em;
+    }
+    
+    .stat-number {
+        font-size: 1.2em;
+    }
+    
+    .stat-label {
+        font-size: 0.7em;
+    }
+    
+    .header-stats {
+        gap: 10px;
+        padding: 8px 12px;
+    }
+    
+    thead th,
+    tbody td {
+        padding: 8px 8px;
+        font-size: 0.75em;
+    }
+    
+    .glass-morphism {
+        padding: 15px;
+    }
+}
+
+/* ============================================ */
+/* ДЛЯ УСТРОЙСТВ С ВЫСОКИМ DPI (RETINA)        */
+/* ============================================ */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .logo-icon {
+        border-width: 1.5px;
+    }
+    
+    .glass-morphism {
+        border-width: 0.5px;
+    }
+}
+
+/* ============================================ */
+/* ДЛЯ ПЕЧАТИ                                   */
+/* ============================================ */
+@media print {
+    .bg-animation {
+        display: none;
+    }
+    
+    .creative-header {
+        background: #667eea !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    .glass-morphism {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+    
+    .submit-btn,
+    .control-btn,
+    .delete-btn {
+        display: none !important;
+    }
+}

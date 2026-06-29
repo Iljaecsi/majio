@@ -23,30 +23,28 @@
     <div class="app-container">
         
         <!-- ====================================== -->
-        <!-- ШАПКА С ПРИВЕТСТВИЕМ И НАСТРОЙКАМИ      -->
+        <!-- ШАПКА С ЛОГОТИПОМ И АВТОРИЗАЦИЕЙ       -->
         <!-- ====================================== -->
         <header class="app-header">
             <div class="header-top">
-                <div class="greeting">
-                    <span class="greeting-text" data-key="greeting">Здравствуйте,</span>
-                    <h1>Majio</h1>
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-house-chimney"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>Majio</h1>
+                        <span class="logo-subtitle" data-key="subtitle">Умный учёт в вашем доме</span>
+                    </div>
                 </div>
                 <div class="header-actions">
-                    <!-- Кнопка переключения языка -->
                     <button class="icon-btn" id="langToggle" title="Switch language">
                         <i class="fas fa-globe"></i>
                     </button>
-                    <!-- Кнопка переключения темы -->
                     <button class="icon-btn" id="themeToggle" title="Toggle theme">
                         <i class="fas fa-moon"></i>
                     </button>
-                    <!-- Кнопка экспорта -->
-                    <button class="icon-btn" id="exportBtn" title="Экспорт CSV">
-                        <i class="fas fa-file-export"></i>
-                    </button>
-                    <!-- Кнопка очистки -->
-                    <button class="icon-btn" id="clearAllBtn" title="Очистить всё">
-                        <i class="fas fa-trash-alt"></i>
+                    <button class="icon-btn auth-btn" id="authToggle" title="Вход / Регистрация">
+                        <i class="fas fa-user"></i>
                     </button>
                 </div>
             </div>
@@ -72,109 +70,394 @@
         </header>
 
         <!-- ====================================== -->
-        <!-- ФОРМА ПОДАЧИ ПОКАЗАНИЙ                  -->
+        <!-- МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ              -->
         <!-- ====================================== -->
-        <section class="form-section">
-            <div class="section-header">
-                <h2><i class="fas fa-pen"></i> <span data-key="submit_title">Подать показания</span></h2>
-                <span class="badge" data-key="new">Новое</span>
-            </div>
-            
-            <form id="meterForm" novalidate>
-                <!-- Поля ввода -->
-                <div class="input-group">
-                    <div class="input-field">
-                        <i class="fas fa-hashtag input-icon"></i>
-                        <input type="number" id="apartment" min="1" max="9999" required placeholder=" ">
-                        <label data-key="apartment_label">Номер квартиры</label>
+        <div class="auth-modal" id="authModal">
+            <div class="auth-modal-content">
+                <div class="auth-modal-header">
+                    <h2 id="authTitle">Вход</h2>
+                    <button class="auth-close-btn" id="authCloseBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="authForm" novalidate>
+                    <div class="auth-tabs">
+                        <button type="button" class="auth-tab active" data-auth-tab="login" data-key="auth_login">Вход</button>
+                        <button type="button" class="auth-tab" data-auth-tab="register" data-key="auth_register">Регистрация</button>
                     </div>
                     
-                    <div class="input-field">
-                        <i class="fas fa-user input-icon"></i>
-                        <input type="text" id="name" maxlength="50" required placeholder=" ">
-                        <label data-key="name_label">Ваше имя</label>
+                    <div class="auth-body">
+                        <!-- Форма входа -->
+                        <div class="auth-pane active" id="auth-login">
+                            <div class="input-field">
+                                <i class="fas fa-user input-icon"></i>
+                                <input type="text" id="loginUsername" required placeholder=" ">
+                                <label data-key="auth_username">Имя пользователя</label>
+                            </div>
+                            <div class="input-field">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" id="loginPassword" required placeholder=" ">
+                                <label data-key="auth_password">Пароль</label>
+                            </div>
+                            <button type="submit" class="auth-submit-btn" data-auth-mode="login">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span data-key="auth_login_btn">Войти</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Форма регистрации -->
+                        <div class="auth-pane" id="auth-register">
+                            <div class="input-field">
+                                <i class="fas fa-user input-icon"></i>
+                                <input type="text" id="registerUsername" required placeholder=" ">
+                                <label data-key="auth_username">Имя пользователя</label>
+                            </div>
+                            <div class="input-field">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" id="registerPassword" required placeholder=" ">
+                                <label data-key="auth_password">Пароль</label>
+                            </div>
+                            <div class="input-field">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" id="registerPasswordConfirm" required placeholder=" ">
+                                <label data-key="auth_password_confirm">Подтвердите пароль</label>
+                            </div>
+                            <button type="submit" class="auth-submit-btn" data-auth-mode="register">
+                                <i class="fas fa-user-plus"></i>
+                                <span data-key="auth_register_btn">Зарегистрироваться</span>
+                            </button>
+                        </div>
                     </div>
+                </form>
+                
+                <div class="auth-modal-footer">
+                    <span id="authStatus"></span>
                 </div>
+            </div>
+        </div>
 
-                <!-- Счетчики -->
-                <div class="meter-grid">
-                    <div class="meter-card electricity">
-                        <div class="meter-icon"><i class="fas fa-bolt"></i></div>
-                        <div class="input-field small">
-                            <input type="number" id="electricity" step="0.1" min="0" required placeholder=" ">
-                            <label data-key="electricity_label">Электричество, кВт·ч</label>
-                        </div>
-                    </div>
-
-                    <div class="meter-card water-cold">
-                        <div class="meter-icon"><i class="fas fa-snowflake"></i></div>
-                        <div class="input-field small">
-                            <input type="number" id="waterCold" step="0.1" min="0" required placeholder=" ">
-                            <label data-key="water_cold_label">Холодная вода, м³</label>
-                        </div>
-                    </div>
-
-                    <div class="meter-card water-hot">
-                        <div class="meter-icon"><i class="fas fa-fire"></i></div>
-                        <div class="input-field small">
-                            <input type="number" id="waterHot" step="0.1" min="0" required placeholder=" ">
-                            <label data-key="water_hot_label">Горячая вода, м³</label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Кнопка отправки -->
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-paper-plane"></i>
-                    <span data-key="submit_btn">Отправить показания</span>
+        <!-- ====================================== -->
+        <!-- ВКЛАДКИ (TABS)                         -->
+        <!-- ====================================== -->
+        <div class="tabs-container">
+            <div class="tab-header">
+                <button class="tab-btn active" data-tab="submit">
+                    <i class="fas fa-pen"></i> <span data-key="tab_submit">Подача</span>
                 </button>
-            </form>
-        </section>
-
-        <!-- ====================================== -->
-        <!-- ИСТОРИЯ ПОКАЗАНИЙ                       -->
-        <!-- ====================================== -->
-        <section class="history-section">
-            <div class="section-header">
-                <h2><i class="fas fa-clock-rotate-left"></i> <span data-key="history_title">История</span></h2>
+                <button class="tab-btn" data-tab="history">
+                    <i class="fas fa-clock-rotate-left"></i> <span data-key="tab_history">История</span>
+                </button>
+                <button class="tab-btn" data-tab="stats">
+                    <i class="fas fa-chart-pie"></i> <span data-key="tab_stats">Статистика</span>
+                </button>
+                <button class="tab-btn" data-tab="profile">
+                    <i class="fas fa-user"></i> <span data-key="tab_profile">Профиль</span>
+                </button>
             </div>
 
-            <div class="table-wrapper">
-                <table id="readingsTable">
-                    <thead>
-                        <tr>
-                            <th data-key="th_apartment">Квартира</th>
-                            <th data-key="th_name">Имя</th>
-                            <th>⚡</th>
-                            <th>💧</th>
-                            <th>🔥</th>
-                            <th data-key="th_date">📅</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="readingsBody">
-                        <!-- Данные через JS -->
-                    </tbody>
-                </table>
+            <div class="tab-content">
+                <!-- ================================== -->
+                <!-- ВКЛАДКА 1: ПОДАЧА ПОКАЗАНИЙ        -->
+                <!-- ================================== -->
+                <div class="tab-pane active" id="tab-submit">
+                    <section class="form-section">
+                        <form id="meterForm" novalidate>
+                            <div class="input-group">
+                                <div class="input-field">
+                                    <i class="fas fa-hashtag input-icon"></i>
+                                    <input type="number" id="apartment" min="1" max="9999" required placeholder=" ">
+                                    <label data-key="apartment_label">Номер квартиры</label>
+                                </div>
+                                <div class="input-field">
+                                    <i class="fas fa-user input-icon"></i>
+                                    <input type="text" id="name" maxlength="50" required placeholder=" ">
+                                    <label data-key="name_label">Ваше имя</label>
+                                </div>
+                            </div>
+
+                            <!-- 5 счетчиков -->
+                            <div class="meter-grid">
+                                <!-- 1. Электричество дневной -->
+                                <div class="meter-card electricity-day">
+                                    <div class="meter-header">
+                                        <div class="meter-icon"><i class="fas fa-sun"></i></div>
+                                        <span class="meter-title" data-key="electricity_day_title">Эл-во (дневной)</span>
+                                    </div>
+                                    <div class="input-field small">
+                                        <input type="number" id="electricityDay" step="0.1" min="0" required placeholder=" ">
+                                        <label data-key="electricity_unit">кВт·ч</label>
+                                    </div>
+                                </div>
+
+                                <!-- 2. Электричество льготный -->
+                                <div class="meter-card electricity-night">
+                                    <div class="meter-header">
+                                        <div class="meter-icon"><i class="fas fa-moon"></i></div>
+                                        <span class="meter-title" data-key="electricity_night_title">Эл-во (льготный)</span>
+                                    </div>
+                                    <div class="input-field small">
+                                        <input type="number" id="electricityNight" step="0.1" min="0" required placeholder=" ">
+                                        <label data-key="electricity_unit">кВт·ч</label>
+                                    </div>
+                                </div>
+
+                                <!-- 3. Холодная вода -->
+                                <div class="meter-card water-cold">
+                                    <div class="meter-header">
+                                        <div class="meter-icon"><i class="fas fa-droplet"></i></div>
+                                        <span class="meter-title" data-key="water_cold_title">Холодная вода</span>
+                                    </div>
+                                    <div class="input-field small">
+                                        <input type="number" id="waterCold" step="0.1" min="0" required placeholder=" ">
+                                        <label data-key="water_unit">м³</label>
+                                    </div>
+                                </div>
+
+                                <!-- 4. Горячая вода -->
+                                <div class="meter-card water-hot">
+                                    <div class="meter-header">
+                                        <div class="meter-icon"><i class="fas fa-fire"></i></div>
+                                        <span class="meter-title" data-key="water_hot_title">Горячая вода</span>
+                                    </div>
+                                    <div class="input-field small">
+                                        <input type="number" id="waterHot" step="0.1" min="0" required placeholder=" ">
+                                        <label data-key="water_unit">м³</label>
+                                    </div>
+                                </div>
+
+                                <!-- 5. Газ -->
+                                <div class="meter-card gas">
+                                    <div class="meter-header">
+                                        <div class="meter-icon"><i class="fas fa-fire-flame-curved"></i></div>
+                                        <span class="meter-title" data-key="gas_title">Газ</span>
+                                    </div>
+                                    <div class="input-field small">
+                                        <input type="number" id="gas" step="0.1" min="0" required placeholder=" ">
+                                        <label data-key="gas_unit">м³</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-paper-plane"></i>
+                                <span data-key="submit_btn">Отправить показания</span>
+                            </button>
+                        </form>
+                    </section>
+                </div>
+
+                <!-- ================================== -->
+                <!-- ВКЛАДКА 2: ИСТОРИЯ                  -->
+                <!-- ================================== -->
+                <div class="tab-pane" id="tab-history">
+                    <section class="history-section">
+                        <div class="table-wrapper">
+                            <table id="readingsTable">
+                                <thead>
+                                    <tr>
+                                        <th data-key="th_apartment">Квартира</th>
+                                        <th data-key="th_name">Имя</th>
+                                        <th data-key="th_electricity_day"><i class="fas fa-sun"></i></th>
+                                        <th data-key="th_electricity_night"><i class="fas fa-moon"></i></th>
+                                        <th data-key="th_water_cold"><i class="fas fa-droplet"></i></th>
+                                        <th data-key="th_water_hot"><i class="fas fa-fire"></i></th>
+                                        <th data-key="th_gas"><i class="fas fa-fire-flame-curved"></i></th>
+                                        <th data-key="th_date"><i class="fas fa-calendar"></i></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="readingsBody">
+                                    <!-- Данные через JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- ================================== -->
+                <!-- ВКЛАДКА 3: СТАТИСТИКА               -->
+                <!-- ================================== -->
+                <div class="tab-pane" id="tab-stats">
+                    <section class="stats-section">
+                        <div class="stats-grid">
+                            <div class="stats-card-small">
+                                <div class="stats-card-icon"><i class="fas fa-file-alt"></i></div>
+                                <div class="stats-card-info">
+                                    <span class="stats-card-number" id="statsTotal">0</span>
+                                    <span class="stats-card-label" data-key="stats_total">Всего показаний</span>
+                                </div>
+                            </div>
+                            
+                            <div class="stats-card-small">
+                                <div class="stats-card-icon"><i class="fas fa-building"></i></div>
+                                <div class="stats-card-info">
+                                    <span class="stats-card-number" id="statsApartments">0</span>
+                                    <span class="stats-card-label" data-key="stats_apartments">Квартир</span>
+                                </div>
+                            </div>
+
+                            <div class="stats-card-small">
+                                <div class="stats-card-icon"><i class="fas fa-users"></i></div>
+                                <div class="stats-card-info">
+                                    <span class="stats-card-number" id="statsPeople">0</span>
+                                    <span class="stats-card-label" data-key="stats_people">Жильцов</span>
+                                </div>
+                            </div>
+
+                            <div class="stats-card-small">
+                                <div class="stats-card-icon"><i class="fas fa-calendar-day"></i></div>
+                                <div class="stats-card-info">
+                                    <span class="stats-card-number" id="statsToday">0</span>
+                                    <span class="stats-card-label" data-key="stats_today">За сегодня</span>
+                                </div>
+                            </div>
+
+                            <div class="stats-card-wide">
+                                <h3 data-key="stats_consumption">Потребление ресурсов</h3>
+                                <div class="consumption-grid">
+                                    <div class="consumption-item">
+                                        <span class="consumption-icon"><i class="fas fa-sun" style="color:#FFD93D;"></i></span>
+                                        <div class="consumption-info">
+                                            <span class="consumption-label" data-key="stats_elec_day">Эл. дневной</span>
+                                            <span class="consumption-value" id="statsElecDay">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="consumption-item">
+                                        <span class="consumption-icon"><i class="fas fa-moon" style="color:#A29BFE;"></i></span>
+                                        <div class="consumption-info">
+                                            <span class="consumption-label" data-key="stats_elec_night">Эл. льготный</span>
+                                            <span class="consumption-value" id="statsElecNight">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="consumption-item">
+                                        <span class="consumption-icon"><i class="fas fa-droplet" style="color:#4FC3F7;"></i></span>
+                                        <div class="consumption-info">
+                                            <span class="consumption-label" data-key="stats_water_cold">Хол. вода</span>
+                                            <span class="consumption-value" id="statsWaterCold">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="consumption-item">
+                                        <span class="consumption-icon"><i class="fas fa-fire" style="color:#FF8A65;"></i></span>
+                                        <div class="consumption-info">
+                                            <span class="consumption-label" data-key="stats_water_hot">Гор. вода</span>
+                                            <span class="consumption-value" id="statsWaterHot">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="consumption-item">
+                                        <span class="consumption-icon"><i class="fas fa-fire-flame-curved" style="color:#FF6B6B;"></i></span>
+                                        <div class="consumption-info">
+                                            <span class="consumption-label" data-key="stats_gas">Газ</span>
+                                            <span class="consumption-value" id="statsGas">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stats-card-wide">
+                                <h3 data-key="stats_top">Активные квартиры</h3>
+                                <div id="topApartments" class="top-list">
+                                    <p class="empty-message-small" data-key="stats_no_data">Нет данных</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- ================================== -->
+                <!-- ВКЛАДКА 4: ПРОФИЛЬ                 -->
+                <!-- ================================== -->
+                <div class="tab-pane" id="tab-profile">
+                    <section class="profile-section">
+                        <div class="profile-card">
+                            <div class="profile-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <h2 class="profile-name" id="profileName">Гость</h2>
+                            <p class="profile-role" id="profileRole" data-key="profile_role">Пользователь Majio</p>
+                            
+                            <div class="profile-divider"></div>
+                            
+                            <div class="profile-stats">
+                                <div class="profile-stat-item">
+                                    <span class="profile-stat-number" id="profileReadings">0</span>
+                                    <span class="profile-stat-label" data-key="profile_readings">показаний подано</span>
+                                </div>
+                                <div class="profile-stat-item">
+                                    <span class="profile-stat-number" id="profileApartments">0</span>
+                                    <span class="profile-stat-label" data-key="profile_apartments">квартир</span>
+                                </div>
+                            </div>
+
+                            <div class="profile-divider"></div>
+
+                            <div class="profile-settings">
+                                <h3 data-key="profile_settings">Настройки</h3>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <i class="fas fa-globe"></i>
+                                        <span data-key="profile_lang">Язык</span>
+                                    </div>
+                                    <span class="setting-value" id="profileLangDisplay">Русский</span>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <i class="fas fa-palette"></i>
+                                        <span data-key="profile_theme">Тема</span>
+                                    </div>
+                                    <span class="setting-value" id="profileThemeDisplay">Светлая</span>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <i class="fas fa-database"></i>
+                                        <span data-key="profile_data">Данные</span>
+                                    </div>
+                                    <span class="setting-value" id="profileDataSize">0 KB</span>
+                                </div>
+                            </div>
+
+                            <div class="profile-divider"></div>
+
+                            <div class="profile-actions">
+                                <button class="profile-action-btn logout" id="profileLogoutBtn">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span data-key="profile_logout">Выйти</span>
+                                </button>
+                            </div>
+
+                            <div class="profile-footer">
+                                <p>Majio v0.03</p>
+                                <p data-key="profile_credit">© 2026 — Умный учёт в вашем доме</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
             </div>
-        </section>
+        </div>
 
         <!-- ====================================== -->
-        <!-- НИЖНЯЯ НАВИГАЦИЯ (TAB BAR)             -->
+        <!-- НИЖНЯЯ НАВИГАЦИЯ                       -->
         <!-- ====================================== -->
         <nav class="bottom-nav">
-            <div class="nav-item active">
-                <i class="fas fa-home"></i>
-                <span data-key="nav_home">Главная</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-chart-simple"></i>
+            <button class="nav-item active" data-tab="submit">
+                <i class="fas fa-pen"></i>
+                <span data-key="nav_submit">Подача</span>
+            </button>
+            <button class="nav-item" data-tab="history">
+                <i class="fas fa-clock-rotate-left"></i>
+                <span data-key="nav_history">История</span>
+            </button>
+            <button class="nav-item" data-tab="stats">
+                <i class="fas fa-chart-pie"></i>
                 <span data-key="nav_stats">Статистика</span>
-            </div>
-            <div class="nav-item">
+            </button>
+            <button class="nav-item" data-tab="profile">
                 <i class="fas fa-user"></i>
                 <span data-key="nav_profile">Профиль</span>
-            </div>
+            </button>
         </nav>
     </div>
 

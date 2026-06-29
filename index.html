@@ -2,185 +2,184 @@
 <html lang="et">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <meta name="theme-color" content="#667eea">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#1a1a2e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Majio - Näitude esitamine</title>
+    
+    <!-- Font Awesome 6 (бесплатные иконки) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- ============================================ -->
-    <!-- АНИМИРОВАННЫЙ ФОН С ПЛАВАЮЩИМИ КРУГАМИ        -->
-    <!-- ============================================ -->
-    <div class="bg-animation">
-        <div class="circle c1"></div>
-        <div class="circle c2"></div>
-        <div class="circle c3"></div>
-        <div class="circle c4"></div>
+    <!-- ========================================== -->
+    <!-- ВЕРХНЯЯ ПАНЕЛЬ (STATUS BAR)                 -->
+    <!-- ========================================== -->
+    <div class="status-bar">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-three-quarters"></i>
+        </div>
     </div>
 
-    <div class="container">
-        <!-- ========================================== -->
-        <!-- ШАПКА С ЛОГОТИПОМ И СТАТИСТИКОЙ             -->
-        <!-- ========================================== -->
-        <header class="creative-header">
-            <div class="header-content">
-                <div class="logo-section">
-                    <!-- Логотип в виде домика со счетчиком -->
-                    <div class="logo-icon">
-                        <svg viewBox="0 0 100 100" fill="none" aria-label="Logo">
-                            <rect x="10" y="30" width="80" height="55" rx="5" stroke="white" stroke-width="3"/>
-                            <rect x="35" y="15" width="30" height="20" rx="3" stroke="white" stroke-width="3"/>
-                            <circle cx="40" cy="55" r="5" fill="#FFD93D"/>
-                            <circle cx="60" cy="55" r="5" fill="#FFD93D"/>
-                            <line x1="30" y1="70" x2="70" y2="70" stroke="white" stroke-width="2" stroke-dasharray="4 4"/>
-                            <text x="50" y="88" text-anchor="middle" fill="white" font-size="14" font-weight="bold">kW</text>
-                        </svg>
-                    </div>
-                    <div class="logo-text">
-                        <h1>Majio</h1>
-                        <p class="tagline">⚡ Tark arvestus sinu kodus</p>
-                    </div>
+    <!-- ========================================== -->
+    <!-- ОСНОВНОЙ КОНТЕЙНЕР                         -->
+    <!-- ========================================== -->
+    <div class="app-container">
+        
+        <!-- ====================================== -->
+        <!-- ШАПКА С ПРИВЕТСТВИЕМ                    -->
+        <!-- ====================================== -->
+        <header class="app-header">
+            <div class="header-top">
+                <div class="greeting">
+                    <span class="greeting-text">Tere,</span>
+                    <h1>Majio</h1>
                 </div>
-                <!-- Блок статистики -->
-                <div class="header-stats">
-                    <div class="stat-item">
+                <div class="header-actions">
+                    <button class="icon-btn" id="exportBtn" title="Ekspordi CSV">
+                        <i class="fas fa-file-export"></i>
+                    </button>
+                    <button class="icon-btn" id="clearAllBtn" title="Tühjenda kõik">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Карточка статистики -->
+            <div class="stats-card">
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+                    <div class="stat-info">
                         <span class="stat-number" id="totalReadings">0</span>
                         <span class="stat-label">näitu</span>
                     </div>
-                    <div class="stat-item">
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-building"></i></div>
+                    <div class="stat-info">
                         <span class="stat-number" id="totalApartments">0</span>
                         <span class="stat-label">korterit</span>
                     </div>
                 </div>
             </div>
-            <!-- Волна-разделитель -->
-            <div class="wave-divider">
-                <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
-                    <path d="M0,30 C360,60 720,0 1080,30 C1260,45 1380,30 1440,30 L1440,60 L0,60Z" fill="#f8f9fa"/>
-                </svg>
-            </div>
         </header>
 
-        <main>
-            <!-- ========================================== -->
-            <!-- ФОРМА ПОДАЧИ ПОКАЗАНИЙ                       -->
-            <!-- ========================================== -->
-            <section class="form-section glass-morphism">
-                <div class="form-header">
-                    <h2>📊 Esita näidud</h2>
-                    <span class="badge">Uus</span>
-                </div>
-                
-                <form id="meterForm" novalidate>
-                    <!-- Первая строка: номер квартиры и имя -->
-                    <div class="form-row">
-                        <div class="form-group floating-label">
-                            <input type="number" id="apartment" min="1" max="9999" required>
-                            <label for="apartment">🏢 Korteri number</label>
-                            <span class="focus-border"></span>
-                        </div>
-                        <div class="form-group floating-label">
-                            <input type="text" id="name" maxlength="50" required>
-                            <label for="name">👤 Teie nimi</label>
-                            <span class="focus-border"></span>
-                        </div>
-                    </div>
-
-                    <!-- Карточки счетчиков -->
-                    <div class="meter-grid">
-                        <!-- Электричество -->
-                        <div class="meter-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                            <div class="meter-icon">⚡</div>
-                            <div class="form-group floating-label">
-                                <input type="number" id="electricity" step="0.1" min="0" required>
-                                <label for="electricity">Elektrienergia, kWh</label>
-                                <span class="focus-border"></span>
-                            </div>
-                        </div>
-
-                        <!-- Холодная вода -->
-                        <div class="meter-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                            <div class="meter-icon">💧</div>
-                            <div class="form-group floating-label">
-                                <input type="number" id="waterCold" step="0.1" min="0" required>
-                                <label for="waterCold">Külm vesi, m³</label>
-                                <span class="focus-border"></span>
-                            </div>
-                        </div>
-
-                        <!-- Горячая вода -->
-                        <div class="meter-card" style="background: linear-gradient(135deg, #f093fb 0%, #ffecd2 100%);">
-                            <div class="meter-icon">🔥</div>
-                            <div class="form-group floating-label">
-                                <input type="number" id="waterHot" step="0.1" min="0" required>
-                                <label for="waterHot">Soe vesi, m³</label>
-                                <span class="focus-border"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Кнопка отправки -->
-                    <button type="submit" class="submit-btn">
-                        <span class="btn-text">📤 Saada näidud</span>
-                        <span class="btn-icon">→</span>
-                    </button>
-                </form>
-            </section>
-
-            <!-- ========================================== -->
-            <!-- ТАБЛИЦА С ИСТОРИЕЙ ПОКАЗАНИЙ               -->
-            <!-- ========================================== -->
-            <section class="table-section glass-morphism">
-                <div class="table-header">
-                    <h2>📋 Näitude ajalugu</h2>
-                    <div class="table-controls">
-                        <button id="exportBtn" class="control-btn export">
-                            <span>📥</span> CSV
-                        </button>
-                        <button id="clearAllBtn" class="control-btn clear">
-                            <span>🗑️</span> Tühjenda
-                        </button>
-                    </div>
-                </div>
-
-                <div class="table-wrapper">
-                    <table id="readingsTable">
-                        <thead>
-                            <tr>
-                                <th>Korter</th>
-                                <th>Nimi</th>
-                                <th>⚡ Elekter</th>
-                                <th>💧 Külm</th>
-                                <th>🔥 Soe</th>
-                                <th>📅 Kuupäev</th>
-                                <th>⚙️</th>
-                            </tr>
-                        </thead>
-                        <tbody id="readingsBody">
-                            <!-- Данные загружаются через JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </main>
-
-        <!-- ========================================== -->
-        <!-- ПОДВАЛ                                     -->
-        <!-- ========================================== -->
-        <footer class="creative-footer">
-            <div class="footer-content">
-                <p>© 2026 <strong>Majio</strong> — tark arvestus igas kodus</p>
-                <p class="footer-tech">⚡ Töötab JavaScript + localStorage</p>
+        <!-- ====================================== -->
+        <!-- ФОРМА ПОДАЧИ ПОКАЗАНИЙ                  -->
+        <!-- ====================================== -->
+        <section class="form-section">
+            <div class="section-header">
+                <h2><i class="fas fa-pen"></i> Esita näidud</h2>
+                <span class="badge">Uus</span>
             </div>
-        </footer>
+            
+            <form id="meterForm" novalidate>
+                <!-- Поля ввода -->
+                <div class="input-group">
+                    <div class="input-field">
+                        <i class="fas fa-hashtag input-icon"></i>
+                        <input type="number" id="apartment" min="1" max="9999" required placeholder=" ">
+                        <label>Korteri number</label>
+                    </div>
+                    
+                    <div class="input-field">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="name" maxlength="50" required placeholder=" ">
+                        <label>Teie nimi</label>
+                    </div>
+                </div>
+
+                <!-- Счетчики -->
+                <div class="meter-grid">
+                    <div class="meter-card electricity">
+                        <div class="meter-icon"><i class="fas fa-bolt"></i></div>
+                        <div class="input-field small">
+                            <input type="number" id="electricity" step="0.1" min="0" required placeholder=" ">
+                            <label>Elektrienergia, kWh</label>
+                        </div>
+                    </div>
+
+                    <div class="meter-card water-cold">
+                        <div class="meter-icon"><i class="fas fa-snowflake"></i></div>
+                        <div class="input-field small">
+                            <input type="number" id="waterCold" step="0.1" min="0" required placeholder=" ">
+                            <label>Külm vesi, m³</label>
+                        </div>
+                    </div>
+
+                    <div class="meter-card water-hot">
+                        <div class="meter-icon"><i class="fas fa-fire"></i></div>
+                        <div class="input-field small">
+                            <input type="number" id="waterHot" step="0.1" min="0" required placeholder=" ">
+                            <label>Soe vesi, m³</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кнопка отправки -->
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Saada näidud</span>
+                </button>
+            </form>
+        </section>
+
+        <!-- ====================================== -->
+        <!-- ИСТОРИЯ ПОКАЗАНИЙ                       -->
+        <!-- ====================================== -->
+        <section class="history-section">
+            <div class="section-header">
+                <h2><i class="fas fa-clock-rotate-left"></i> Ajalugu</h2>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="readingsTable">
+                    <thead>
+                        <tr>
+                            <th>Korter</th>
+                            <th>Nimi</th>
+                            <th>⚡</th>
+                            <th>💧</th>
+                            <th>🔥</th>
+                            <th>📅</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="readingsBody">
+                        <!-- Данные через JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ====================================== -->
+        <!-- НИЖНЯЯ НАВИГАЦИЯ (TAB BAR)             -->
+        <!-- ====================================== -->
+        <nav class="bottom-nav">
+            <div class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Avaleht</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-chart-simple"></i>
+                <span>Statistika</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profiil</span>
+            </div>
+        </nav>
     </div>
 
-    <!-- ========================================== -->
-    <!-- ПОДКЛЮЧЕНИЕ JAVASCRIPT                      -->
-    <!-- ========================================== -->
     <script src="script.js"></script>
 </body>
 </html>

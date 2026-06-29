@@ -1,10 +1,6 @@
 /**
  * ============================================
- * MAJIO - ПРИЛОЖЕНИЕ ДЛЯ ПОДАЧИ ПОКАЗАНИЙ
- * ============================================
- * Версия: 1.0
- * Язык: Эстонский (интерфейс), русский (комментарии)
- * Хранение: localStorage
+ * MAJIO - СОВРЕМЕННОЕ МОБИЛЬНОЕ ПРИЛОЖЕНИЕ
  * ============================================
  */
 
@@ -12,17 +8,11 @@
 // КЛАСС ДЛЯ УПРАВЛЕНИЯ ПОКАЗАНИЯМИ
 // ============================================
 class MeterReadings {
-    /**
-     * Конструктор - загружает данные из localStorage
-     */
     constructor() {
         this.readings = [];
         this.loadFromLocalStorage();
     }
 
-    /**
-     * Загрузка данных из localStorage
-     */
     loadFromLocalStorage() {
         const data = localStorage.getItem('majio_readings');
         if (data) {
@@ -34,25 +24,13 @@ class MeterReadings {
         }
     }
 
-    /**
-     * Сохранение данных в localStorage
-     */
     saveToLocalStorage() {
         localStorage.setItem('majio_readings', JSON.stringify(this.readings));
     }
 
-    /**
-     * Добавление нового показания
-     * @param {number} apartment - номер квартиры
-     * @param {string} name - имя жильца
-     * @param {number} electricity - показания электричества
-     * @param {number} waterCold - показания холодной воды
-     * @param {number} waterHot - показания горячей воды
-     * @returns {object} - созданная запись
-     */
     addReading(apartment, name, electricity, waterCold, waterHot) {
         const reading = {
-            id: Date.now(), // Уникальный ID на основе времени
+            id: Date.now(),
             apartment: parseInt(apartment),
             name: name.trim(),
             electricity: parseFloat(electricity),
@@ -68,25 +46,16 @@ class MeterReadings {
             timestamp: Date.now()
         };
 
-        // Добавляем в начало массива (свежие записи сверху)
         this.readings.unshift(reading);
         this.saveToLocalStorage();
         return reading;
     }
 
-    /**
-     * Удаление показания по ID
-     * @param {number} id - ID записи
-     */
     deleteReading(id) {
         this.readings = this.readings.filter(r => r.id !== id);
         this.saveToLocalStorage();
     }
 
-    /**
-     * Очистка всех показаний
-     * @returns {boolean} - подтверждение действия
-     */
     clearAll() {
         if (confirm('🗑️ Kas soovite kõik näidud kustutada?')) {
             this.readings = [];
@@ -96,18 +65,10 @@ class MeterReadings {
         return false;
     }
 
-    /**
-     * Получение всех показаний
-     * @returns {array} - массив всех записей
-     */
     getAllReadings() {
         return this.readings;
     }
 
-    /**
-     * Получение статистики
-     * @returns {object} - { total: количество записей, apartments: количество квартир }
-     */
     getStats() {
         const uniqueApartments = new Set(this.readings.map(r => r.apartment));
         return {
@@ -116,19 +77,13 @@ class MeterReadings {
         };
     }
 
-    /**
-     * Экспорт данных в CSV файл
-     */
     exportToCSV() {
         if (this.readings.length === 0) {
-            alert('📭 Andmed puuduvad!');
+            this.showNotification('📭 Andmed puuduvad!', 'error');
             return;
         }
 
-        // Заголовки CSV
         const headers = ['Korter', 'Nimi', 'Elektrienergia', 'Külm vesi', 'Soe vesi', 'Kuupäev'];
-        
-        // Данные
         const rows = this.readings.map(r => [
             r.apartment,
             r.name,
@@ -138,30 +93,39 @@ class MeterReadings {
             r.date
         ]);
 
-        // Формируем CSV строку
         const csvContent = [headers, ...rows]
             .map(row => row.join(','))
             .join('\n');
 
-        // Добавляем BOM для корректного отображения в Excel
         const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-        
-        // Создаем ссылку для скачивания
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
         link.download = `majio_${new Date().toISOString().slice(0,10)}.csv`;
         link.click();
         URL.revokeObjectURL(link.href);
     }
+
+    showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateX(-50%) translateY(-20px) scale(0.9)';
+            notification.style.transition = 'all 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
 }
 
 // ============================================
-// ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
+// ИНИЦИАЛИЗАЦИЯ
 // ============================================
 const meterApp = new MeterReadings();
 
 // ============================================
-// ПОЛУЧЕНИЕ DOM ЭЛЕМЕНТОВ
+// DOM ЭЛЕМЕНТЫ
 // ============================================
 const form = document.getElementById('meterForm');
 const readingsBody = document.getElementById('readingsBody');
@@ -177,16 +141,15 @@ function renderTable() {
     const readings = meterApp.getAllReadings();
     
     if (readings.length === 0) {
-        // Показываем пустое сообщение
         readingsBody.innerHTML = `
             <tr>
                 <td colspan="7" class="empty-message">
-                    Näidud puuduvad. Lisage esimene!
+                    <i class="fas fa-inbox" style="display:block;font-size:24px;margin-bottom:8px;color:var(--text-muted)"></i>
+                    Näidud puuduvad
                 </td>
             </tr>
         `;
     } else {
-        // Генерируем строки таблицы
         readingsBody.innerHTML = readings.map(reading => `
             <tr>
                 <td><strong>${reading.apartment}</strong></td>
@@ -196,12 +159,13 @@ function renderTable() {
                 <td>${reading.waterHot}</td>
                 <td>${reading.date}</td>
                 <td>
-                    <button class="delete-btn" data-id="${reading.id}">✕</button>
+                    <button class="delete-btn" data-id="${reading.id}">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                 </td>
             </tr>
         `).join('');
 
-        // Добавляем обработчики для кнопок удаления
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const id = parseInt(this.dataset.id);
@@ -209,7 +173,7 @@ function renderTable() {
                     meterApp.deleteReading(id);
                     renderTable();
                     updateStats();
-                    showNotification('✅ Näidud kustutatud');
+                    meterApp.showNotification('✅ Näidud kustutatud');
                 }
             });
         });
@@ -226,135 +190,55 @@ function updateStats() {
 }
 
 // ============================================
-// УВЕДОМЛЕНИЯ
-// ============================================
-function showNotification(message, isError = false) {
-    // Создаем элемент уведомления
-    const notification = document.createElement('div');
-    const colors = isError 
-        ? 'linear-gradient(135deg, #ff6b6b, #ee5a24)'
-        : 'linear-gradient(135deg, #43e97b, #38f9d7)';
-    
-    // Стили уведомления
-    notification.style.cssText = `
-        position: fixed;
-        top: 30px;
-        right: 30px;
-        background: ${colors};
-        color: ${isError ? 'white' : '#0a0e27'};
-        padding: 18px 28px;
-        border-radius: 16px;
-        font-weight: 700;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-        z-index: 10000;
-        animation: slideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        font-family: 'Inter', sans-serif;
-        font-size: 1em;
-        max-width: 350px;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.3);
-    `;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-
-    // Автоматическое исчезновение через 3 секунды
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease forwards';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-}
-
-// ============================================
-// ДОБАВЛЕНИЕ АНИМАЦИЙ ДЛЯ УВЕДОМЛЕНИЙ
-// ============================================
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(120%) scale(0.8);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0) scale(1);
-            opacity: 1;
-        }
-    }
-    @keyframes slideOut {
-        to {
-            transform: translateX(120%) scale(0.8);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
-
-// ============================================
 // ОБРАБОТЧИК ФОРМЫ
 // ============================================
 form.addEventListener('submit', function(e) {
-    e.preventDefault(); // Предотвращаем перезагрузку страницы
+    e.preventDefault();
 
-    // Получаем значения полей
     const apartment = document.getElementById('apartment').value;
     const name = document.getElementById('name').value;
     const electricity = document.getElementById('electricity').value;
     const waterCold = document.getElementById('waterCold').value;
     const waterHot = document.getElementById('waterHot').value;
 
-    // Проверка заполнения всех полей
     if (!apartment || !name || !electricity || !waterCold || !waterHot) {
-        showNotification('⚠️ Täitke kõik väljad!', true);
+        meterApp.showNotification('⚠️ Täitke kõik väljad!', 'error');
         return;
     }
 
-    // Проверка на отрицательные значения
     if (parseFloat(electricity) < 0 || parseFloat(waterCold) < 0 || parseFloat(waterHot) < 0) {
-        showNotification('⚠️ Väärtused ei saa olla negatiivsed!', true);
+        meterApp.showNotification('⚠️ Väärtused ei saa olla negatiivsed!', 'error');
         return;
     }
 
-    // Добавляем показание
     meterApp.addReading(apartment, name, electricity, waterCold, waterHot);
-    
-    // Обновляем интерфейс
     renderTable();
     updateStats();
-    
-    // Очищаем форму
     form.reset();
     
-    // Показываем уведомление об успехе
-    showNotification('🎉 Näidud edukalt esitatud!');
+    meterApp.showNotification('🎉 Näidud edukalt esitatud!');
 });
 
 // ============================================
-// ОБРАБОТЧИК КНОПКИ ОЧИСТКИ
+// ОБРАБОТЧИКИ КНОПОК
 // ============================================
 clearAllBtn.addEventListener('click', function() {
     if (meterApp.clearAll()) {
         renderTable();
         updateStats();
-        showNotification('🗑️ Kõik näidud kustutatud');
+        meterApp.showNotification('🗑️ Kõik näidud kustutatud');
     }
 });
 
-// ============================================
-// ОБРАБОТЧИК КНОПКИ ЭКСПОРТА
-// ============================================
 exportBtn.addEventListener('click', function() {
     meterApp.exportToCSV();
-    showNotification('📥 CSV fail allalaetud');
+    meterApp.showNotification('📥 CSV fail allalaetud');
 });
 
 // ============================================
-// ПЕРВОНАЧАЛЬНАЯ ЗАГРУЗКА ДАННЫХ
+// ЗАГРУЗКА
 // ============================================
 renderTable();
 updateStats();
 
-// ============================================
-// ОБРАБОТКА ОШИБОК (для отладки)
-// ============================================
-console.log('🏠 Majio rakendus käivitatud!');
-console.log(`📊 Hetkel ${meterApp.getStats().total} näitu ja ${meterApp.getStats().apartments} korterit`);
+console.log('🏠 Majio v2.0 - Modern Mobile UI');

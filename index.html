@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="et" id="htmlRoot">
+<html lang="ru" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#1a1a2e" id="themeColor">
+    <meta name="theme-color" content="#F5F5FA" id="themeColor">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Majio - Näitude esitamine</title>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Majio - Подача показаний</title>
     
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -18,18 +18,6 @@
 </head>
 <body>
     <!-- ========================================== -->
-    <!-- ВЕРХНЯЯ ПАНЕЛЬ (STATUS BAR)                 -->
-    <!-- ========================================== -->
-    <div class="status-bar">
-        <span class="time" id="statusTime">9:41</span>
-        <div class="status-icons">
-            <i class="fas fa-signal"></i>
-            <i class="fas fa-wifi"></i>
-            <i class="fas fa-battery-three-quarters"></i>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
     <!-- ОСНОВНОЙ КОНТЕЙНЕР                         -->
     <!-- ========================================== -->
     <div class="app-container">
@@ -40,7 +28,7 @@
         <header class="app-header">
             <div class="header-top">
                 <div class="greeting">
-                    <span class="greeting-text" data-key="greeting">Tere,</span>
+                    <span class="greeting-text" data-key="greeting">Здравствуйте,</span>
                     <h1>Majio</h1>
                 </div>
                 <div class="header-actions">
@@ -53,11 +41,11 @@
                         <i class="fas fa-moon"></i>
                     </button>
                     <!-- Кнопка экспорта -->
-                    <button class="icon-btn" id="exportBtn" title="Ekspordi CSV">
+                    <button class="icon-btn" id="exportBtn" title="Экспорт CSV">
                         <i class="fas fa-file-export"></i>
                     </button>
                     <!-- Кнопка очистки -->
-                    <button class="icon-btn" id="clearAllBtn" title="Tühjenda kõik">
+                    <button class="icon-btn" id="clearAllBtn" title="Очистить всё">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                 </div>
@@ -69,7 +57,7 @@
                     <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
                     <div class="stat-info">
                         <span class="stat-number" id="totalReadings">0</span>
-                        <span class="stat-label" data-key="readings">näitu</span>
+                        <span class="stat-label" data-key="readings">показаний</span>
                     </div>
                 </div>
                 <div class="stat-divider"></div>
@@ -77,7 +65,7 @@
                     <div class="stat-icon"><i class="fas fa-building"></i></div>
                     <div class="stat-info">
                         <span class="stat-number" id="totalApartments">0</span>
-                        <span class="stat-label" data-key="apartments">korterit</span>
+                        <span class="stat-label" data-key="apartments">квартир</span>
                     </div>
                 </div>
             </div>
@@ -88,8 +76,8 @@
         <!-- ====================================== -->
         <section class="form-section">
             <div class="section-header">
-                <h2><i class="fas fa-pen"></i> <span data-key="submit_title">Esita näidud</span></h2>
-                <span class="badge" data-key="new">Uus</span>
+                <h2><i class="fas fa-pen"></i> <span data-key="submit_title">Подать показания</span></h2>
+                <span class="badge" data-key="new">Новое</span>
             </div>
             
             <form id="meterForm" novalidate>
@@ -98,13 +86,13 @@
                     <div class="input-field">
                         <i class="fas fa-hashtag input-icon"></i>
                         <input type="number" id="apartment" min="1" max="9999" required placeholder=" ">
-                        <label data-key="apartment_label">Korteri number</label>
+                        <label data-key="apartment_label">Номер квартиры</label>
                     </div>
                     
                     <div class="input-field">
                         <i class="fas fa-user input-icon"></i>
                         <input type="text" id="name" maxlength="50" required placeholder=" ">
-                        <label data-key="name_label">Teie nimi</label>
+                        <label data-key="name_label">Ваше имя</label>
                     </div>
                 </div>
 
@@ -114,7 +102,7 @@
                         <div class="meter-icon"><i class="fas fa-bolt"></i></div>
                         <div class="input-field small">
                             <input type="number" id="electricity" step="0.1" min="0" required placeholder=" ">
-                            <label data-key="electricity_label">Elektrienergia, kWh</label>
+                            <label data-key="electricity_label">Электричество, кВт·ч</label>
                         </div>
                     </div>
 
@@ -122,7 +110,7 @@
                         <div class="meter-icon"><i class="fas fa-snowflake"></i></div>
                         <div class="input-field small">
                             <input type="number" id="waterCold" step="0.1" min="0" required placeholder=" ">
-                            <label data-key="water_cold_label">Külm vesi, m³</label>
+                            <label data-key="water_cold_label">Холодная вода, м³</label>
                         </div>
                     </div>
 
@@ -130,7 +118,7 @@
                         <div class="meter-icon"><i class="fas fa-fire"></i></div>
                         <div class="input-field small">
                             <input type="number" id="waterHot" step="0.1" min="0" required placeholder=" ">
-                            <label data-key="water_hot_label">Soe vesi, m³</label>
+                            <label data-key="water_hot_label">Горячая вода, м³</label>
                         </div>
                     </div>
                 </div>
@@ -138,7 +126,7 @@
                 <!-- Кнопка отправки -->
                 <button type="submit" class="submit-btn">
                     <i class="fas fa-paper-plane"></i>
-                    <span data-key="submit_btn">Saada näidud</span>
+                    <span data-key="submit_btn">Отправить показания</span>
                 </button>
             </form>
         </section>
@@ -148,15 +136,15 @@
         <!-- ====================================== -->
         <section class="history-section">
             <div class="section-header">
-                <h2><i class="fas fa-clock-rotate-left"></i> <span data-key="history_title">Ajalugu</span></h2>
+                <h2><i class="fas fa-clock-rotate-left"></i> <span data-key="history_title">История</span></h2>
             </div>
 
             <div class="table-wrapper">
                 <table id="readingsTable">
                     <thead>
                         <tr>
-                            <th data-key="th_apartment">Korter</th>
-                            <th data-key="th_name">Nimi</th>
+                            <th data-key="th_apartment">Квартира</th>
+                            <th data-key="th_name">Имя</th>
                             <th>⚡</th>
                             <th>💧</th>
                             <th>🔥</th>
@@ -177,15 +165,15 @@
         <nav class="bottom-nav">
             <div class="nav-item active">
                 <i class="fas fa-home"></i>
-                <span data-key="nav_home">Avaleht</span>
+                <span data-key="nav_home">Главная</span>
             </div>
             <div class="nav-item">
                 <i class="fas fa-chart-simple"></i>
-                <span data-key="nav_stats">Statistika</span>
+                <span data-key="nav_stats">Статистика</span>
             </div>
             <div class="nav-item">
                 <i class="fas fa-user"></i>
-                <span data-key="nav_profile">Profiil</span>
+                <span data-key="nav_profile">Профиль</span>
             </div>
         </nav>
     </div>

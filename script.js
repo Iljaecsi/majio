@@ -1,6 +1,6 @@
 /**
  * ============================================
- * MAJIO v3.0 - ТЕМЫ + ПЕРЕВОДЫ
+ * MAJIO v3.1 - СВЕТЛАЯ ТЕМА + РУССКИЙ ЯЗЫК
  * ============================================
  */
 
@@ -8,6 +8,36 @@
 // ПЕРЕВОДЫ
 // ============================================
 const translations = {
+    ru: {
+        greeting: 'Здравствуйте,',
+        readings: 'показаний',
+        apartments: 'квартир',
+        submit_title: 'Подать показания',
+        new: 'Новое',
+        apartment_label: 'Номер квартиры',
+        name_label: 'Ваше имя',
+        electricity_label: 'Электричество, кВт·ч',
+        water_cold_label: 'Холодная вода, м³',
+        water_hot_label: 'Горячая вода, м³',
+        submit_btn: 'Отправить показания',
+        history_title: 'История',
+        th_apartment: 'Квартира',
+        th_name: 'Имя',
+        th_date: '📅',
+        nav_home: 'Главная',
+        nav_stats: 'Статистика',
+        nav_profile: 'Профиль',
+        empty_message: 'Нет показаний',
+        delete_confirm: 'Удалить это показание?',
+        clear_confirm: '🗑️ Удалить все показания?',
+        clear_all: 'Все показания удалены',
+        deleted: 'Показание удалено',
+        submitted: '🎉 Показания успешно поданы!',
+        export_success: '📥 CSV файл скачан',
+        export_error: '📭 Нет данных для экспорта!',
+        fill_fields: '⚠️ Заполните все поля!',
+        negative_error: '⚠️ Значения не могут быть отрицательными!'
+    },
     et: {
         greeting: 'Tere,',
         readings: 'näitu',
@@ -37,44 +67,14 @@ const translations = {
         export_error: '📭 Andmed puuduvad!',
         fill_fields: '⚠️ Täitke kõik väljad!',
         negative_error: '⚠️ Väärtused ei saa olla negatiivsed!'
-    },
-    ru: {
-        greeting: 'Здравствуйте,',
-        readings: 'показаний',
-        apartments: 'квартир',
-        submit_title: 'Подать показания',
-        new: 'Новое',
-        apartment_label: 'Номер квартиры',
-        name_label: 'Ваше имя',
-        electricity_label: 'Электроэнергия, кВт·ч',
-        water_cold_label: 'Холодная вода, м³',
-        water_hot_label: 'Горячая вода, м³',
-        submit_btn: 'Отправить показания',
-        history_title: 'История',
-        th_apartment: 'Квартира',
-        th_name: 'Имя',
-        th_date: '📅',
-        nav_home: 'Главная',
-        nav_stats: 'Статистика',
-        nav_profile: 'Профиль',
-        empty_message: 'Нет показаний',
-        delete_confirm: 'Удалить это показание?',
-        clear_confirm: '🗑️ Удалить все показания?',
-        clear_all: 'Все показания удалены',
-        deleted: 'Показание удалено',
-        submitted: '🎉 Показания успешно поданы!',
-        export_success: '📥 CSV файл скачан',
-        export_error: '📭 Нет данных для экспорта!',
-        fill_fields: '⚠️ Заполните все поля!',
-        negative_error: '⚠️ Значения не могут быть отрицательными!'
     }
 };
 
 // ============================================
-// ТЕКУЩИЕ НАСТРОЙКИ
+// ТЕКУЩИЕ НАСТРОЙКИ (ПО УМОЛЧАНИЮ: СВЕТЛАЯ + РУССКИЙ)
 // ============================================
-let currentLang = localStorage.getItem('majio_lang') || 'et';
-let currentTheme = localStorage.getItem('majio_theme') || 'dark';
+let currentLang = localStorage.getItem('majio_lang') || 'ru';
+let currentTheme = localStorage.getItem('majio_theme') || 'light';
 
 // ============================================
 // ФУНКЦИЯ ПРИМЕНЕНИЯ ПЕРЕВОДОВ
@@ -90,12 +90,9 @@ function applyTranslations(lang) {
         }
     });
     
-    // Обновляем язык в HTML
     document.getElementById('htmlRoot').setAttribute('lang', lang === 'et' ? 'et' : 'ru');
     localStorage.setItem('majio_lang', lang);
     currentLang = lang;
-    
-    // Обновляем таблицу (для пустого сообщения)
     renderTable();
 }
 
@@ -107,7 +104,6 @@ function applyTheme(theme) {
     localStorage.setItem('majio_theme', theme);
     currentTheme = theme;
     
-    // Обновляем иконку на кнопке
     const themeBtn = document.getElementById('themeToggle');
     if (themeBtn) {
         const icon = themeBtn.querySelector('i');
@@ -116,7 +112,6 @@ function applyTheme(theme) {
         }
     }
     
-    // Обновляем meta theme-color
     const metaColor = document.getElementById('themeColor');
     if (metaColor) {
         metaColor.content = theme === 'dark' ? '#1a1a2e' : '#F5F5FA';
@@ -378,33 +373,16 @@ themeToggle.addEventListener('click', function() {
 langToggle.addEventListener('click', function() {
     const newLang = currentLang === 'et' ? 'ru' : 'et';
     applyTranslations(newLang);
-    // Обновляем таблицу
     renderTable();
 });
 
 // ============================================
-// ОБНОВЛЕНИЕ ВРЕМЕНИ В STATUS BAR
-// ============================================
-function updateTime() {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    document.getElementById('statusTime').textContent = `${hours}:${minutes}`;
-}
-
-// ============================================
 // ЗАГРУЗКА
 // ============================================
-// Применяем сохраненную тему
 applyTheme(currentTheme);
-// Применяем сохраненный язык
 applyTranslations(currentLang);
-// Обновляем время
-updateTime();
-setInterval(updateTime, 30000);
-
 renderTable();
 updateStats();
 
-console.log('🏠 Majio v3.0 - Themes + Translations');
+console.log('🏠 Majio v3.1 - Light theme + Russian default');
 console.log(`🌓 Theme: ${currentTheme}, Language: ${currentLang}`);

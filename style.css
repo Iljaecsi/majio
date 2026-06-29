@@ -1,14 +1,8 @@
 /* ============================================ */
-/* ГЛОБАЛЬНЫЕ СТИЛИ - iOS/Android 2024           */
+/* ПЕРЕМЕННЫЕ ТЕМ (СВЕТЛАЯ/ТЕМНАЯ)              */
 /* ============================================ */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
-
 :root {
+    /* Темная тема (по умолчанию) */
     --primary: #6C5CE7;
     --primary-dark: #5A4BD1;
     --primary-light: #A29BFE;
@@ -24,6 +18,30 @@
     --radius: 16px;
     --radius-sm: 12px;
     --radius-xs: 8px;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Светлая тема */
+[data-theme="light"] {
+    --bg-primary: #F5F5FA;
+    --bg-secondary: #FFFFFF;
+    --bg-card: #FFFFFF;
+    --bg-input: #F0F0F5;
+    --text-primary: #1A1A2E;
+    --text-secondary: #4A4A5E;
+    --text-muted: #8A8A9E;
+    --border-color: #E0E0E8;
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================ */
+/* ГЛОБАЛЬНЫЕ СТИЛИ                             */
+/* ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -35,10 +53,11 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background var(--transition), color var(--transition);
 }
 
 /* ============================================ */
-/* STATUS BAR (iOS стиль)                       */
+/* STATUS BAR                                   */
 /* ============================================ */
 .status-bar {
     display: flex;
@@ -52,6 +71,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+    transition: background var(--transition), color var(--transition);
 }
 
 .status-icons {
@@ -82,6 +102,8 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .greeting-text {
@@ -102,19 +124,20 @@ body {
 
 .header-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
+    flex-wrap: wrap;
 }
 
 .icon-btn {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     border: none;
     background: var(--bg-card);
     color: var(--text-secondary);
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.25s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -122,6 +145,11 @@ body {
 
 .icon-btn:active {
     transform: scale(0.92);
+    background: var(--primary);
+    color: white;
+}
+
+.icon-btn.active {
     background: var(--primary);
     color: white;
 }
@@ -136,6 +164,7 @@ body {
     padding: 20px 24px;
     border: 1px solid var(--border-color);
     backdrop-filter: blur(10px);
+    transition: background var(--transition), border var(--transition);
 }
 
 .stat-item {
@@ -155,12 +184,18 @@ body {
     justify-content: center;
     color: var(--primary-light);
     font-size: 20px;
+    transition: background var(--transition);
+}
+
+[data-theme="light"] .stat-icon {
+    background: rgba(108, 92, 231, 0.1);
 }
 
 .stat-divider {
     width: 1px;
     background: var(--border-color);
     margin: 0 12px;
+    transition: background var(--transition);
 }
 
 .stat-info {
@@ -171,8 +206,9 @@ body {
 .stat-number {
     font-size: 22px;
     font-weight: 700;
-    color: white;
+    color: var(--text-primary);
     line-height: 1.2;
+    transition: color var(--transition);
 }
 
 .stat-label {
@@ -194,10 +230,11 @@ body {
 .section-header h2 {
     font-size: 17px;
     font-weight: 700;
-    color: white;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 10px;
+    transition: color var(--transition);
 }
 
 .section-header h2 i {
@@ -231,7 +268,7 @@ body {
 }
 
 /* ============================================ */
-/* ПОЛЯ ВВОДА (iOS стиль)                      */
+/* ПОЛЯ ВВОДА                                   */
 /* ============================================ */
 .input-field {
     position: relative;
@@ -267,11 +304,12 @@ body {
     background: transparent;
     border: none;
     outline: none;
-    color: white;
+    color: var(--text-primary);
     font-size: 15px;
     font-family: 'Inter', sans-serif;
     font-weight: 500;
     min-height: 56px;
+    transition: color var(--transition);
 }
 
 .input-field input::placeholder {
@@ -354,6 +392,11 @@ body {
     border-color: rgba(255,255,255,0.08);
 }
 
+[data-theme="light"] .meter-card .input-field {
+    background: rgba(0,0,0,0.03);
+    border-color: rgba(0,0,0,0.08);
+}
+
 .meter-card .input-field input {
     padding: 12px 10px 4px 10px;
     font-size: 13px;
@@ -423,6 +466,7 @@ table {
 thead {
     background: var(--bg-card);
     border-radius: var(--radius-xs);
+    transition: background var(--transition);
 }
 
 thead th {
@@ -459,7 +503,7 @@ tbody td:first-child { padding-left: 14px; }
 tbody td:last-child { padding-right: 14px; }
 
 tbody td strong {
-    color: white;
+    color: var(--text-primary);
     font-weight: 700;
 }
 
@@ -509,6 +553,7 @@ tbody td strong {
     max-width: 480px;
     margin: 0 auto;
     z-index: 100;
+    transition: background var(--transition), border var(--transition);
 }
 
 .nav-item {
@@ -544,25 +589,7 @@ tbody td strong {
 }
 
 /* ============================================ */
-/* АДАПТИВНОСТЬ                                 */
-/* ============================================ */
-@media (max-width: 420px) {
-    .app-container { padding: 0 12px 80px; }
-    .meter-grid { grid-template-columns: 1fr 1fr; }
-    .input-group { grid-template-columns: 1fr; }
-    .stats-card { flex-direction: column; gap: 12px; }
-    .stat-divider { display: none; }
-    .greeting h1 { font-size: 24px; }
-}
-
-@media (min-width: 481px) {
-    .app-container {
-        padding: 0 24px 80px;
-    }
-}
-
-/* ============================================ */
-/* УВЕДОМЛЕНИЯ (добавляются через JS)           */
+/* УВЕДОМЛЕНИЯ                                  */
 /* ============================================ */
 .notification {
     position: fixed;
@@ -572,7 +599,7 @@ tbody td strong {
     padding: 14px 24px;
     border-radius: var(--radius-sm);
     background: var(--bg-card);
-    color: white;
+    color: var(--text-primary);
     font-weight: 600;
     font-size: 14px;
     box-shadow: var(--shadow);
@@ -581,16 +608,15 @@ tbody td strong {
     animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     max-width: 90%;
     text-align: center;
+    transition: background var(--transition), color var(--transition), border var(--transition);
 }
 
 .notification.success {
     border-color: #43e97b;
-    background: #1a2e1a;
 }
 
 .notification.error {
     border-color: #ff6b6b;
-    background: #2e1a1a;
 }
 
 @keyframes slideDown {
@@ -602,4 +628,22 @@ tbody td strong {
         opacity: 1;
         transform: translateX(-50%) translateY(0) scale(1);
     }
+}
+
+/* ============================================ */
+/* АДАПТИВНОСТЬ                                 */
+/* ============================================ */
+@media (max-width: 420px) {
+    .app-container { padding: 0 12px 80px; }
+    .meter-grid { grid-template-columns: 1fr 1fr; }
+    .input-group { grid-template-columns: 1fr; }
+    .stats-card { flex-direction: column; gap: 12px; }
+    .stat-divider { display: none; }
+    .greeting h1 { font-size: 24px; }
+    .header-actions { gap: 4px; }
+    .icon-btn { width: 36px; height: 36px; font-size: 14px; }
+}
+
+@media (min-width: 481px) {
+    .app-container { padding: 0 24px 80px; }
 }

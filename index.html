@@ -6,24 +6,17 @@
     <meta name="theme-color" content="#F5F5FA" id="themeColor">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>Majio - Подача показаний</title>
+    <title>Majio - Управление недвижимостью</title>
     
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- ========================================== -->
-    <!-- ОСНОВНОЙ КОНТЕЙНЕР                         -->
-    <!-- ========================================== -->
     <div class="app-container">
         
         <!-- ====================================== -->
-        <!-- ШАПКА С ЛОГОТИПОМ И АВТОРИЗАЦИЕЙ       -->
+        <!-- ШАПКА С ЛОГОТИПОМ                      -->
         <!-- ====================================== -->
         <header class="app-header">
             <div class="header-top">
@@ -43,52 +36,68 @@
                     <button class="icon-btn" id="themeToggle" title="Toggle theme">
                         <i class="fas fa-moon"></i>
                     </button>
-                    <button class="icon-btn auth-btn" id="authToggle" title="Вход / Регистрация">
-                        <i class="fas fa-user"></i>
-                    </button>
+                    <div class="profile-dropdown">
+                        <button class="icon-btn auth-btn" id="profileToggle">
+                            <i class="fas fa-user"></i>
+                        </button>
+                        <div class="dropdown-menu" id="dropdownMenu">
+                            <button class="dropdown-item" id="dropdownLogin">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span data-key="dropdown_login">Вход</span>
+                            </button>
+                            <button class="dropdown-item" id="dropdownRegister">
+                                <i class="fas fa-user-plus"></i>
+                                <span data-key="dropdown_register">Регистрация</span>
+                            </button>
+                            <button class="dropdown-item" id="dropdownProperties">
+                                <i class="fas fa-building"></i>
+                                <span data-key="dropdown_properties">Моя недвижимость</span>
+                            </button>
+                            <button class="dropdown-item" id="dropdownLogout" style="display:none;">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span data-key="dropdown_logout">Выйти</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <!-- Карточка статистики -->
-            <div class="stats-card">
-                <div class="stat-item">
-                    <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
-                    <div class="stat-info">
-                        <span class="stat-number" id="totalReadings">0</span>
-                        <span class="stat-label" data-key="readings">показаний</span>
-                    </div>
+            <!-- ====================================== -->
+            <!-- БЛОК "МОЯ НЕДВИЖИМОСТЬ"               -->
+            <!-- ====================================== -->
+            <div class="property-card" id="propertyCard">
+                <div class="property-header">
+                    <i class="fas fa-building property-icon"></i>
+                    <span class="property-title" data-key="property_title">Моя недвижимость</span>
                 </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <div class="stat-icon"><i class="fas fa-building"></i></div>
-                    <div class="stat-info">
-                        <span class="stat-number" id="totalApartments">0</span>
-                        <span class="stat-label" data-key="apartments">квартир</span>
+                <div class="property-body">
+                    <div class="property-address" id="propertyAddress">
+                        <i class="fas fa-map-pin"></i>
+                        <span>Kangelaste 41-38, Narva, 20607</span>
+                    </div>
+                    <div class="property-owner" id="propertyOwner">
+                        <i class="fas fa-user"></i>
+                        <span>Иванов Иван Иванович</span>
                     </div>
                 </div>
             </div>
         </header>
 
         <!-- ====================================== -->
-        <!-- МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ              -->
+        <!-- МОДАЛЬНЫЕ ОКНА                         -->
         <!-- ====================================== -->
         <div class="auth-modal" id="authModal">
             <div class="auth-modal-content">
                 <div class="auth-modal-header">
                     <h2 id="authTitle">Вход</h2>
-                    <button class="auth-close-btn" id="authCloseBtn">
-                        <i class="fas fa-times"></i>
-                    </button>
+                    <button class="auth-close-btn" id="authCloseBtn"><i class="fas fa-times"></i></button>
                 </div>
-                
                 <form id="authForm" novalidate>
                     <div class="auth-tabs">
                         <button type="button" class="auth-tab active" data-auth-tab="login" data-key="auth_login">Вход</button>
                         <button type="button" class="auth-tab" data-auth-tab="register" data-key="auth_register">Регистрация</button>
                     </div>
-                    
                     <div class="auth-body">
-                        <!-- Форма входа -->
                         <div class="auth-pane active" id="auth-login">
                             <div class="input-field">
                                 <i class="fas fa-user input-icon"></i>
@@ -105,8 +114,6 @@
                                 <span data-key="auth_login_btn">Войти</span>
                             </button>
                         </div>
-                        
-                        <!-- Форма регистрации -->
                         <div class="auth-pane" id="auth-register">
                             <div class="input-field">
                                 <i class="fas fa-user input-icon"></i>
@@ -130,10 +137,44 @@
                         </div>
                     </div>
                 </form>
-                
-                <div class="auth-modal-footer">
-                    <span id="authStatus"></span>
+                <div class="auth-modal-footer"><span id="authStatus"></span></div>
+            </div>
+        </div>
+
+        <div class="property-modal" id="propertyModal">
+            <div class="property-modal-content">
+                <div class="property-modal-header">
+                    <h2 data-key="property_modal_title">Моя недвижимость</h2>
+                    <button class="property-close-btn" id="propertyCloseBtn"><i class="fas fa-times"></i></button>
                 </div>
+                <div class="property-list" id="propertyList"></div>
+                <button class="property-add-btn" id="propertyAddBtn">
+                    <i class="fas fa-plus"></i>
+                    <span data-key="property_add">Добавить квартиру</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="property-add-modal" id="propertyAddModal">
+            <div class="property-add-content">
+                <div class="property-modal-header">
+                    <h2 data-key="property_add_title">Добавить квартиру</h2>
+                    <button class="property-close-btn" id="propertyAddCloseBtn"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="input-field">
+                    <i class="fas fa-map-pin input-icon"></i>
+                    <input type="text" id="newPropertyAddress" required placeholder=" ">
+                    <label data-key="property_address_label">Адрес (ул. д-кв, город, индекс)</label>
+                </div>
+                <div class="input-field">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="newPropertyOwner" required placeholder=" ">
+                    <label data-key="property_owner_label">Имя собственника</label>
+                </div>
+                <button class="property-save-btn" id="propertySaveBtn">
+                    <i class="fas fa-save"></i>
+                    <span data-key="property_save">Сохранить</span>
+                </button>
             </div>
         </div>
 
@@ -143,7 +184,7 @@
         <div class="tabs-container">
             <div class="tab-header">
                 <button class="tab-btn active" data-tab="submit">
-                    <i class="fas fa-pen"></i> <span data-key="tab_submit">Подача</span>
+                    <i class="fas fa-gauge-high"></i> <span data-key="tab_submit">Счетчики</span>
                 </button>
                 <button class="tab-btn" data-tab="history">
                     <i class="fas fa-clock-rotate-left"></i> <span data-key="tab_history">История</span>
@@ -158,92 +199,29 @@
 
             <div class="tab-content">
                 <!-- ================================== -->
-                <!-- ВКЛАДКА 1: ПОДАЧА ПОКАЗАНИЙ        -->
+                <!-- ВКЛАДКА 1: СЧЕТЧИКИ                 -->
                 <!-- ================================== -->
                 <div class="tab-pane active" id="tab-submit">
-                    <section class="form-section">
-                        <form id="meterForm" novalidate>
-                            <div class="input-group">
-                                <div class="input-field">
-                                    <i class="fas fa-hashtag input-icon"></i>
-                                    <input type="number" id="apartment" min="1" max="9999" required placeholder=" ">
-                                    <label data-key="apartment_label">Номер квартиры</label>
-                                </div>
-                                <div class="input-field">
-                                    <i class="fas fa-user input-icon"></i>
-                                    <input type="text" id="name" maxlength="50" required placeholder=" ">
-                                    <label data-key="name_label">Ваше имя</label>
-                                </div>
-                            </div>
-
-                            <!-- 5 счетчиков -->
-                            <div class="meter-grid">
-                                <!-- 1. Электричество дневной -->
-                                <div class="meter-card electricity-day">
-                                    <div class="meter-header">
-                                        <div class="meter-icon"><i class="fas fa-sun"></i></div>
-                                        <span class="meter-title" data-key="electricity_day_title">Эл-во (дневной)</span>
-                                    </div>
-                                    <div class="input-field small">
-                                        <input type="number" id="electricityDay" step="0.1" min="0" required placeholder=" ">
-                                        <label data-key="electricity_unit">кВт·ч</label>
-                                    </div>
-                                </div>
-
-                                <!-- 2. Электричество льготный -->
-                                <div class="meter-card electricity-night">
-                                    <div class="meter-header">
-                                        <div class="meter-icon"><i class="fas fa-moon"></i></div>
-                                        <span class="meter-title" data-key="electricity_night_title">Эл-во (льготный)</span>
-                                    </div>
-                                    <div class="input-field small">
-                                        <input type="number" id="electricityNight" step="0.1" min="0" required placeholder=" ">
-                                        <label data-key="electricity_unit">кВт·ч</label>
-                                    </div>
-                                </div>
-
-                                <!-- 3. Холодная вода -->
-                                <div class="meter-card water-cold">
-                                    <div class="meter-header">
-                                        <div class="meter-icon"><i class="fas fa-droplet"></i></div>
-                                        <span class="meter-title" data-key="water_cold_title">Холодная вода</span>
-                                    </div>
-                                    <div class="input-field small">
-                                        <input type="number" id="waterCold" step="0.1" min="0" required placeholder=" ">
-                                        <label data-key="water_unit">м³</label>
-                                    </div>
-                                </div>
-
-                                <!-- 4. Горячая вода -->
-                                <div class="meter-card water-hot">
-                                    <div class="meter-header">
-                                        <div class="meter-icon"><i class="fas fa-fire"></i></div>
-                                        <span class="meter-title" data-key="water_hot_title">Горячая вода</span>
-                                    </div>
-                                    <div class="input-field small">
-                                        <input type="number" id="waterHot" step="0.1" min="0" required placeholder=" ">
-                                        <label data-key="water_unit">м³</label>
-                                    </div>
-                                </div>
-
-                                <!-- 5. Газ -->
-                                <div class="meter-card gas">
-                                    <div class="meter-header">
-                                        <div class="meter-icon"><i class="fas fa-fire-flame-curved"></i></div>
-                                        <span class="meter-title" data-key="gas_title">Газ</span>
-                                    </div>
-                                    <div class="input-field small">
-                                        <input type="number" id="gas" step="0.1" min="0" required placeholder=" ">
-                                        <label data-key="gas_unit">м³</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="submit-btn">
-                                <i class="fas fa-paper-plane"></i>
-                                <span data-key="submit_btn">Отправить показания</span>
-                            </button>
-                        </form>
+                    <section class="meters-section">
+                        <div class="meters-grid" id="metersGrid">
+                            <!-- Счетчики через JS -->
+                        </div>
+                        
+                        <!-- Большая кнопка отправки -->
+                        <button class="submit-all-btn" id="submitAllBtn">
+                            <i class="fas fa-paper-plane"></i>
+                            <span data-key="submit_all">Отправить все показания</span>
+                            <span class="warning-badge" id="warningBadge" style="display:none;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span id="warningCount">0</span>
+                            </span>
+                        </button>
+                        
+                        <!-- Статус отправки -->
+                        <div class="submit-status" id="submitStatus">
+                            <i class="fas fa-check-circle"></i>
+                            <span data-key="submit_status_ok">Все показания отправлены</span>
+                        </div>
                     </section>
                 </div>
 
@@ -256,19 +234,16 @@
                             <table id="readingsTable">
                                 <thead>
                                     <tr>
-                                        <th data-key="th_apartment">Квартира</th>
-                                        <th data-key="th_name">Имя</th>
-                                        <th data-key="th_electricity_day"><i class="fas fa-sun"></i></th>
-                                        <th data-key="th_electricity_night"><i class="fas fa-moon"></i></th>
-                                        <th data-key="th_water_cold"><i class="fas fa-droplet"></i></th>
-                                        <th data-key="th_water_hot"><i class="fas fa-fire"></i></th>
-                                        <th data-key="th_gas"><i class="fas fa-fire-flame-curved"></i></th>
-                                        <th data-key="th_date"><i class="fas fa-calendar"></i></th>
+                                        <th data-key="th_date">📅 Дата</th>
+                                        <th data-key="th_meter">Счетчик</th>
+                                        <th data-key="th_previous">Предыдущее</th>
+                                        <th data-key="th_current">Новое</th>
+                                        <th data-key="th_diff">Разница</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody id="readingsBody">
-                                    <!-- Данные через JS -->
+                                    <tr><td colspan="6" class="empty-message">Нет показаний</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -288,23 +263,20 @@
                                     <span class="stats-card-label" data-key="stats_total">Всего показаний</span>
                                 </div>
                             </div>
-                            
                             <div class="stats-card-small">
                                 <div class="stats-card-icon"><i class="fas fa-building"></i></div>
                                 <div class="stats-card-info">
-                                    <span class="stats-card-number" id="statsApartments">0</span>
-                                    <span class="stats-card-label" data-key="stats_apartments">Квартир</span>
+                                    <span class="stats-card-number" id="statsProperties">0</span>
+                                    <span class="stats-card-label" data-key="stats_properties">Квартир</span>
                                 </div>
                             </div>
-
                             <div class="stats-card-small">
-                                <div class="stats-card-icon"><i class="fas fa-users"></i></div>
+                                <div class="stats-card-icon"><i class="fas fa-gauge-high"></i></div>
                                 <div class="stats-card-info">
-                                    <span class="stats-card-number" id="statsPeople">0</span>
-                                    <span class="stats-card-label" data-key="stats_people">Жильцов</span>
+                                    <span class="stats-card-number" id="statsMeters">0</span>
+                                    <span class="stats-card-label" data-key="stats_meters">Счетчиков</span>
                                 </div>
                             </div>
-
                             <div class="stats-card-small">
                                 <div class="stats-card-icon"><i class="fas fa-calendar-day"></i></div>
                                 <div class="stats-card-info">
@@ -312,53 +284,9 @@
                                     <span class="stats-card-label" data-key="stats_today">За сегодня</span>
                                 </div>
                             </div>
-
                             <div class="stats-card-wide">
-                                <h3 data-key="stats_consumption">Потребление ресурсов</h3>
-                                <div class="consumption-grid">
-                                    <div class="consumption-item">
-                                        <span class="consumption-icon"><i class="fas fa-sun" style="color:#FFD93D;"></i></span>
-                                        <div class="consumption-info">
-                                            <span class="consumption-label" data-key="stats_elec_day">Эл. дневной</span>
-                                            <span class="consumption-value" id="statsElecDay">0</span>
-                                        </div>
-                                    </div>
-                                    <div class="consumption-item">
-                                        <span class="consumption-icon"><i class="fas fa-moon" style="color:#A29BFE;"></i></span>
-                                        <div class="consumption-info">
-                                            <span class="consumption-label" data-key="stats_elec_night">Эл. льготный</span>
-                                            <span class="consumption-value" id="statsElecNight">0</span>
-                                        </div>
-                                    </div>
-                                    <div class="consumption-item">
-                                        <span class="consumption-icon"><i class="fas fa-droplet" style="color:#4FC3F7;"></i></span>
-                                        <div class="consumption-info">
-                                            <span class="consumption-label" data-key="stats_water_cold">Хол. вода</span>
-                                            <span class="consumption-value" id="statsWaterCold">0</span>
-                                        </div>
-                                    </div>
-                                    <div class="consumption-item">
-                                        <span class="consumption-icon"><i class="fas fa-fire" style="color:#FF8A65;"></i></span>
-                                        <div class="consumption-info">
-                                            <span class="consumption-label" data-key="stats_water_hot">Гор. вода</span>
-                                            <span class="consumption-value" id="statsWaterHot">0</span>
-                                        </div>
-                                    </div>
-                                    <div class="consumption-item">
-                                        <span class="consumption-icon"><i class="fas fa-fire-flame-curved" style="color:#FF6B6B;"></i></span>
-                                        <div class="consumption-info">
-                                            <span class="consumption-label" data-key="stats_gas">Газ</span>
-                                            <span class="consumption-value" id="statsGas">0</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="stats-card-wide">
-                                <h3 data-key="stats_top">Активные квартиры</h3>
-                                <div id="topApartments" class="top-list">
-                                    <p class="empty-message-small" data-key="stats_no_data">Нет данных</p>
-                                </div>
+                                <h3 data-key="stats_consumption">Потребление по счетчикам</h3>
+                                <div id="statsConsumption" class="consumption-grid"></div>
                             </div>
                         </div>
                     </section>
@@ -370,66 +298,34 @@
                 <div class="tab-pane" id="tab-profile">
                     <section class="profile-section">
                         <div class="profile-card">
-                            <div class="profile-avatar">
-                                <i class="fas fa-user-circle"></i>
-                            </div>
+                            <div class="profile-avatar"><i class="fas fa-user-circle"></i></div>
                             <h2 class="profile-name" id="profileName">Гость</h2>
                             <p class="profile-role" id="profileRole" data-key="profile_role">Пользователь Majio</p>
-                            
                             <div class="profile-divider"></div>
-                            
                             <div class="profile-stats">
                                 <div class="profile-stat-item">
                                     <span class="profile-stat-number" id="profileReadings">0</span>
-                                    <span class="profile-stat-label" data-key="profile_readings">показаний подано</span>
+                                    <span class="profile-stat-label" data-key="profile_readings">показаний</span>
                                 </div>
                                 <div class="profile-stat-item">
-                                    <span class="profile-stat-number" id="profileApartments">0</span>
-                                    <span class="profile-stat-label" data-key="profile_apartments">квартир</span>
+                                    <span class="profile-stat-number" id="profileProperties">0</span>
+                                    <span class="profile-stat-label" data-key="profile_properties">квартир</span>
                                 </div>
                             </div>
-
                             <div class="profile-divider"></div>
-
                             <div class="profile-settings">
                                 <h3 data-key="profile_settings">Настройки</h3>
-                                
                                 <div class="setting-item">
-                                    <div class="setting-info">
-                                        <i class="fas fa-globe"></i>
-                                        <span data-key="profile_lang">Язык</span>
-                                    </div>
+                                    <div class="setting-info"><i class="fas fa-globe"></i><span data-key="profile_lang">Язык</span></div>
                                     <span class="setting-value" id="profileLangDisplay">Русский</span>
                                 </div>
-                                
                                 <div class="setting-item">
-                                    <div class="setting-info">
-                                        <i class="fas fa-palette"></i>
-                                        <span data-key="profile_theme">Тема</span>
-                                    </div>
+                                    <div class="setting-info"><i class="fas fa-palette"></i><span data-key="profile_theme">Тема</span></div>
                                     <span class="setting-value" id="profileThemeDisplay">Светлая</span>
                                 </div>
-                                
-                                <div class="setting-item">
-                                    <div class="setting-info">
-                                        <i class="fas fa-database"></i>
-                                        <span data-key="profile_data">Данные</span>
-                                    </div>
-                                    <span class="setting-value" id="profileDataSize">0 KB</span>
-                                </div>
                             </div>
-
-                            <div class="profile-divider"></div>
-
-                            <div class="profile-actions">
-                                <button class="profile-action-btn logout" id="profileLogoutBtn">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                    <span data-key="profile_logout">Выйти</span>
-                                </button>
-                            </div>
-
                             <div class="profile-footer">
-                                <p>Majio v0.03</p>
+                                <p>Majio v0.07</p>
                                 <p data-key="profile_credit">© 2026 — Умный учёт в вашем доме</p>
                             </div>
                         </div>
@@ -439,12 +335,49 @@
         </div>
 
         <!-- ====================================== -->
+        <!-- МОДАЛЬНОЕ ОКНО ДОБАВЛЕНИЯ ПОКАЗАНИЙ    -->
+        <!-- ====================================== -->
+        <div class="reading-modal" id="readingModal">
+            <div class="reading-modal-content">
+                <div class="reading-modal-header">
+                    <div class="reading-modal-icon" id="readingModalIcon"><i class="fas fa-bolt"></i></div>
+                    <div class="reading-modal-title">
+                        <h2 id="readingModalName">Счетчик</h2>
+                        <span class="reading-modal-id" id="readingModalId">ID: 001</span>
+                    </div>
+                    <button class="reading-close-btn" id="readingCloseBtn"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="reading-modal-body">
+                    <div class="reading-previous">
+                        <span data-key="reading_previous">Предыдущие показания:</span>
+                        <strong id="readingPreviousValue">0.0</strong>
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-pen input-icon"></i>
+                        <input type="number" id="readingInput" step="0.1" min="0" required placeholder=" ">
+                        <label data-key="reading_new_label">Новые показания</label>
+                    </div>
+                    <div class="reading-actions">
+                        <button class="reading-submit-btn" id="readingSubmitBtn">
+                            <i class="fas fa-paper-plane"></i>
+                            <span data-key="reading_submit">Добавить показание</span>
+                        </button>
+                        <button class="reading-history-btn" id="readingHistoryBtn">
+                            <i class="fas fa-clock-rotate-left"></i>
+                            <span data-key="reading_history">История счетчика</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================================== -->
         <!-- НИЖНЯЯ НАВИГАЦИЯ                       -->
         <!-- ====================================== -->
         <nav class="bottom-nav">
             <button class="nav-item active" data-tab="submit">
-                <i class="fas fa-pen"></i>
-                <span data-key="nav_submit">Подача</span>
+                <i class="fas fa-gauge-high"></i>
+                <span data-key="nav_submit">Счетчики</span>
             </button>
             <button class="nav-item" data-tab="history">
                 <i class="fas fa-clock-rotate-left"></i>

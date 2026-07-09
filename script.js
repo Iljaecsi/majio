@@ -303,7 +303,7 @@ function applyTheme(theme) {
     
     const metaColor = document.getElementById('themeColor');
     if (metaColor) {
-        metaColor.content = theme === 'dark' ? '#0D0D0D' : '#F8F9FA';
+        metaColor.content = theme === 'dark' ? '#1A1A1A' : '#ECF0F1';
     }
 }
 
@@ -384,14 +384,14 @@ function updateAuthUI() {
         dropdownRegister.style.display = 'none';
         dropdownLogout.style.display = 'flex';
         icon.className = 'fas fa-user-check';
-        profileToggle.style.background = 'var(--primary)';
+        profileToggle.style.background = '#2ECC71';
         profileToggle.style.color = 'white';
     } else {
         dropdownLogin.style.display = 'flex';
         dropdownRegister.style.display = 'flex';
         dropdownLogout.style.display = 'none';
         icon.className = 'fas fa-user';
-        profileToggle.style.background = 'var(--primary)';
+        profileToggle.style.background = '#34495E';
         profileToggle.style.color = 'white';
     }
 }
@@ -630,11 +630,11 @@ document.getElementById('propertySaveBtn').addEventListener('click', function() 
     
     pendingReadings = {};
     refreshUI();
-    showNotification('✅ Недвижимость добавлена!', 'success');
+    showNotification('Недвижимость добавлена!', 'success');
 });
 
 // ============================================
-// СЧЕТЧИКИ
+// СЧЕТЧИКИ (С РАСХОДОМ ЗА МЕСЯЦ + СТАТУС)
 // ============================================
 function renderMeters() {
     const prop = getCurrentProperty();
@@ -657,8 +657,11 @@ function renderMeters() {
         
         const showWarning = !hasPending && meter.hasWarning === true;
         
+        // === РАСХОД ЗА МЕСЯЦ ===
         let monthUsage = 0;
         let hasMonthData = false;
+        let isSent = false;
+        
         if (prop.readings && prop.readings.length > 0) {
             const meterReadings = prop.readings.filter(r => r.meterId === meter.id);
             if (meterReadings.length > 0) {
@@ -666,13 +669,47 @@ function renderMeters() {
                 const last = sorted[0];
                 monthUsage = last.diff || 0;
                 hasMonthData = true;
+                isSent = true;
             }
         }
         
-        const monthText = hasMonthData 
-            ? t.month_usage.replace('{value}', monthUsage.toFixed(1))
-            : t.month_no_data;
-        const monthClass = hasMonthData ? 'meter-month' : 'meter-month no-data';
+        // === ЕСЛИ ЕСТЬ PENDING (не отправлено) - считаем расход от текущего значения ===
+        let displayMonthUsage = monthUsage;
+        let displayHasData = hasMonthData;
+        let displayIsSent = isSent;
+        
+        if (hasPending) {
+            // Расход = новое значение (pending) - предыдущее значение (из истории или текущее)
+            const prevValue = hasMonthData ? (prop.readings.filter(r => r.meterId === meter.id).sort((a, b) => b.timestamp - a.timestamp)[0]?.newValue || meter.value) : meter.value;
+            const pendingValue = pendingReadings[meter.id];
+            displayMonthUsage = pendingValue - prevValue;
+            displayHasData = true;
+            displayIsSent = false; // Не отправлено
+        }
+        
+        // Определяем цвет и текст
+        let monthClass = 'meter-month';
+        let monthText = '';
+        
+        if (displayHasData) {
+            if (displayIsSent) {
+                // Отправлено - зеленый
+                monthClass = 'meter-month sent';
+                monthText = t.month_usage.replace('{value}', displayMonthUsage.toFixed(1));
+            } else if (hasPending) {
+                // В очереди (не отправлено) - оранжевый, но с расходом
+                monthClass = 'meter-month pending';
+                monthText = t.month_usage.replace('{value}', displayMonthUsage.toFixed(1));
+            } else {
+                // Есть данные, но не отправлено (по какой-то причине)
+                monthClass = 'meter-month';
+                monthText = t.month_usage.replace('{value}', displayMonthUsage.toFixed(1));
+            }
+        } else {
+            // Нет данных
+            monthClass = 'meter-month no-data';
+            monthText = t.month_no_data;
+        }
         
         return `
             <button class="meter-btn ${meter.type || 'electricity-day'}" data-id="${meter.id}">
@@ -700,7 +737,7 @@ function renderMeters() {
 }
 
 // ============================================
-// СТАТУС ОТПРАВКИ (НЕЖНЫЙ)
+// СТАТУС ОТПРАВКИ
 // ============================================
 function updateSubmitStatus() {
     const prop = getCurrentProperty();
@@ -883,7 +920,7 @@ document.getElementById('readingSubmitBtn').addEventListener('click', function()
     }
     
     if (isNaN(value)) {
-        showNotification('⚠️ Введите число', 'error');
+        showNotification('Введите число', 'error');
         input.classList.add('error');
         return;
     }
@@ -915,7 +952,7 @@ document.getElementById('readingSubmitBtn').addEventListener('click', function()
                 input.classList.remove('error');
                 closeReadingModal();
                 refreshUI();
-                showNotification(`📝 Показание ${value.toFixed(1)} добавлено в очередь`, 'success');
+                showNotification(`Показание ${value.toFixed(1)} добавлено в очередь`, 'success');
             }
         );
         return;
@@ -925,7 +962,7 @@ document.getElementById('readingSubmitBtn').addEventListener('click', function()
     input.classList.remove('error');
     closeReadingModal();
     refreshUI();
-    showNotification(`📝 Показание ${value.toFixed(1)} добавлено в очередь`, 'success');
+    showNotification(`Показание ${value.toFixed(1)} добавлено в очередь`, 'success');
 });
 
 document.getElementById('readingHistoryBtn').addEventListener('click', function() {
@@ -1069,7 +1106,7 @@ function updateProfile() {
 }
 
 // ============================================
-// УВЕДОМЛЕНИЯ (С ИКОНКАМИ)
+// УВЕДОМЛЕНИЯ
 // ============================================
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
@@ -1126,7 +1163,7 @@ applyTranslations(currentLang);
 switchTab('submit');
 refreshUI();
 
-console.log('🏠 Majio v0.14 - Hover on meters, icons in alerts, gentle status');
+console.log('🏠 Majio v0.16 - Month usage visible even in pending state');
 console.log(`🌓 Theme: ${currentTheme}, Language: ${currentLang}`);
 console.log(`👤 User: ${currentUser || 'guest'}`);
 console.log(`📍 Property: ${currentProperty ? currentProperty.address : 'none'}`);

@@ -1,6 +1,6 @@
 /**
  * ============================================
- * MAJIO v0.09
+ * MAJIO v0.10
  * ============================================
  */
 
@@ -25,13 +25,14 @@ const translations = {
         nav_profile: 'Профиль',
         empty_message: 'Нет показаний',
         delete_confirm: 'Удалить это показание?',
-        submitted: '🎉 Показания успешно поданы!',
+        submitted: 'Показания успешно поданы!',
         deleted: 'Показание удалено',
-        fill_fields: '⚠️ Заполните все поля!',
-        negative_error: '⚠️ Показание не может быть отрицательным!',
-        less_than_previous: '⚠️ Новое показание ({new}) не может быть меньше предыдущего ({prev})',
-        equal_to_previous: '⚠️ Новое показание совпадает с предыдущим ({prev})',
-        large_reading_confirm: '⚠️ Вы уверены, что показания правильные? ({value})',
+        fill_fields: 'Заполните все поля!',
+        negative_error: 'Показание не может быть отрицательным!',
+        less_than_previous: 'Новое показание ({new}) не может быть меньше предыдущего ({prev})',
+        equal_to_previous: 'Новое показание совпадает с предыдущим ({prev})',
+        confirm_title: 'Внимание!',
+        confirm_message: 'Вы уверены, что показания правильные? ({value})',
         stats_total: 'Всего показаний',
         stats_properties: 'Квартир',
         stats_meters: 'Счетчиков',
@@ -56,12 +57,12 @@ const translations = {
         auth_password_confirm: 'Подтвердите пароль',
         auth_login_btn: 'Войти',
         auth_register_btn: 'Зарегистрироваться',
-        auth_login_success: '✅ Добро пожаловать, {name}!',
-        auth_register_success: '✅ Регистрация успешна! Войдите в систему.',
-        auth_login_error: '❌ Неверное имя пользователя или пароль',
-        auth_register_error: '❌ Пользователь уже существует',
-        auth_password_mismatch: '❌ Пароли не совпадают',
-        auth_empty_fields: '⚠️ Заполните все поля',
+        auth_login_success: 'Добро пожаловать, {name}!',
+        auth_register_success: 'Регистрация успешна! Войдите в систему.',
+        auth_login_error: 'Неверное имя пользователя или пароль',
+        auth_register_error: 'Пользователь уже существует',
+        auth_password_mismatch: 'Пароли не совпадают',
+        auth_empty_fields: 'Заполните все поля',
         auth_welcome: 'Добро пожаловать, {name}!',
         dropdown_login: 'Вход',
         dropdown_register: 'Регистрация',
@@ -83,7 +84,9 @@ const translations = {
         th_meter: 'Счетчик',
         th_previous: 'Предыдущее',
         th_current: 'Новое',
-        th_diff: 'Разница'
+        th_diff: 'Разница',
+        month_usage: 'За месяц: {value}',
+        month_no_data: 'Показания не поданы'
     },
     et: {
         subtitle: 'Tark arvestus teie kodus',
@@ -102,13 +105,14 @@ const translations = {
         nav_profile: 'Profiil',
         empty_message: 'Näidud puuduvad',
         delete_confirm: 'Kas soovite selle näidu kustutada?',
-        submitted: '🎉 Näidud edukalt esitatud!',
+        submitted: 'Näidud edukalt esitatud!',
         deleted: 'Näidud kustutatud',
-        fill_fields: '⚠️ Täitke kõik väljad!',
-        negative_error: '⚠️ Näit ei saa olla negatiivne!',
-        less_than_previous: '⚠️ Uus näit ({new}) ei saa olla väiksem kui eelmine ({prev})',
-        equal_to_previous: '⚠️ Uus näit on sama mis eelmine ({prev})',
-        large_reading_confirm: '⚠️ Kas olete kindel, et näidud on õiged? ({value})',
+        fill_fields: 'Täitke kõik väljad!',
+        negative_error: 'Näit ei saa olla negatiivne!',
+        less_than_previous: 'Uus näit ({new}) ei saa olla väiksem kui eelmine ({prev})',
+        equal_to_previous: 'Uus näit on sama mis eelmine ({prev})',
+        confirm_title: 'Tähelepanu!',
+        confirm_message: 'Kas olete kindel, et näidud on õiged? ({value})',
         stats_total: 'Näite kokku',
         stats_properties: 'Korterit',
         stats_meters: 'Arvestit',
@@ -133,12 +137,12 @@ const translations = {
         auth_password_confirm: 'Kinnita parool',
         auth_login_btn: 'Logi sisse',
         auth_register_btn: 'Registreeru',
-        auth_login_success: '✅ Tere tulemast, {name}!',
-        auth_register_success: '✅ Registreerimine õnnestus! Logige sisse.',
-        auth_login_error: '❌ Vale kasutajanimi või parool',
-        auth_register_error: '❌ Kasutaja juba eksisteerib',
-        auth_password_mismatch: '❌ Paroolid ei kattu',
-        auth_empty_fields: '⚠️ Täitke kõik väljad',
+        auth_login_success: 'Tere tulemast, {name}!',
+        auth_register_success: 'Registreerimine õnnestus! Logige sisse.',
+        auth_login_error: 'Vale kasutajanimi või parool',
+        auth_register_error: 'Kasutaja juba eksisteerib',
+        auth_password_mismatch: 'Paroolid ei kattu',
+        auth_empty_fields: 'Täitke kõik väljad',
         auth_welcome: 'Tere tulemast, {name}!',
         dropdown_login: 'Logi sisse',
         dropdown_register: 'Registreeru',
@@ -160,7 +164,9 @@ const translations = {
         th_meter: 'Arvesti',
         th_previous: 'Eelmine',
         th_current: 'Uus',
-        th_diff: 'Vahe'
+        th_diff: 'Vahe',
+        month_usage: 'Kuu jooksul: {value}',
+        month_no_data: 'Näidud puuduvad'
     }
 };
 
@@ -173,6 +179,7 @@ let currentUser = localStorage.getItem('majio_user') || null;
 let currentProperty = null;
 let selectedMeter = null;
 let pendingReadings = {};
+let confirmCallback = null;
 
 // ============================================
 // ДАННЫЕ ПО УМОЛЧАНИЮ
@@ -296,7 +303,7 @@ function applyTheme(theme) {
     
     const metaColor = document.getElementById('themeColor');
     if (metaColor) {
-        metaColor.content = theme === 'dark' ? '#1a1a2e' : '#F5F5FA';
+        metaColor.content = theme === 'dark' ? '#0D0D0D' : '#F8F9FA';
     }
 }
 
@@ -377,8 +384,8 @@ function updateAuthUI() {
         dropdownRegister.style.display = 'none';
         dropdownLogout.style.display = 'flex';
         icon.className = 'fas fa-user-check';
-        profileToggle.style.background = '#43e97b';
-        profileToggle.style.color = '#0a0e27';
+        profileToggle.style.background = 'var(--primary)';
+        profileToggle.style.color = 'white';
     } else {
         dropdownLogin.style.display = 'flex';
         dropdownRegister.style.display = 'flex';
@@ -419,7 +426,7 @@ document.getElementById('dropdownProperties').addEventListener('click', function
 document.getElementById('dropdownLogout').addEventListener('click', function() {
     document.getElementById('dropdownMenu').classList.remove('active');
     logoutUser();
-    showNotification('Выход выполнен');
+    showNotification('Выход выполнен', 'warning');
 });
 
 // ============================================
@@ -568,7 +575,7 @@ function renderPropertyList() {
             const id = this.dataset.id;
             switchProperty(id);
             closePropertyModal();
-            showNotification('Недвижимость изменена');
+            showNotification('Недвижимость изменена', 'success');
         });
     });
 }
@@ -623,7 +630,7 @@ document.getElementById('propertySaveBtn').addEventListener('click', function() 
     
     pendingReadings = {};
     refreshUI();
-    showNotification('✅ Недвижимость добавлена!');
+    showNotification('✅ Недвижимость добавлена!', 'success');
 });
 
 // ============================================
@@ -641,6 +648,8 @@ function renderMeters() {
         return;
     }
     
+    const t = translations[currentLang];
+    
     grid.innerHTML = prop.meters.map(meter => {
         const value = (meter.value !== undefined && meter.value !== null) ? meter.value : 0;
         const hasPending = pendingReadings[meter.id] !== undefined;
@@ -648,14 +657,36 @@ function renderMeters() {
         
         const showWarning = !hasPending && meter.hasWarning === true;
         
+        let monthUsage = 0;
+        let hasMonthData = false;
+        if (prop.readings && prop.readings.length > 0) {
+            const meterReadings = prop.readings.filter(r => r.meterId === meter.id);
+            if (meterReadings.length > 0) {
+                const sorted = meterReadings.sort((a, b) => b.timestamp - a.timestamp);
+                const last = sorted[0];
+                monthUsage = last.diff || 0;
+                hasMonthData = true;
+            }
+        }
+        
+        const monthText = hasMonthData 
+            ? t.month_usage.replace('{value}', monthUsage.toFixed(1))
+            : t.month_no_data;
+        const monthClass = hasMonthData ? 'meter-month' : 'meter-month no-data';
+        
         return `
             <button class="meter-btn ${meter.type || 'electricity-day'}" data-id="${meter.id}">
+                <div class="meter-top">
+                    <span class="meter-name">${meter.name || 'Счетчик'}</span>
+                    ${showWarning ? '<span class="meter-warning"><i class="fas fa-exclamation-triangle"></i></span>' : ''}
+                    ${hasPending ? '<span class="meter-pending"><i class="fas fa-pen"></i></span>' : ''}
+                </div>
                 <i class="fas ${meter.icon || 'fa-bolt'} meter-bg-icon"></i>
-                <span class="meter-name">${meter.name || 'Счетчик'}</span>
-                <span class="meter-value">${Number(displayValue).toFixed(1)}</span>
-                <span class="meter-unit">${meter.unit || ''}</span>
-                ${showWarning ? '<span class="meter-warning"><i class="fas fa-exclamation-triangle"></i></span>' : ''}
-                ${hasPending ? '<span class="meter-pending"><i class="fas fa-pen"></i></span>' : ''}
+                <div class="meter-bottom">
+                    <span class="meter-value">${Number(displayValue).toFixed(1)}</span>
+                    <span class="meter-unit">${meter.unit || ''}</span>
+                    <span class="${monthClass}"><i class="fas fa-chart-line"></i> ${monthText}</span>
+                </div>
             </button>
         `;
     }).join('');
@@ -669,7 +700,7 @@ function renderMeters() {
 }
 
 // ============================================
-// СТАТУС ОТПРАВКИ
+// СТАТУС ОТПРАВКИ (НЕЖНЫЙ)
 // ============================================
 function updateSubmitStatus() {
     const prop = getCurrentProperty();
@@ -696,6 +727,39 @@ function updateSubmitStatus() {
 }
 
 // ============================================
+// МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ
+// ============================================
+function showConfirmModal(title, message, callback) {
+    const modal = document.getElementById('confirmModal');
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmMessage').textContent = message;
+    confirmCallback = callback;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeConfirmModal() {
+    document.getElementById('confirmModal').classList.remove('active');
+    document.body.style.overflow = '';
+    confirmCallback = null;
+}
+
+document.getElementById('confirmCancel').addEventListener('click', function() {
+    closeConfirmModal();
+});
+
+document.getElementById('confirmOk').addEventListener('click', function() {
+    if (confirmCallback) {
+        confirmCallback();
+    }
+    closeConfirmModal();
+});
+
+document.getElementById('confirmModal').addEventListener('click', function(e) {
+    if (e.target === this) closeConfirmModal();
+});
+
+// ============================================
 // ОТПРАВКА ВСЕХ ПОКАЗАНИЙ
 // ============================================
 document.getElementById('submitAllBtn').addEventListener('click', function() {
@@ -704,7 +768,7 @@ document.getElementById('submitAllBtn').addEventListener('click', function() {
     
     const pendingKeys = Object.keys(pendingReadings);
     if (pendingKeys.length === 0) {
-        showNotification('Нет новых показаний для отправки', 'error');
+        showNotification('Нет новых показаний для отправки', 'warning');
         return;
     }
     
@@ -745,11 +809,11 @@ document.getElementById('submitAllBtn').addEventListener('click', function() {
     pendingReadings = {};
     saveProperty(prop);
     refreshUI();
-    showNotification(`✅ ${t.submitted} (${count} показаний)`);
+    showNotification(`✅ ${t.submitted} (${count} показаний)`, 'success');
 });
 
 // ============================================
-// МОДАЛЬНОЕ ОКНО ПОКАЗАНИЙ (ИСПРАВЛЕННОЕ)
+// МОДАЛЬНОЕ ОКНО ПОКАЗАНИЙ
 // ============================================
 function openReadingModal(meterId) {
     const prop = getCurrentProperty();
@@ -779,8 +843,6 @@ function openReadingModal(meterId) {
     input.placeholder = `Введите значение > ${currentValue.toFixed(1)}`;
     input.step = "0.1";
     
-    const errorMsg = document.querySelector('.reading-error-msg');
-    if (errorMsg) errorMsg.remove();
     input.classList.remove('error');
     
     modal.classList.add('active');
@@ -800,7 +862,7 @@ document.getElementById('readingModal').addEventListener('click', function(e) {
 });
 
 // ============================================
-// ОБРАБОТЧИК ДОБАВЛЕНИЯ ПОКАЗАНИЯ (ИСПРАВЛЕННЫЙ)
+// ОБРАБОТЧИК ДОБАВЛЕНИЯ ПОКАЗАНИЯ
 // ============================================
 document.getElementById('readingSubmitBtn').addEventListener('click', function() {
     const prop = getCurrentProperty();
@@ -814,55 +876,56 @@ document.getElementById('readingSubmitBtn').addEventListener('click', function()
         ? pendingReadings[selectedMeter.id] 
         : selectedMeter.value;
     
-    // Проверка 1: Пустое поле
     if (input.value.trim() === '') {
-        showNotification('⚠️ Введите новое показание', 'error');
+        showNotification(t.fill_fields, 'error');
         input.classList.add('error');
         return;
     }
     
-    // Проверка 2: Не число
     if (isNaN(value)) {
         showNotification('⚠️ Введите число', 'error');
         input.classList.add('error');
         return;
     }
     
-    // Проверка 3: Отрицательное число
     if (value < 0) {
         showNotification(t.negative_error, 'error');
         input.classList.add('error');
         return;
     }
     
-    // Проверка 4: Меньше текущего
     if (value < currentValue) {
         showNotification(t.less_than_previous.replace('{new}', value.toFixed(1)).replace('{prev}', currentValue.toFixed(1)), 'error');
         input.classList.add('error');
         return;
     }
     
-    // Проверка 5: Равно текущему
     if (value === currentValue) {
         showNotification(t.equal_to_previous.replace('{prev}', currentValue.toFixed(1)), 'error');
         input.classList.add('error');
         return;
     }
     
-    // Проверка 6: Слишком большое
     if (value - currentValue > 1000) {
-        if (!confirm(t.large_reading_confirm.replace('{value}', value.toFixed(1)))) {
-            return;
-        }
+        showConfirmModal(
+            t.confirm_title,
+            t.confirm_message.replace('{value}', value.toFixed(1)),
+            function() {
+                pendingReadings[selectedMeter.id] = value;
+                input.classList.remove('error');
+                closeReadingModal();
+                refreshUI();
+                showNotification(`📝 Показание ${value.toFixed(1)} добавлено в очередь`, 'success');
+            }
+        );
+        return;
     }
     
-    // Все проверки пройдены
     pendingReadings[selectedMeter.id] = value;
     input.classList.remove('error');
-    
     closeReadingModal();
     refreshUI();
-    showNotification(`📝 Показание ${value.toFixed(1)} добавлено в очередь`);
+    showNotification(`📝 Показание ${value.toFixed(1)} добавлено в очередь`, 'success');
 });
 
 document.getElementById('readingHistoryBtn').addEventListener('click', function() {
@@ -922,7 +985,7 @@ function renderTable(filterMeterId = null) {
                     prop.readings = prop.readings.filter(r => r.id !== id);
                     saveProperty(prop);
                     refreshUI();
-                    showNotification(t.deleted);
+                    showNotification(t.deleted, 'success');
                 }
             }
         });
@@ -1006,16 +1069,22 @@ function updateProfile() {
 }
 
 // ============================================
-// УВЕДОМЛЕНИЯ
+// УВЕДОМЛЕНИЯ (С ИКОНКАМИ)
 // ============================================
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
-    notification.textContent = message;
+    
+    let icon = '';
+    if (type === 'success') icon = '<i class="fas fa-check-circle"></i>';
+    else if (type === 'error') icon = '<i class="fas fa-exclamation-circle"></i>';
+    else if (type === 'warning') icon = '<i class="fas fa-exclamation-triangle"></i>';
+    
+    notification.innerHTML = `${icon} ${message}`;
     document.body.appendChild(notification);
     setTimeout(() => {
         notification.style.opacity = '0';
-        notification.style.transform = 'translateX(-50%) translateY(-20px) scale(0.9)';
+        notification.style.transform = 'translateX(-50%) translateY(-20px) scale(0.95)';
         notification.style.transition = 'all 0.3s ease';
         setTimeout(() => notification.remove(), 300);
     }, 3000);
@@ -1057,7 +1126,7 @@ applyTranslations(currentLang);
 switchTab('submit');
 refreshUI();
 
-console.log('🏠 Majio v0.09 - Fixed reading validation');
+console.log('🏠 Majio v0.14 - Hover on meters, icons in alerts, gentle status');
 console.log(`🌓 Theme: ${currentTheme}, Language: ${currentLang}`);
 console.log(`👤 User: ${currentUser || 'guest'}`);
 console.log(`📍 Property: ${currentProperty ? currentProperty.address : 'none'}`);

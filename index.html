@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#F5F5FA" id="themeColor">
+    <meta name="theme-color" content="#ffffff" id="themeColor">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Majio - Управление недвижимостью</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container">
         
         <!-- ====================================== -->
-        <!-- ШАПКА С ЛОГОТИПОМ                      -->
+        <!-- ШАПКА                                  -->
         <!-- ====================================== -->
         <header class="app-header">
             <div class="header-top">
@@ -30,10 +30,10 @@
                     </div>
                 </div>
                 <div class="header-actions">
-                    <button class="icon-btn" id="langToggle" title="Switch language">
+                    <button class="icon-btn" id="langToggle">
                         <i class="fas fa-globe"></i>
                     </button>
-                    <button class="icon-btn" id="themeToggle" title="Toggle theme">
+                    <button class="icon-btn" id="themeToggle">
                         <i class="fas fa-moon"></i>
                     </button>
                     <div class="profile-dropdown">
@@ -62,9 +62,6 @@
                 </div>
             </div>
             
-            <!-- ====================================== -->
-            <!-- БЛОК "МОЯ НЕДВИЖИМОСТЬ"               -->
-            <!-- ====================================== -->
             <div class="property-card" id="propertyCard">
                 <div class="property-header">
                     <i class="fas fa-building property-icon"></i>
@@ -179,7 +176,24 @@
         </div>
 
         <!-- ====================================== -->
-        <!-- ВКЛАДКИ (TABS)                         -->
+        <!-- МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ           -->
+        <!-- ====================================== -->
+        <div class="confirm-modal" id="confirmModal">
+            <div class="confirm-modal-content">
+                <div class="confirm-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h2 id="confirmTitle">Внимание!</h2>
+                <p id="confirmMessage">Вы уверены, что показания правильные?</p>
+                <div class="confirm-actions">
+                    <button class="confirm-btn confirm-cancel" id="confirmCancel">Отмена</button>
+                    <button class="confirm-btn confirm-ok" id="confirmOk">Да, уверен</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================================== -->
+        <!-- ВКЛАДКИ                                -->
         <!-- ====================================== -->
         <div class="tabs-container">
             <div class="tab-header">
@@ -203,11 +217,8 @@
                 <!-- ================================== -->
                 <div class="tab-pane active" id="tab-submit">
                     <section class="meters-section">
-                        <div class="meters-grid" id="metersGrid">
-                            <!-- Счетчики через JS -->
-                        </div>
+                        <div class="meters-grid" id="metersGrid"></div>
                         
-                        <!-- Большая кнопка отправки -->
                         <button class="submit-all-btn" id="submitAllBtn">
                             <i class="fas fa-paper-plane"></i>
                             <span data-key="submit_all">Отправить все показания</span>
@@ -217,7 +228,6 @@
                             </span>
                         </button>
                         
-                        <!-- Статус отправки -->
                         <div class="submit-status" id="submitStatus">
                             <i class="fas fa-check-circle"></i>
                             <span data-key="submit_status_ok">Все показания отправлены</span>
@@ -234,7 +244,7 @@
                             <table id="readingsTable">
                                 <thead>
                                     <tr>
-                                        <th data-key="th_date">📅 Дата</th>
+                                        <th data-key="th_date">Дата</th>
                                         <th data-key="th_meter">Счетчик</th>
                                         <th data-key="th_previous">Предыдущее</th>
                                         <th data-key="th_current">Новое</th>
@@ -256,28 +266,28 @@
                 <div class="tab-pane" id="tab-stats">
                     <section class="stats-section">
                         <div class="stats-grid">
-                            <div class="stats-card-small">
+                            <div class="stats-card">
                                 <div class="stats-card-icon"><i class="fas fa-file-alt"></i></div>
                                 <div class="stats-card-info">
                                     <span class="stats-card-number" id="statsTotal">0</span>
                                     <span class="stats-card-label" data-key="stats_total">Всего показаний</span>
                                 </div>
                             </div>
-                            <div class="stats-card-small">
+                            <div class="stats-card">
                                 <div class="stats-card-icon"><i class="fas fa-building"></i></div>
                                 <div class="stats-card-info">
                                     <span class="stats-card-number" id="statsProperties">0</span>
                                     <span class="stats-card-label" data-key="stats_properties">Квартир</span>
                                 </div>
                             </div>
-                            <div class="stats-card-small">
+                            <div class="stats-card">
                                 <div class="stats-card-icon"><i class="fas fa-gauge-high"></i></div>
                                 <div class="stats-card-info">
                                     <span class="stats-card-number" id="statsMeters">0</span>
                                     <span class="stats-card-label" data-key="stats_meters">Счетчиков</span>
                                 </div>
                             </div>
-                            <div class="stats-card-small">
+                            <div class="stats-card">
                                 <div class="stats-card-icon"><i class="fas fa-calendar-day"></i></div>
                                 <div class="stats-card-info">
                                     <span class="stats-card-number" id="statsToday">0</span>
@@ -325,7 +335,7 @@
                                 </div>
                             </div>
                             <div class="profile-footer">
-                                <p>Majio v0.07</p>
+                                <p>Majio v0.11</p>
                                 <p data-key="profile_credit">© 2026 — Умный учёт в вашем доме</p>
                             </div>
                         </div>

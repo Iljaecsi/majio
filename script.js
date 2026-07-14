@@ -1,6 +1,6 @@
 /**
  * ============================================
- * MAJIO v0.11 - MATERIAL DESIGN STYLE
+ * MAJIO v0.12
  * ============================================
  */
 
@@ -85,7 +85,17 @@ const translations = {
         month_no_data: 'Показания не поданы',
         meter_sent: 'Показания счетчика "{meter}" отправлены!',
         invalid_number: 'Введите корректное число',
-        comma_replaced: 'Запятая заменена на точку'
+        comma_replaced: 'Запятая заменена на точку',
+        announcement_title: 'Объявления',
+        announcement_water_title: '⚠️ Отключение воды',
+        announcement_water_text: 'С 15 июля по 20 июля будет отключена горячая вода для плановых ремонтных работ.',
+        announcement_water_date: '15.07.2026 — 20.07.2026',
+        announcement_repair_title: '🔧 Ремонт лифта',
+        announcement_repair_text: 'С 10 по 12 июля будет проводиться плановое техническое обслуживание лифта.',
+        announcement_repair_date: '10.07.2026 — 12.07.2026',
+        announcement_garden_title: '🌳 Озеленение двора',
+        announcement_garden_text: 'Приглашаем жителей на субботник по озеленению двора 25 июля в 10:00.',
+        announcement_garden_date: '25.07.2026, 10:00'
     },
     et: {
         subtitle: 'Tark arvestus teie kodus',
@@ -164,7 +174,17 @@ const translations = {
         month_no_data: 'Näidud puuduvad',
         meter_sent: 'Arvesti "{meter}" näidud saadetud!',
         invalid_number: 'Sisestage korrektne number',
-        comma_replaced: 'Koma asendati punktiga'
+        comma_replaced: 'Koma asendati punktiga',
+        announcement_title: 'Teadaanded',
+        announcement_water_title: '⚠️ Vee väljalülitamine',
+        announcement_water_text: '15. juulist kuni 20. juulini lülitatakse plaaniliste remonditööde tõttu soe vesi välja.',
+        announcement_water_date: '15.07.2026 — 20.07.2026',
+        announcement_repair_title: '🔧 Lifti remont',
+        announcement_repair_text: '10.–12. juulil tehakse lifti plaanilist tehnohooldust.',
+        announcement_repair_date: '10.07.2026 — 12.07.2026',
+        announcement_garden_title: '🌳 Hoovi haljastus',
+        announcement_garden_text: 'Kutsume elanikke hoovi haljastustalgutele 25. juulil kell 10:00.',
+        announcement_garden_date: '25.07.2026, 10:00'
     }
 };
 
@@ -176,6 +196,8 @@ let currentTheme = localStorage.getItem('majio_theme') || 'light';
 let currentUser = localStorage.getItem('majio_user') || null;
 let currentProperty = null;
 let selectedMeterId = null;
+let currentAnnouncement = 0;
+let announcementInterval = null;
 
 // ============================================
 // ДАННЫЕ ПО УМОЛЧАНИЮ
@@ -309,7 +331,6 @@ function refreshUI() {
     renderPropertyCard();
     renderMeters();
     renderTable();
-    updateStats();
     updateStatsPage();
     updateProfile();
     updateAuthUI();
@@ -1117,45 +1138,6 @@ function renderTable(filterMeterId = null) {
 // ============================================
 // СТАТИСТИКА
 // ============================================
-function updateStats() {
-    const prop = getCurrentProperty();
-    
-    const totalReadings = document.getElementById('totalReadings');
-    const totalApartments = document.getElementById('totalApartments');
-    
-    if (totalReadings) {
-        totalReadings.textContent = prop ? (prop.readings ? prop.readings.length : 0) : 0;
-    }
-    if (totalApartments) {
-        totalApartments.textContent = prop ? 1 : 0;
-    }
-}
-
-function getStats(prop) {
-    if (!prop) return { total: 0, today: 0, meters: 0, totals: {} };
-    
-    const readings = prop.readings || [];
-    const today = new Date().toDateString();
-    const todayReadings = readings.filter(r => new Date(r.timestamp).toDateString() === today);
-    
-    const totals = {};
-    (prop.meters || []).forEach(m => {
-        totals[m.id] = 0;
-    });
-    readings.forEach(r => {
-        if (totals[r.meterId] !== undefined) {
-            totals[r.meterId] += r.diff || 0;
-        }
-    });
-    
-    return {
-        total: readings.length,
-        today: todayReadings.length,
-        meters: (prop.meters || []).length,
-        totals: totals
-    };
-}
-
 function updateStatsPage() {
     const prop = getCurrentProperty();
     if (!prop) return;
@@ -1184,6 +1166,31 @@ function updateStatsPage() {
             </div>
         `).join('');
     }
+}
+
+function getStats(prop) {
+    if (!prop) return { total: 0, today: 0, meters: 0, totals: {} };
+    
+    const readings = prop.readings || [];
+    const today = new Date().toDateString();
+    const todayReadings = readings.filter(r => new Date(r.timestamp).toDateString() === today);
+    
+    const totals = {};
+    (prop.meters || []).forEach(m => {
+        totals[m.id] = 0;
+    });
+    readings.forEach(r => {
+        if (totals[r.meterId] !== undefined) {
+            totals[r.meterId] += r.diff || 0;
+        }
+    });
+    
+    return {
+        total: readings.length,
+        today: todayReadings.length,
+        meters: (prop.meters || []).length,
+        totals: totals
+    };
 }
 
 // ============================================
@@ -1215,7 +1222,7 @@ function updateProfile() {
 }
 
 // ============================================
-// УВЕДОМЛЕНИЯ - ТОЛЬКО ИКОНКИ
+// УВЕДОМЛЕНИЯ
 // ============================================
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
@@ -1234,6 +1241,100 @@ function showNotification(message, type = 'success') {
         notification.style.transition = 'all 0.3s ease';
         setTimeout(() => notification.remove(), 300);
     }, 3000);
+}
+
+// ============================================
+// КАРУСЕЛЬ ОБЪЯВЛЕНИЙ
+// ============================================
+function initAnnouncements() {
+    const items = document.querySelectorAll('.announcement-item');
+    const dots = document.querySelectorAll('.dot');
+    const prevBtn = document.getElementById('announcementPrevBtn');
+    const nextBtn = document.getElementById('announcementNextBtn');
+    
+    if (items.length === 0) return;
+    
+    function showAnnouncement(index) {
+        items.forEach(item => item.classList.remove('active'));
+        dots.forEach(dot => dot.classList.remove('active'));
+        
+        if (items[index]) items[index].classList.add('active');
+        if (dots[index]) dots[index].classList.add('active');
+        
+        currentAnnouncement = index;
+        
+        const badge = document.getElementById('announcementBadge');
+        if (badge) {
+            badge.textContent = `${index + 1}/${items.length}`;
+        }
+    }
+    
+    function nextAnnouncement() {
+        const next = (currentAnnouncement + 1) % items.length;
+        showAnnouncement(next);
+    }
+    
+    function prevAnnouncement() {
+        const prev = (currentAnnouncement - 1 + items.length) % items.length;
+        showAnnouncement(prev);
+    }
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            prevAnnouncement();
+            resetAutoPlay();
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            nextAnnouncement();
+            resetAutoPlay();
+        });
+    }
+    
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', function(e) {
+            e.stopPropagation();
+            showAnnouncement(index);
+            resetAutoPlay();
+        });
+    });
+    
+    function startAutoPlay() {
+        if (announcementInterval) {
+            clearInterval(announcementInterval);
+        }
+        announcementInterval = setInterval(nextAnnouncement, 5000);
+    }
+    
+    function resetAutoPlay() {
+        if (announcementInterval) {
+            clearInterval(announcementInterval);
+            announcementInterval = setInterval(nextAnnouncement, 5000);
+        }
+    }
+    
+    showAnnouncement(0);
+    startAutoPlay();
+    
+    const card = document.getElementById('announcementCard');
+    if (card) {
+        card.addEventListener('mouseenter', function() {
+            if (announcementInterval) {
+                clearInterval(announcementInterval);
+                announcementInterval = null;
+            }
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            if (!announcementInterval) {
+                announcementInterval = setInterval(nextAnnouncement, 5000);
+            }
+        });
+    }
 }
 
 // ============================================
@@ -1272,7 +1373,10 @@ applyTranslations(currentLang);
 switchTab('submit');
 refreshUI();
 
-console.log('🏠 Majio v0.25 - Material Design Style');
+// Запускаем карусель
+setTimeout(initAnnouncements, 100);
+
+console.log('🏠 Majio v0.26 - Announcements Carousel');
 console.log(`🌓 Theme: ${currentTheme}, Language: ${currentLang}`);
 console.log(`👤 User: ${currentUser || 'guest'}`);
 console.log(`📍 Property: ${currentProperty ? currentProperty.address : 'none'}`);

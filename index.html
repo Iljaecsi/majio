@@ -79,25 +79,78 @@
                 </div>
             </div>
             
-            <!-- Карточка статистики -->
-            <div class="stats-card">
-                <div class="stat-item">
-                    <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
-                    <div class="stat-info">
-                        <span class="stat-number" id="totalReadings">0</span>
-                        <span class="stat-label" data-key="readings">показаний</span>
+            <!-- ====================================== -->
+            <!-- КАРТОЧКА ИНФОРМАЦИОННЫХ ОБЪЯВЛЕНИЙ     -->
+            <!-- ====================================== -->
+            <div class="announcement-card" id="announcementCard">
+                <div class="announcement-header">
+                    <div class="announcement-icon">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <span class="announcement-title" data-key="announcement_title">Объявления</span>
+                    <span class="announcement-badge" id="announcementBadge">1</span>
+                </div>
+                <div class="announcement-body" id="announcementBody">
+                    <div class="announcement-item active">
+                        <div class="announcement-item-icon">
+                            <i class="fas fa-triangle-exclamation"></i>
+                        </div>
+                        <div class="announcement-item-content">
+                            <div class="announcement-item-title" data-key="announcement_water_title">⚠️ Отключение воды</div>
+                            <div class="announcement-item-text" data-key="announcement_water_text">
+                                С 15 июля по 20 июля будет отключена горячая вода для плановых ремонтных работ.
+                            </div>
+                            <div class="announcement-item-date">
+                                <i class="far fa-calendar-alt"></i>
+                                <span data-key="announcement_water_date">15.07.2026 — 20.07.2026</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="announcement-item">
+                        <div class="announcement-item-icon">
+                            <i class="fas fa-wrench"></i>
+                        </div>
+                        <div class="announcement-item-content">
+                            <div class="announcement-item-title" data-key="announcement_repair_title">🔧 Ремонт лифта</div>
+                            <div class="announcement-item-text" data-key="announcement_repair_text">
+                                С 10 по 12 июля будет проводиться плановое техническое обслуживание лифта.
+                            </div>
+                            <div class="announcement-item-date">
+                                <i class="far fa-calendar-alt"></i>
+                                <span data-key="announcement_repair_date">10.07.2026 — 12.07.2026</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="announcement-item">
+                        <div class="announcement-item-icon">
+                            <i class="fas fa-tree"></i>
+                        </div>
+                        <div class="announcement-item-content">
+                            <div class="announcement-item-title" data-key="announcement_garden_title">🌳 Озеленение двора</div>
+                            <div class="announcement-item-text" data-key="announcement_garden_text">
+                                Приглашаем жителей на субботник по озеленению двора 25 июля в 10:00.
+                            </div>
+                            <div class="announcement-item-date">
+                                <i class="far fa-calendar-alt"></i>
+                                <span data-key="announcement_garden_date">25.07.2026, 10:00</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <div class="stat-icon"><i class="fas fa-building"></i></div>
-                    <div class="stat-info">
-                        <span class="stat-number" id="totalApartments">0</span>
-                        <span class="stat-label" data-key="apartments">квартир</span>
+                <div class="announcement-footer">
+                    <button class="announcement-btn" id="announcementPrevBtn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="announcement-dots" id="announcementDots">
+                        <span class="dot active" data-index="0"></span>
+                        <span class="dot" data-index="1"></span>
+                        <span class="dot" data-index="2"></span>
                     </div>
+                    <button class="announcement-btn" id="announcementNextBtn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
-        </header>
 
         <!-- ====================================== -->
         <!-- МОДАЛЬНЫЕ ОКНА                         -->

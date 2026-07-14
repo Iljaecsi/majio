@@ -1,6 +1,6 @@
 /**
  * ============================================
- * MAJIO v0.10
+ * MAJIO v0.11 - MATERIAL DESIGN STYLE
  * ============================================
  */
 
@@ -16,18 +16,14 @@ const translations = {
         tab_history: 'История',
         tab_stats: 'Статистика',
         tab_profile: 'Профиль',
-        submit_all: 'Отправить все показания',
-        submit_status_ok: 'Все показания отправлены',
-        submit_status_warning: 'Не отправлены показания: {count}',
         nav_submit: 'Счетчики',
         nav_history: 'История',
         nav_stats: 'Статистика',
         nav_profile: 'Профиль',
         empty_message: 'Нет показаний',
         delete_confirm: 'Удалить это показание?',
-        submitted: 'Показания успешно поданы!',
         deleted: 'Показание удалено',
-        fill_fields: 'Заполните все поля!',
+        fill_fields: 'Введите показание!',
         negative_error: 'Показание не может быть отрицательным!',
         less_than_previous: 'Новое показание ({new}) не может быть меньше предыдущего ({prev})',
         equal_to_previous: 'Новое показание совпадает с предыдущим ({prev})',
@@ -66,10 +62,10 @@ const translations = {
         auth_welcome: 'Добро пожаловать, {name}!',
         dropdown_login: 'Вход',
         dropdown_register: 'Регистрация',
-        dropdown_properties: 'Моя недвижимость',
+        dropdown_properties: 'Моя квартира',
         dropdown_logout: 'Выйти',
-        property_title: 'Моя недвижимость',
-        property_modal_title: 'Моя недвижимость',
+        property_title: 'Моя квартира',
+        property_modal_title: 'Моя квартира',
         property_add: 'Добавить квартиру',
         property_add_title: 'Добавить квартиру',
         property_address_label: 'Адрес (ул. д-кв, город, индекс)',
@@ -86,7 +82,10 @@ const translations = {
         th_current: 'Новое',
         th_diff: 'Разница',
         month_usage: 'За месяц: {value}',
-        month_no_data: 'Показания не поданы'
+        month_no_data: 'Показания не поданы',
+        meter_sent: 'Показания счетчика "{meter}" отправлены!',
+        invalid_number: 'Введите корректное число',
+        comma_replaced: 'Запятая заменена на точку'
     },
     et: {
         subtitle: 'Tark arvestus teie kodus',
@@ -96,18 +95,14 @@ const translations = {
         tab_history: 'Ajalugu',
         tab_stats: 'Statistika',
         tab_profile: 'Profiil',
-        submit_all: 'Saada kõik näidud',
-        submit_status_ok: 'Kõik näidud saadetud',
-        submit_status_warning: 'Saatmata näidud: {count}',
         nav_submit: 'Arvestid',
         nav_history: 'Ajalugu',
         nav_stats: 'Statistika',
         nav_profile: 'Profiil',
         empty_message: 'Näidud puuduvad',
         delete_confirm: 'Kas soovite selle näidu kustutada?',
-        submitted: 'Näidud edukalt esitatud!',
         deleted: 'Näidud kustutatud',
-        fill_fields: 'Täitke kõik väljad!',
+        fill_fields: 'Sisestage näit!',
         negative_error: 'Näit ei saa olla negatiivne!',
         less_than_previous: 'Uus näit ({new}) ei saa olla väiksem kui eelmine ({prev})',
         equal_to_previous: 'Uus näit on sama mis eelmine ({prev})',
@@ -146,10 +141,10 @@ const translations = {
         auth_welcome: 'Tere tulemast, {name}!',
         dropdown_login: 'Logi sisse',
         dropdown_register: 'Registreeru',
-        dropdown_properties: 'Minu kinnisvara',
+        dropdown_properties: 'Minu korter',
         dropdown_logout: 'Logi välja',
-        property_title: 'Minu kinnisvara',
-        property_modal_title: 'Minu kinnisvara',
+        property_title: 'Minu korter',
+        property_modal_title: 'Minu korter',
         property_add: 'Lisa korter',
         property_add_title: 'Lisa korter',
         property_address_label: 'Aadress (tänav maja-korter, linn, indeks)',
@@ -166,7 +161,10 @@ const translations = {
         th_current: 'Uus',
         th_diff: 'Vahe',
         month_usage: 'Kuu jooksul: {value}',
-        month_no_data: 'Näidud puuduvad'
+        month_no_data: 'Näidud puuduvad',
+        meter_sent: 'Arvesti "{meter}" näidud saadetud!',
+        invalid_number: 'Sisestage korrektne number',
+        comma_replaced: 'Koma asendati punktiga'
     }
 };
 
@@ -177,9 +175,7 @@ let currentLang = localStorage.getItem('majio_lang') || 'ru';
 let currentTheme = localStorage.getItem('majio_theme') || 'light';
 let currentUser = localStorage.getItem('majio_user') || null;
 let currentProperty = null;
-let selectedMeter = null;
-let pendingReadings = {};
-let confirmCallback = null;
+let selectedMeterId = null;
 
 // ============================================
 // ДАННЫЕ ПО УМОЛЧАНИЮ
@@ -191,11 +187,11 @@ const DEFAULT_PROPERTY = {
 };
 
 const DEFAULT_METERS = [
-    { id: 'meter_001', name: 'Электричество (дневной)', icon: 'fa-bolt', unit: 'кВт·ч', type: 'electricity-day', value: 245.3, hasWarning: true },
-    { id: 'meter_002', name: 'Электричество (льготный)', icon: 'fa-bolt', unit: 'кВт·ч', type: 'electricity-night', value: 123.7, hasWarning: false },
-    { id: 'meter_003', name: 'Холодная вода', icon: 'fa-droplet', unit: 'м³', type: 'water-cold', value: 56.2, hasWarning: true },
-    { id: 'meter_004', name: 'Горячая вода', icon: 'fa-droplet', unit: 'м³', type: 'water-hot', value: 34.8, hasWarning: false },
-    { id: 'meter_005', name: 'Газ', icon: 'fa-fire-flame-curved', unit: 'м³', type: 'gas', value: 12.5, hasWarning: true }
+    { id: 'meter_001', name: 'Электричество (дневной)', icon: 'fa-sun', unit: 'кВт·ч', type: 'electricity-day', value: 245.30, hasWarning: true },
+    { id: 'meter_002', name: 'Электричество (льготный)', icon: 'fa-moon', unit: 'кВт·ч', type: 'electricity-night', value: 123.70, hasWarning: false },
+    { id: 'meter_003', name: 'Холодная вода', icon: 'fa-droplet', unit: 'м³', type: 'water-cold', value: 56.20, hasWarning: true },
+    { id: 'meter_004', name: 'Горячая вода', icon: 'fa-fire', unit: 'м³', type: 'water-hot', value: 34.80, hasWarning: false },
+    { id: 'meter_005', name: 'Газ', icon: 'fa-fire-flame-curved', unit: 'м³', type: 'gas', value: 12.50, hasWarning: true }
 ];
 
 // ============================================
@@ -266,7 +262,6 @@ function switchProperty(propertyId) {
     data.currentPropertyId = propertyId;
     saveData(data);
     currentProperty = getCurrentProperty();
-    pendingReadings = {};
     refreshUI();
 }
 
@@ -303,7 +298,7 @@ function applyTheme(theme) {
     
     const metaColor = document.getElementById('themeColor');
     if (metaColor) {
-        metaColor.content = theme === 'dark' ? '#1A1A1A' : '#ECF0F1';
+        metaColor.content = theme === 'dark' ? '#121212' : '#F5F7FA';
     }
 }
 
@@ -318,7 +313,6 @@ function refreshUI() {
     updateStatsPage();
     updateProfile();
     updateAuthUI();
-    updateSubmitStatus();
 }
 
 function switchTab(tabId) {
@@ -364,7 +358,6 @@ function loginUser(username, password) {
 function logoutUser() {
     currentUser = null;
     localStorage.removeItem('majio_user');
-    pendingReadings = {};
     refreshUI();
 }
 
@@ -436,8 +429,10 @@ function renderPropertyCard() {
     const prop = getCurrentProperty();
     if (!prop) return;
     
-    document.getElementById('propertyAddress').innerHTML = `<i class="fas fa-map-pin"></i><span>${prop.address}</span>`;
-    document.getElementById('propertyOwner').innerHTML = `<i class="fas fa-user"></i><span>${prop.owner}</span>`;
+    const addressEl = document.getElementById('propertyAddress');
+    const ownerEl = document.getElementById('propertyOwner');
+    if (addressEl) addressEl.innerHTML = `<i class="fas fa-map-pin"></i><span>${prop.address}</span>`;
+    if (ownerEl) ownerEl.innerHTML = `<i class="fas fa-user"></i><span>${prop.owner}</span>`;
 }
 
 // ============================================
@@ -445,21 +440,30 @@ function renderPropertyCard() {
 // ============================================
 function openAuthModal(mode = 'login') {
     const modal = document.getElementById('authModal');
+    if (!modal) return;
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
-    document.getElementById('authStatus').textContent = '';
-    document.getElementById('authStatus').className = '';
+    const statusEl = document.getElementById('authStatus');
+    if (statusEl) {
+        statusEl.textContent = '';
+        statusEl.className = '';
+    }
     
     if (mode === 'register') {
-        document.querySelector('.auth-tab[data-auth-tab="register"]').click();
+        const tab = document.querySelector('.auth-tab[data-auth-tab="register"]');
+        if (tab) tab.click();
     } else {
-        document.querySelector('.auth-tab[data-auth-tab="login"]').click();
+        const tab = document.querySelector('.auth-tab[data-auth-tab="login"]');
+        if (tab) tab.click();
     }
 }
 
 function closeAuthModal() {
-    document.getElementById('authModal').classList.remove('active');
-    document.body.style.overflow = '';
+    const modal = document.getElementById('authModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
 }
 
 document.getElementById('authCloseBtn').addEventListener('click', closeAuthModal);
@@ -473,10 +477,15 @@ document.querySelectorAll('.auth-tab').forEach(tab => {
         document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
         this.classList.add('active');
         document.querySelectorAll('.auth-pane').forEach(p => p.classList.remove('active'));
-        document.getElementById('auth-' + mode).classList.add('active');
-        document.getElementById('authTitle').textContent = this.textContent;
-        document.getElementById('authStatus').textContent = '';
-        document.getElementById('authStatus').className = '';
+        const pane = document.getElementById('auth-' + mode);
+        if (pane) pane.classList.add('active');
+        const title = document.getElementById('authTitle');
+        if (title) title.textContent = this.textContent;
+        const status = document.getElementById('authStatus');
+        if (status) {
+            status.textContent = '';
+            status.className = '';
+        }
     });
 });
 
@@ -487,51 +496,70 @@ document.getElementById('authForm').addEventListener('submit', function(e) {
     const mode = activeTab ? activeTab.dataset.authTab : 'login';
     const statusEl = document.getElementById('authStatus');
     
-    statusEl.textContent = '';
-    statusEl.className = '';
+    if (statusEl) {
+        statusEl.textContent = '';
+        statusEl.className = '';
+    }
     
     if (mode === 'login') {
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value;
         if (!username || !password) {
-            statusEl.textContent = t.auth_empty_fields;
-            statusEl.className = 'error';
+            if (statusEl) {
+                statusEl.textContent = t.auth_empty_fields;
+                statusEl.className = 'error';
+            }
             return;
         }
         const result = loginUser(username, password);
         if (result.success) {
-            statusEl.textContent = t.auth_login_success.replace('{name}', username);
-            statusEl.className = 'success';
+            if (statusEl) {
+                statusEl.textContent = t.auth_login_success.replace('{name}', username);
+                statusEl.className = 'success';
+            }
             refreshUI();
             setTimeout(closeAuthModal, 1000);
         } else {
-            statusEl.textContent = t.auth_login_error;
-            statusEl.className = 'error';
+            if (statusEl) {
+                statusEl.textContent = t.auth_login_error;
+                statusEl.className = 'error';
+            }
         }
     } else {
         const username = document.getElementById('registerUsername').value.trim();
         const password = document.getElementById('registerPassword').value;
         const confirm = document.getElementById('registerPasswordConfirm').value;
         if (!username || !password || !confirm) {
-            statusEl.textContent = t.auth_empty_fields;
-            statusEl.className = 'error';
+            if (statusEl) {
+                statusEl.textContent = t.auth_empty_fields;
+                statusEl.className = 'error';
+            }
             return;
         }
         if (password !== confirm) {
-            statusEl.textContent = t.auth_password_mismatch;
-            statusEl.className = 'error';
+            if (statusEl) {
+                statusEl.textContent = t.auth_password_mismatch;
+                statusEl.className = 'error';
+            }
             return;
         }
         const result = registerUser(username, password);
         if (result.success) {
-            statusEl.textContent = t.auth_register_success;
-            statusEl.className = 'success';
-            document.querySelector('.auth-tab[data-auth-tab="login"]').click();
-            document.getElementById('loginUsername').value = username;
-            document.getElementById('loginPassword').value = '';
+            if (statusEl) {
+                statusEl.textContent = t.auth_register_success;
+                statusEl.className = 'success';
+            }
+            const loginTab = document.querySelector('.auth-tab[data-auth-tab="login"]');
+            if (loginTab) loginTab.click();
+            const loginUserField = document.getElementById('loginUsername');
+            if (loginUserField) loginUserField.value = username;
+            const loginPassField = document.getElementById('loginPassword');
+            if (loginPassField) loginPassField.value = '';
         } else {
-            statusEl.textContent = t.auth_register_error;
-            statusEl.className = 'error';
+            if (statusEl) {
+                statusEl.textContent = t.auth_register_error;
+                statusEl.className = 'error';
+            }
         }
     }
 });
@@ -541,14 +569,18 @@ document.getElementById('authForm').addEventListener('submit', function(e) {
 // ============================================
 function openPropertyModal() {
     const modal = document.getElementById('propertyModal');
+    if (!modal) return;
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
     renderPropertyList();
 }
 
 function closePropertyModal() {
-    document.getElementById('propertyModal').classList.remove('active');
-    document.body.style.overflow = '';
+    const modal = document.getElementById('propertyModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
 }
 
 document.getElementById('propertyCloseBtn').addEventListener('click', closePropertyModal);
@@ -560,6 +592,8 @@ function renderPropertyList() {
     const data = loadData();
     if (!data) return;
     const list = document.getElementById('propertyList');
+    if (!list) return;
+    
     list.innerHTML = data.properties.map(p => `
         <div class="property-list-item" data-id="${p.id}">
             <div class="property-info">
@@ -575,20 +609,26 @@ function renderPropertyList() {
             const id = this.dataset.id;
             switchProperty(id);
             closePropertyModal();
-            showNotification('Недвижимость изменена', 'success');
+            showNotification('Квартира изменена', 'success');
         });
     });
 }
 
 document.getElementById('propertyAddBtn').addEventListener('click', function() {
     closePropertyModal();
-    document.getElementById('propertyAddModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
+    const modal = document.getElementById('propertyAddModal');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
 });
 
 document.getElementById('propertyAddCloseBtn').addEventListener('click', function() {
-    document.getElementById('propertyAddModal').classList.remove('active');
-    document.body.style.overflow = '';
+    const modal = document.getElementById('propertyAddModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
 });
 
 document.getElementById('propertyAddModal').addEventListener('click', function(e) {
@@ -623,27 +663,29 @@ document.getElementById('propertySaveBtn').addEventListener('click', function() 
     data.currentPropertyId = newProperty.id;
     saveData(data);
     
-    document.getElementById('propertyAddModal').classList.remove('active');
-    document.body.style.overflow = '';
-    document.getElementById('newPropertyAddress').value = '';
-    document.getElementById('newPropertyOwner').value = '';
+    const modal = document.getElementById('propertyAddModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    const addressField = document.getElementById('newPropertyAddress');
+    const ownerField = document.getElementById('newPropertyOwner');
+    if (addressField) addressField.value = '';
+    if (ownerField) ownerField.value = '';
     
-    pendingReadings = {};
     refreshUI();
-    showNotification('Недвижимость добавлена!', 'success');
+    showNotification('Квартира добавлена!', 'success');
 });
 
 // ============================================
-// СЧЕТЧИКИ (С РАСХОДОМ ЗА МЕСЯЦ + СТАТУС)
+// СЧЕТЧИКИ
 // ============================================
 function renderMeters() {
     const prop = getCurrentProperty();
-    if (!prop) return;
-    
     const grid = document.getElementById('metersGrid');
     if (!grid) return;
     
-    if (!prop.meters || prop.meters.length === 0) {
+    if (!prop || !prop.meters || prop.meters.length === 0) {
         grid.innerHTML = `<p class="empty-message">Нет счетчиков</p>`;
         return;
     }
@@ -652,12 +694,8 @@ function renderMeters() {
     
     grid.innerHTML = prop.meters.map(meter => {
         const value = (meter.value !== undefined && meter.value !== null) ? meter.value : 0;
-        const hasPending = pendingReadings[meter.id] !== undefined;
-        const displayValue = hasPending ? pendingReadings[meter.id] : value;
+        const showWarning = meter.hasWarning === true;
         
-        const showWarning = !hasPending && meter.hasWarning === true;
-        
-        // === РАСХОД ЗА МЕСЯЦ ===
         let monthUsage = 0;
         let hasMonthData = false;
         let isSent = false;
@@ -673,40 +711,13 @@ function renderMeters() {
             }
         }
         
-        // === ЕСЛИ ЕСТЬ PENDING (не отправлено) - считаем расход от текущего значения ===
-        let displayMonthUsage = monthUsage;
-        let displayHasData = hasMonthData;
-        let displayIsSent = isSent;
-        
-        if (hasPending) {
-            // Расход = новое значение (pending) - предыдущее значение (из истории или текущее)
-            const prevValue = hasMonthData ? (prop.readings.filter(r => r.meterId === meter.id).sort((a, b) => b.timestamp - a.timestamp)[0]?.newValue || meter.value) : meter.value;
-            const pendingValue = pendingReadings[meter.id];
-            displayMonthUsage = pendingValue - prevValue;
-            displayHasData = true;
-            displayIsSent = false; // Не отправлено
-        }
-        
-        // Определяем цвет и текст
         let monthClass = 'meter-month';
         let monthText = '';
         
-        if (displayHasData) {
-            if (displayIsSent) {
-                // Отправлено - зеленый
-                monthClass = 'meter-month sent';
-                monthText = t.month_usage.replace('{value}', displayMonthUsage.toFixed(1));
-            } else if (hasPending) {
-                // В очереди (не отправлено) - оранжевый, но с расходом
-                monthClass = 'meter-month pending';
-                monthText = t.month_usage.replace('{value}', displayMonthUsage.toFixed(1));
-            } else {
-                // Есть данные, но не отправлено (по какой-то причине)
-                monthClass = 'meter-month';
-                monthText = t.month_usage.replace('{value}', displayMonthUsage.toFixed(1));
-            }
+        if (hasMonthData && isSent) {
+            monthClass = 'meter-month sent';
+            monthText = t.month_usage.replace('{value}', monthUsage.toFixed(2));
         } else {
-            // Нет данных
             monthClass = 'meter-month no-data';
             monthText = t.month_no_data;
         }
@@ -716,11 +727,10 @@ function renderMeters() {
                 <div class="meter-top">
                     <span class="meter-name">${meter.name || 'Счетчик'}</span>
                     ${showWarning ? '<span class="meter-warning"><i class="fas fa-exclamation-triangle"></i></span>' : ''}
-                    ${hasPending ? '<span class="meter-pending"><i class="fas fa-pen"></i></span>' : ''}
                 </div>
                 <i class="fas ${meter.icon || 'fa-bolt'} meter-bg-icon"></i>
                 <div class="meter-bottom">
-                    <span class="meter-value">${Number(displayValue).toFixed(1)}</span>
+                    <span class="meter-value">${Number(value).toFixed(2)}</span>
                     <span class="meter-unit">${meter.unit || ''}</span>
                     <span class="${monthClass}"><i class="fas fa-chart-line"></i> ${monthText}</span>
                 </div>
@@ -737,116 +747,50 @@ function renderMeters() {
 }
 
 // ============================================
-// СТАТУС ОТПРАВКИ
-// ============================================
-function updateSubmitStatus() {
-    const prop = getCurrentProperty();
-    if (!prop) return;
-    
-    const pendingCount = Object.keys(pendingReadings).length;
-    const badge = document.getElementById('warningBadge');
-    const warningCount = document.getElementById('warningCount');
-    const status = document.getElementById('submitStatus');
-    const t = translations[currentLang];
-    
-    if (pendingCount > 0) {
-        badge.style.display = 'flex';
-        warningCount.textContent = pendingCount;
-        status.className = 'submit-status warning';
-        status.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${t.submit_status_warning.replace('{count}', pendingCount)}`;
-        status.classList.remove('hidden');
-    } else {
-        badge.style.display = 'none';
-        status.className = 'submit-status';
-        status.innerHTML = `<i class="fas fa-check-circle"></i> ${t.submit_status_ok}`;
-        status.classList.remove('hidden');
-    }
-}
-
-// ============================================
 // МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ
 // ============================================
 function showConfirmModal(title, message, callback) {
     const modal = document.getElementById('confirmModal');
-    document.getElementById('confirmTitle').textContent = title;
-    document.getElementById('confirmMessage').textContent = message;
-    confirmCallback = callback;
+    if (!modal) return;
+    
+    const titleEl = document.getElementById('confirmTitle');
+    const msgEl = document.getElementById('confirmMessage');
+    if (titleEl) titleEl.textContent = title;
+    if (msgEl) msgEl.textContent = message;
+    
+    const okBtn = document.getElementById('confirmOk');
+    const cancelBtn = document.getElementById('confirmCancel');
+    
+    if (!okBtn || !cancelBtn) return;
+    
+    const newOk = okBtn.cloneNode(true);
+    const newCancel = cancelBtn.cloneNode(true);
+    okBtn.parentNode.replaceChild(newOk, okBtn);
+    cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+    
+    newCancel.addEventListener('click', function() {
+        closeConfirmModal();
+    });
+    
+    newOk.addEventListener('click', function() {
+        if (callback) callback();
+        closeConfirmModal();
+    });
+    
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
 
 function closeConfirmModal() {
-    document.getElementById('confirmModal').classList.remove('active');
-    document.body.style.overflow = '';
-    confirmCallback = null;
-}
-
-document.getElementById('confirmCancel').addEventListener('click', function() {
-    closeConfirmModal();
-});
-
-document.getElementById('confirmOk').addEventListener('click', function() {
-    if (confirmCallback) {
-        confirmCallback();
+    const modal = document.getElementById('confirmModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
     }
-    closeConfirmModal();
-});
+}
 
 document.getElementById('confirmModal').addEventListener('click', function(e) {
     if (e.target === this) closeConfirmModal();
-});
-
-// ============================================
-// ОТПРАВКА ВСЕХ ПОКАЗАНИЙ
-// ============================================
-document.getElementById('submitAllBtn').addEventListener('click', function() {
-    const prop = getCurrentProperty();
-    if (!prop) return;
-    
-    const pendingKeys = Object.keys(pendingReadings);
-    if (pendingKeys.length === 0) {
-        showNotification('Нет новых показаний для отправки', 'warning');
-        return;
-    }
-    
-    const t = translations[currentLang];
-    let count = 0;
-    
-    pendingKeys.forEach(meterId => {
-        const meter = prop.meters.find(m => m.id === meterId);
-        if (meter) {
-            const newValue = pendingReadings[meterId];
-            const reading = {
-                id: 'read_' + Date.now() + '_' + count,
-                meterId: meter.id,
-                meterName: meter.name,
-                meterType: meter.type,
-                meterIcon: meter.icon,
-                previousValue: meter.value,
-                newValue: newValue,
-                diff: newValue - meter.value,
-                date: new Date().toLocaleString(currentLang === 'et' ? 'et-EE' : 'ru-RU', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                }),
-                timestamp: Date.now()
-            };
-            
-            meter.value = newValue;
-            meter.hasWarning = false;
-            if (!prop.readings) prop.readings = [];
-            prop.readings.push(reading);
-            count++;
-        }
-    });
-    
-    pendingReadings = {};
-    saveProperty(prop);
-    refreshUI();
-    showNotification(`✅ ${t.submitted} (${count} показаний)`, 'success');
 });
 
 // ============================================
@@ -859,27 +803,35 @@ function openReadingModal(meterId) {
     const meter = prop.meters.find(m => m.id === meterId);
     if (!meter) return;
     
-    selectedMeter = meter;
+    selectedMeterId = meter.id;
     
     const modal = document.getElementById('readingModal');
+    if (!modal) return;
+    
     const icon = document.getElementById('readingModalIcon');
     const name = document.getElementById('readingModalName');
     const idEl = document.getElementById('readingModalId');
     const previous = document.getElementById('readingPreviousValue');
     const input = document.getElementById('readingInput');
     
-    const currentValue = pendingReadings[meter.id] !== undefined ? pendingReadings[meter.id] : meter.value;
+    if (!input) return;
+    const formGroup = input.closest('.form-group');
     
-    icon.className = `reading-modal-icon ${meter.type || 'electricity-day'}`;
-    icon.innerHTML = `<i class="fas ${meter.icon || 'fa-bolt'}"></i>`;
-    name.textContent = meter.name || 'Счетчик';
-    idEl.textContent = `ID: ${meter.id.slice(-3)}`;
-    previous.textContent = currentValue.toFixed(1);
+    const currentValue = meter.value;
+    
+    if (icon) {
+        icon.className = `reading-modal-icon ${meter.type || 'electricity-day'}`;
+        icon.innerHTML = `<i class="fas ${meter.icon || 'fa-bolt'}"></i>`;
+    }
+    if (name) name.textContent = meter.name || 'Счетчик';
+    if (idEl) idEl.textContent = `ID: ${meter.id.slice(-3)}`;
+    if (previous) previous.textContent = currentValue.toFixed(2);
+    
     input.value = '';
-    input.min = 0;
-    input.placeholder = `Введите значение > ${currentValue.toFixed(1)}`;
-    input.step = "0.1";
-    
+    input.placeholder = ' ';
+    if (formGroup) {
+        formGroup.classList.remove('has-success', 'has-error');
+    }
     input.classList.remove('error');
     
     modal.classList.add('active');
@@ -888,9 +840,11 @@ function openReadingModal(meterId) {
 }
 
 function closeReadingModal() {
-    document.getElementById('readingModal').classList.remove('active');
-    document.body.style.overflow = '';
-    selectedMeter = null;
+    const modal = document.getElementById('readingModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
 }
 
 document.getElementById('readingCloseBtn').addEventListener('click', closeReadingModal);
@@ -899,46 +853,136 @@ document.getElementById('readingModal').addEventListener('click', function(e) {
 });
 
 // ============================================
-// ОБРАБОТЧИК ДОБАВЛЕНИЯ ПОКАЗАНИЯ
+// ФИЛЬТРАЦИЯ ВВОДА
 // ============================================
-document.getElementById('readingSubmitBtn').addEventListener('click', function() {
-    const prop = getCurrentProperty();
-    if (!prop || !selectedMeter) return;
-    
-    const input = document.getElementById('readingInput');
-    const value = parseFloat(input.value);
+function filterInput(value) {
+    let filtered = value.replace(/[^0-9,.]/g, '');
+    return filtered;
+}
+
+// ============================================
+// ОТПРАВКА ПОКАЗАНИЙ
+// ============================================
+function submitMeterReading(property, meterId, newValue) {
     const t = translations[currentLang];
     
-    const currentValue = pendingReadings[selectedMeter.id] !== undefined 
-        ? pendingReadings[selectedMeter.id] 
-        : selectedMeter.value;
+    const meter = property.meters.find(m => m.id === meterId);
+    if (!meter) {
+        showNotification('Ошибка: счетчик не найден', 'error');
+        return;
+    }
     
-    if (input.value.trim() === '') {
+    const formattedValue = parseFloat(Number(newValue).toFixed(2));
+    
+    const reading = {
+        id: 'read_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        meterId: meter.id,
+        meterName: meter.name,
+        meterType: meter.type,
+        meterIcon: meter.icon,
+        previousValue: meter.value,
+        newValue: formattedValue,
+        diff: formattedValue - meter.value,
+        date: new Date().toLocaleString(currentLang === 'et' ? 'et-EE' : 'ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }),
+        timestamp: Date.now()
+    };
+    
+    meter.value = formattedValue;
+    meter.hasWarning = false;
+    
+    if (!property.readings) property.readings = [];
+    property.readings.push(reading);
+    
+    saveProperty(property);
+    
+    refreshUI();
+    
+    const message = t.meter_sent.replace('{meter}', meter.name);
+    showNotification(message, 'success');
+}
+
+// ============================================
+// ОСНОВНОЙ ОБРАБОТЧИК ПОКАЗАНИЙ
+// ============================================
+function handleReadingSubmit() {
+    const prop = getCurrentProperty();
+    if (!prop) {
+        showNotification('Ошибка: нет недвижимости', 'error');
+        return;
+    }
+    
+    if (!selectedMeterId) {
+        showNotification('Ошибка: выберите счетчик', 'error');
+        return;
+    }
+    
+    const input = document.getElementById('readingInput');
+    if (!input) return;
+    
+    const rawValue = input.value.trim();
+    const formGroup = input.closest('.form-group');
+    const t = translations[currentLang];
+    
+    const meter = prop.meters.find(m => m.id === selectedMeterId);
+    if (!meter) {
+        showNotification('Ошибка: счетчик не найден', 'error');
+        return;
+    }
+    
+    const currentValue = meter.value;
+    
+    if (formGroup) {
+        formGroup.classList.remove('has-success', 'has-error');
+    }
+    input.classList.remove('error');
+    
+    if (rawValue === '') {
         showNotification(t.fill_fields, 'error');
+        if (formGroup) formGroup.classList.add('has-error');
         input.classList.add('error');
         return;
     }
     
+    let processedValue = rawValue;
+    if (processedValue.includes(',')) {
+        processedValue = processedValue.replace(',', '.');
+        showNotification(t.comma_replaced, 'warning');
+    }
+    
+    const value = parseFloat(processedValue);
+    
     if (isNaN(value)) {
-        showNotification('Введите число', 'error');
+        showNotification(t.invalid_number, 'error');
+        if (formGroup) formGroup.classList.add('has-error');
         input.classList.add('error');
         return;
     }
     
     if (value < 0) {
         showNotification(t.negative_error, 'error');
+        if (formGroup) formGroup.classList.add('has-error');
         input.classList.add('error');
         return;
     }
     
     if (value < currentValue) {
-        showNotification(t.less_than_previous.replace('{new}', value.toFixed(1)).replace('{prev}', currentValue.toFixed(1)), 'error');
+        showNotification(t.less_than_previous
+            .replace('{new}', value.toFixed(2))
+            .replace('{prev}', currentValue.toFixed(2)), 'error');
+        if (formGroup) formGroup.classList.add('has-error');
         input.classList.add('error');
         return;
     }
     
     if (value === currentValue) {
-        showNotification(t.equal_to_previous.replace('{prev}', currentValue.toFixed(1)), 'error');
+        showNotification(t.equal_to_previous.replace('{prev}', currentValue.toFixed(2)), 'error');
+        if (formGroup) formGroup.classList.add('has-error');
         input.classList.add('error');
         return;
     }
@@ -946,30 +990,69 @@ document.getElementById('readingSubmitBtn').addEventListener('click', function()
     if (value - currentValue > 1000) {
         showConfirmModal(
             t.confirm_title,
-            t.confirm_message.replace('{value}', value.toFixed(1)),
+            t.confirm_message.replace('{value}', value.toFixed(2)),
             function() {
-                pendingReadings[selectedMeter.id] = value;
-                input.classList.remove('error');
                 closeReadingModal();
-                refreshUI();
-                showNotification(`Показание ${value.toFixed(1)} добавлено в очередь`, 'success');
+                submitMeterReading(prop, selectedMeterId, value);
             }
         );
         return;
     }
     
-    pendingReadings[selectedMeter.id] = value;
-    input.classList.remove('error');
     closeReadingModal();
-    refreshUI();
-    showNotification(`Показание ${value.toFixed(1)} добавлено в очередь`, 'success');
-});
+    submitMeterReading(prop, selectedMeterId, value);
+}
 
-document.getElementById('readingHistoryBtn').addEventListener('click', function() {
-    if (!selectedMeter) return;
-    closeReadingModal();
-    switchTab('history');
-    renderTable(selectedMeter.id);
+// ============================================
+// ПОДКЛЮЧЕНИЕ ОБРАБОТЧИКОВ
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    const submitBtn = document.getElementById('readingSubmitBtn');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', handleReadingSubmit);
+    }
+    
+    const input = document.getElementById('readingInput');
+    if (input) {
+        input.addEventListener('input', function(e) {
+            const filtered = filterInput(this.value);
+            if (this.value !== filtered) {
+                this.value = filtered;
+            }
+            
+            let value = this.value;
+            if (value.includes('.')) {
+                const parts = value.split('.');
+                if (parts[1] && parts[1].length > 2) {
+                    parts[1] = parts[1].slice(0, 2);
+                    this.value = parts[0] + '.' + parts[1];
+                }
+            }
+            
+            const formGroup = this.closest('.form-group');
+            if (formGroup) {
+                formGroup.classList.remove('has-error');
+            }
+            this.classList.remove('error');
+        });
+        
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleReadingSubmit();
+            }
+        });
+    }
+    
+    const historyBtn = document.getElementById('readingHistoryBtn');
+    if (historyBtn) {
+        historyBtn.addEventListener('click', function() {
+            if (!selectedMeterId) return;
+            closeReadingModal();
+            switchTab('history');
+            renderTable(selectedMeterId);
+        });
+    }
 });
 
 // ============================================
@@ -977,8 +1060,11 @@ document.getElementById('readingHistoryBtn').addEventListener('click', function(
 // ============================================
 function renderTable(filterMeterId = null) {
     const prop = getCurrentProperty();
+    const body = document.getElementById('readingsBody');
+    if (!body) return;
+    
     if (!prop) {
-        document.getElementById('readingsBody').innerHTML = `<tr><td colspan="6" class="empty-message">Нет данных</td></tr>`;
+        body.innerHTML = `<tr><td colspan="6" class="empty-message">Нет данных</td></tr>`;
         return;
     }
     
@@ -988,7 +1074,6 @@ function renderTable(filterMeterId = null) {
     }
     
     const t = translations[currentLang];
-    const body = document.getElementById('readingsBody');
     
     if (readings.length === 0) {
         body.innerHTML = `<tr><td colspan="6" class="empty-message">${t.empty_message}</td></tr>`;
@@ -1001,9 +1086,9 @@ function renderTable(filterMeterId = null) {
         <tr>
             <td>${r.date}</td>
             <td><i class="fas ${r.meterIcon}"></i> ${r.meterName}</td>
-            <td>${r.previousValue.toFixed(1)}</td>
-            <td><strong>${r.newValue.toFixed(1)}</strong></td>
-            <td>${r.diff.toFixed(1)}</td>
+            <td>${r.previousValue.toFixed(2)}</td>
+            <td><strong>${r.newValue.toFixed(2)}</strong></td>
+            <td>${r.diff.toFixed(2)}</td>
             <td>
                 <button class="delete-btn" data-id="${r.id}">
                     <i class="fas fa-trash-alt"></i>
@@ -1034,13 +1119,21 @@ function renderTable(filterMeterId = null) {
 // ============================================
 function updateStats() {
     const prop = getCurrentProperty();
-    if (!prop) return;
-    const stats = getStats(prop);
-    document.getElementById('totalReadings').textContent = stats.total;
-    document.getElementById('totalApartments').textContent = 1;
+    
+    const totalReadings = document.getElementById('totalReadings');
+    const totalApartments = document.getElementById('totalApartments');
+    
+    if (totalReadings) {
+        totalReadings.textContent = prop ? (prop.readings ? prop.readings.length : 0) : 0;
+    }
+    if (totalApartments) {
+        totalApartments.textContent = prop ? 1 : 0;
+    }
 }
 
 function getStats(prop) {
+    if (!prop) return { total: 0, today: 0, meters: 0, totals: {} };
+    
     const readings = prop.readings || [];
     const today = new Date().toDateString();
     const todayReadings = readings.filter(r => new Date(r.timestamp).toDateString() === today);
@@ -1069,21 +1162,28 @@ function updateStatsPage() {
     const stats = getStats(prop);
     const t = translations[currentLang];
     
-    document.getElementById('statsTotal').textContent = stats.total;
-    document.getElementById('statsProperties').textContent = 1;
-    document.getElementById('statsMeters').textContent = stats.meters;
-    document.getElementById('statsToday').textContent = stats.today;
+    const totalEl = document.getElementById('statsTotal');
+    const propertiesEl = document.getElementById('statsProperties');
+    const metersEl = document.getElementById('statsMeters');
+    const todayEl = document.getElementById('statsToday');
+    const consumptionEl = document.getElementById('statsConsumption');
     
-    const container = document.getElementById('statsConsumption');
-    container.innerHTML = (prop.meters || []).map(m => `
-        <div class="consumption-item">
-            <span class="consumption-icon"><i class="fas ${m.icon}" style="color:var(--meter-color);"></i></span>
-            <div class="consumption-info">
-                <span class="consumption-label">${m.name}</span>
-                <span class="consumption-value">${(stats.totals[m.id] || 0).toFixed(1)} ${m.unit}</span>
+    if (totalEl) totalEl.textContent = stats.total;
+    if (propertiesEl) propertiesEl.textContent = 1;
+    if (metersEl) metersEl.textContent = stats.meters;
+    if (todayEl) todayEl.textContent = stats.today;
+    
+    if (consumptionEl) {
+        consumptionEl.innerHTML = (prop.meters || []).map(m => `
+            <div class="consumption-item">
+                <span class="consumption-icon"><i class="fas ${m.icon}" style="color:var(--meter-color);"></i></span>
+                <div class="consumption-info">
+                    <span class="consumption-label">${m.name}</span>
+                    <span class="consumption-value">${(stats.totals[m.id] || 0).toFixed(2)} ${m.unit}</span>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `).join('');
+    }
 }
 
 // ============================================
@@ -1093,20 +1193,29 @@ function updateProfile() {
     const prop = getCurrentProperty();
     const t = translations[currentLang];
     
-    document.getElementById('profileName').textContent = isAuthenticated() ? currentUser : 'Гость';
-    document.getElementById('profileRole').textContent = isAuthenticated() 
-        ? t.auth_welcome.replace('{name}', currentUser) 
-        : t.profile_role;
+    const nameEl = document.getElementById('profileName');
+    const roleEl = document.getElementById('profileRole');
+    const readingsEl = document.getElementById('profileReadings');
+    const propertiesEl = document.getElementById('profileProperties');
+    const langDisplay = document.getElementById('profileLangDisplay');
+    const themeDisplay = document.getElementById('profileThemeDisplay');
+    
+    if (nameEl) nameEl.textContent = isAuthenticated() ? currentUser : 'Гость';
+    if (roleEl) {
+        roleEl.textContent = isAuthenticated() 
+            ? t.auth_welcome.replace('{name}', currentUser) 
+            : t.profile_role;
+    }
     
     const stats = prop ? getStats(prop) : { total: 0 };
-    document.getElementById('profileReadings').textContent = stats.total || 0;
-    document.getElementById('profileProperties').textContent = prop ? 1 : 0;
-    document.getElementById('profileLangDisplay').textContent = currentLang === 'et' ? t.lang_et : t.lang_ru;
-    document.getElementById('profileThemeDisplay').textContent = currentTheme === 'dark' ? t.theme_dark : t.theme_light;
+    if (readingsEl) readingsEl.textContent = stats.total || 0;
+    if (propertiesEl) propertiesEl.textContent = prop ? 1 : 0;
+    if (langDisplay) langDisplay.textContent = currentLang === 'et' ? t.lang_et : t.lang_ru;
+    if (themeDisplay) themeDisplay.textContent = currentTheme === 'dark' ? t.theme_dark : t.theme_light;
 }
 
 // ============================================
-// УВЕДОМЛЕНИЯ
+// УВЕДОМЛЕНИЯ - ТОЛЬКО ИКОНКИ
 // ============================================
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
@@ -1128,7 +1237,7 @@ function showNotification(message, type = 'success') {
 }
 
 // ============================================
-// ОБРАБОТЧИКИ
+// ОБРАБОТЧИКИ ВКЛАДОК
 // ============================================
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -1163,7 +1272,7 @@ applyTranslations(currentLang);
 switchTab('submit');
 refreshUI();
 
-console.log('🏠 Majio v0.16 - Month usage visible even in pending state');
+console.log('🏠 Majio v0.25 - Material Design Style');
 console.log(`🌓 Theme: ${currentTheme}, Language: ${currentLang}`);
 console.log(`👤 User: ${currentUser || 'guest'}`);
 console.log(`📍 Property: ${currentProperty ? currentProperty.address : 'none'}`);

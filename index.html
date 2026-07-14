@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#ffffff" id="themeColor">
+    <meta name="theme-color" content="#ECF0F1" id="themeColor">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Majio - Управление недвижимостью</title>
@@ -51,7 +51,7 @@
                             </button>
                             <button class="dropdown-item" id="dropdownProperties">
                                 <i class="fas fa-building"></i>
-                                <span data-key="dropdown_properties">Моя недвижимость</span>
+                                <span data-key="dropdown_properties">Моя квартира</span>
                             </button>
                             <button class="dropdown-item" id="dropdownLogout" style="display:none;">
                                 <i class="fas fa-sign-out-alt"></i>
@@ -65,7 +65,7 @@
             <div class="property-card" id="propertyCard">
                 <div class="property-header">
                     <i class="fas fa-building property-icon"></i>
-                    <span class="property-title" data-key="property_title">Моя недвижимость</span>
+                    <span class="property-title" data-key="property_title">Моя квартира</span>
                 </div>
                 <div class="property-body">
                     <div class="property-address" id="propertyAddress">
@@ -74,7 +74,26 @@
                     </div>
                     <div class="property-owner" id="propertyOwner">
                         <i class="fas fa-user"></i>
-                        <span>Иванов Иван Иванович</span>
+                        <span>Иванов Иван</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Карточка статистики -->
+            <div class="stats-card">
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="totalReadings">0</span>
+                        <span class="stat-label" data-key="readings">показаний</span>
+                    </div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-building"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="totalApartments">0</span>
+                        <span class="stat-label" data-key="apartments">квартир</span>
                     </div>
                 </div>
             </div>
@@ -141,7 +160,7 @@
         <div class="property-modal" id="propertyModal">
             <div class="property-modal-content">
                 <div class="property-modal-header">
-                    <h2 data-key="property_modal_title">Моя недвижимость</h2>
+                    <h2 data-key="property_modal_title">Моя квартира</h2>
                     <button class="property-close-btn" id="propertyCloseBtn"><i class="fas fa-times"></i></button>
                 </div>
                 <div class="property-list" id="propertyList"></div>
@@ -218,20 +237,6 @@
                 <div class="tab-pane active" id="tab-submit">
                     <section class="meters-section">
                         <div class="meters-grid" id="metersGrid"></div>
-                        
-                        <button class="submit-all-btn" id="submitAllBtn">
-                            <i class="fas fa-paper-plane"></i>
-                            <span data-key="submit_all">Отправить все показания</span>
-                            <span class="warning-badge" id="warningBadge" style="display:none;">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <span id="warningCount">0</span>
-                            </span>
-                        </button>
-                        
-                        <div class="submit-status" id="submitStatus">
-                            <i class="fas fa-check-circle"></i>
-                            <span data-key="submit_status_ok">Все показания отправлены</span>
-                        </div>
                     </section>
                 </div>
 
@@ -335,7 +340,7 @@
                                 </div>
                             </div>
                             <div class="profile-footer">
-                                <p>Majio v0.11</p>
+                                <p>Majio v0.25</p>
                                 <p data-key="profile_credit">© 2026 — Умный учёт в вашем доме</p>
                             </div>
                         </div>
@@ -362,11 +367,15 @@
                         <span data-key="reading_previous">Предыдущие показания:</span>
                         <strong id="readingPreviousValue">0.0</strong>
                     </div>
-                    <div class="input-field">
-                        <i class="fas fa-pen input-icon"></i>
-                        <input type="number" id="readingInput" step="0.1" min="0" required placeholder=" ">
-                        <label data-key="reading_new_label">Новые показания</label>
+                    
+                    <div class="form-group label-floating">
+                        <label class="control-label" for="readingInput" data-key="reading_new_label">Новые показания</label>
+                        <input type="text" id="readingInput" class="form-control" 
+                               inputmode="decimal" autocomplete="off"
+                               placeholder=" ">
+                        <span class="material-icons form-control-feedback">edit</span>
                     </div>
+                    
                     <div class="reading-actions">
                         <button class="reading-submit-btn" id="readingSubmitBtn">
                             <i class="fas fa-paper-plane"></i>

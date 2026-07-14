@@ -1,60 +1,54 @@
 /* ============================================ */
-/* ЦВЕТОВАЯ СХЕМА                               */
+/* MATERIAL DESIGN STYLE      */
 /* ============================================ */
 :root {
-    /* Основной цвет (Wet Asphalt) */
     --primary: #34495E;
     --primary-dark: #2C3E50;
     --primary-light: #5D6D7E;
     --primary-gradient: linear-gradient(135deg, #34495E, #2C3E50);
     --primary-bg: rgba(52, 73, 94, 0.08);
 
-    /* Акцент (Carrot - теплый оранжевый) */
     --accent: #E67E22;
     --accent-dark: #D35400;
     --accent-bg: rgba(230, 126, 34, 0.1);
 
-    /* Кнопка / Успех (Emerald) */
     --success: #2ECC71;
     --success-dark: #27AE60;
     --success-bg: rgba(46, 204, 113, 0.1);
 
-    /* Цвета состояний */
     --warning: #F1C40F;
     --warning-dark: #F39C12;
     --danger: #E74C3C;
     --danger-dark: #C0392B;
 
-    /* Цвета фона и текста */
-    --bg-primary: #ECF0F1;
+    --bg-primary: #F5F7FA;
     --bg-secondary: #FFFFFF;
     --bg-card: #FFFFFF;
     --bg-input: #F8F9FA;
     --text-primary: #2C3E50;
     --text-secondary: #7F8C8D;
     --text-muted: #BDC3C7;
-    --border-color: #D5D8DC;
+    --border-color: #E0E0E0;
 
-    /* Тени и скругления */
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.10);
-    --radius: 16px;
-    --radius-sm: 12px;
-    --radius-xs: 8px;
-    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-xs: 4px;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 [data-theme="dark"] {
-    --bg-primary: #1A1A1A;
-    --bg-secondary: #2C2C2C;
-    --bg-card: #2C2C2C;
-    --bg-input: #3D3D3D;
-    --text-primary: #ECF0F1;
-    --text-secondary: #BDC3C7;
-    --text-muted: #7F8C8D;
+    --bg-primary: #121212;
+    --bg-secondary: #1E1E1E;
+    --bg-card: #1E1E1E;
+    --bg-input: #2D2D2D;
+    --text-primary: #E8E8E8;
+    --text-secondary: #B0B0B0;
+    --text-muted: #7A7A7A;
     --border-color: #3D3D3D;
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5);
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.4);
     --primary-bg: rgba(52, 73, 94, 0.2);
     --accent-bg: rgba(230, 126, 34, 0.15);
     --success-bg: rgba(46, 204, 113, 0.15);
@@ -84,7 +78,7 @@ body {
 }
 
 /* ============================================ */
-/* ШАПКА                                        */
+/* ШАПКА - MATERIAL STYLE                       */
 /* ============================================ */
 .app-header { padding: 20px 0 16px; }
 
@@ -114,7 +108,7 @@ body {
     justify-content: center;
     color: white;
     font-size: 20px;
-    box-shadow: 0 4px 12px rgba(52, 73, 94, 0.35);
+    box-shadow: 0 4px 12px rgba(52, 73, 94, 0.3);
     flex-shrink: 0;
 }
 
@@ -157,12 +151,12 @@ body {
     box-shadow: var(--shadow);
 }
 
-.icon-btn:active { transform: scale(0.92); background: var(--accent); color: white; }
-.icon-btn.auth-btn { background: var(--primary-gradient); color: white; box-shadow: 0 4px 12px rgba(52, 73, 94, 0.35); }
+.icon-btn:active { transform: scale(0.92); background: var(--primary); color: white; }
+.icon-btn.auth-btn { background: var(--primary-gradient); color: white; box-shadow: 0 4px 12px rgba(52, 73, 94, 0.3); }
 .icon-btn.auth-btn:active { opacity: 0.8; }
 
 /* ============================================ */
-/* ДРОПДАУН                                     */
+/* ДРОПДАУН - MATERIAL                          */
 /* ============================================ */
 .profile-dropdown {
     position: relative;
@@ -178,7 +172,7 @@ body {
     border-radius: var(--radius-sm);
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-lg);
-    min-width: 210px;
+    min-width: 200px;
     padding: 8px 0;
     z-index: 100;
     overflow: hidden;
@@ -205,7 +199,7 @@ body {
 
 .dropdown-item:hover { background: var(--primary-bg); color: var(--primary); }
 .dropdown-item:active { transform: scale(0.95); }
-.dropdown-item i { width: 20px; font-size: 16px; text-align: center; color: var(--accent); }
+.dropdown-item i { width: 20px; font-size: 16px; text-align: center; color: var(--primary); }
 
 /* ============================================ */
 /* КАРТОЧКА НЕДВИЖИМОСТИ                       */
@@ -226,7 +220,7 @@ body {
     margin-bottom: 10px;
 }
 
-.property-header .property-icon { color: var(--accent); font-size: 16px; }
+.property-header .property-icon { color: var(--primary); font-size: 16px; }
 .property-title { font-size: 14px; font-weight: 700; color: var(--text-primary); }
 
 .property-body {
@@ -243,10 +237,67 @@ body {
     color: var(--text-secondary);
 }
 
-.property-address i, .property-owner i { color: var(--accent); width: 16px; font-size: 14px; }
+.property-address i, .property-owner i { color: var(--primary); width: 16px; font-size: 14px; }
 
 /* ============================================ */
-/* СЧЕТЧИКИ                                     */
+/* СТАТИСТИКА В ШАПКЕ                          */
+/* ============================================ */
+.stats-card {
+    display: flex;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-top: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    transition: all var(--transition);
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    background: var(--primary-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 18px;
+}
+
+.stat-divider {
+    width: 1px;
+    background: var(--border-color);
+    margin: 0 12px;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-number {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* ============================================ */
+/* СЧЕТЧИКИ - MATERIAL CARDS                    */
 /* ============================================ */
 .meters-section { padding: 4px 0; }
 
@@ -254,7 +305,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 0;
 }
 
 .meter-btn {
@@ -263,11 +314,11 @@ body {
     border-radius: var(--radius-sm);
     padding: 16px;
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: left;
     position: relative;
     overflow: hidden;
-    min-height: 130px;
+    min-height: 140px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -275,10 +326,8 @@ body {
 }
 
 .meter-btn:hover {
-    background: var(--primary-bg);
-    border-color: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(52, 73, 94, 0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
 }
 
 .meter-btn:active {
@@ -290,13 +339,13 @@ body {
     right: -5px;
     bottom: -5px;
     font-size: 64px;
-    opacity: 0.12;
+    opacity: 0.06;
     pointer-events: none;
     transition: opacity 0.3s ease;
 }
 
 .meter-btn:hover .meter-bg-icon {
-    opacity: 0.25;
+    opacity: 0.12;
 }
 
 .meter-btn.electricity-day .meter-bg-icon { color: #F1C40F; }
@@ -317,21 +366,13 @@ body {
     color: var(--text-secondary);
     position: relative;
     z-index: 1;
-    transition: color 0.25s ease;
 }
 
-.meter-btn:hover .meter-name {
-    color: var(--primary);
-}
-
-.meter-btn .meter-warning,
-.meter-btn .meter-pending {
+.meter-btn .meter-warning {
     font-size: 14px;
     z-index: 2;
+    color: var(--warning);
 }
-
-.meter-btn .meter-warning { color: var(--warning); }
-.meter-btn .meter-pending { color: var(--success); }
 
 .meter-btn .meter-bottom {
     display: flex;
@@ -346,11 +387,6 @@ body {
     font-weight: 800;
     color: var(--text-primary);
     line-height: 1;
-    transition: color 0.25s ease;
-}
-
-.meter-btn:hover .meter-value {
-    color: var(--primary);
 }
 
 .meter-btn .meter-unit {
@@ -362,8 +398,9 @@ body {
 .meter-btn .meter-month {
     font-size: 11px;
     font-weight: 600;
-    color: var(--accent);
+    color: #7F8C8D;
     margin-top: 2px;
+    transition: color 0.3s ease;
 }
 
 .meter-btn .meter-month i {
@@ -371,9 +408,12 @@ body {
     margin-right: 4px;
 }
 
+.meter-btn .meter-month.sent {
+    color: var(--success);
+}
+
 .meter-btn .meter-month.no-data {
     color: var(--text-muted);
-    font-weight: 400;
 }
 
 /* Цвета границ счетчиков */
@@ -384,84 +424,7 @@ body {
 .meter-btn.gas { border-left: 4px solid #E74C3C; }
 
 /* ============================================ */
-/* БОЛЬШАЯ КНОПКА ОТПРАВКИ (ЗЕЛЕНАЯ)           */
-/* ============================================ */
-.submit-all-btn {
-    width: 100%;
-    padding: 16px 20px;
-    border: none;
-    border-radius: var(--radius-sm);
-    background: var(--success);
-    color: white;
-    font-size: 16px;
-    font-weight: 700;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    transition: all 0.25s ease;
-    box-shadow: 0 4px 16px rgba(46, 204, 113, 0.35);
-    position: relative;
-    margin-bottom: 12px;
-}
-
-.submit-all-btn:active { transform: scale(0.97); }
-
-.submit-all-btn .warning-badge {
-    position: absolute;
-    right: 12px;
-    top: -8px;
-    background: var(--warning);
-    color: #2C3E50;
-    border-radius: 20px;
-    padding: 2px 10px;
-    font-size: 12px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    box-shadow: 0 2px 8px rgba(241, 196, 15, 0.4);
-}
-
-/* ============================================ */
-/* СТАТУС ОТПРАВКИ                             */
-/* ============================================ */
-.submit-status {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px 16px;
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--success);
-    background: var(--success-bg);
-    border: 1px solid rgba(46, 204, 113, 0.15);
-    transition: all 0.3s ease;
-}
-
-.submit-status i {
-    font-size: 16px;
-    color: var(--success);
-}
-
-.submit-status.warning {
-    color: var(--danger);
-    background: rgba(231, 76, 60, 0.08);
-    border-color: rgba(231, 76, 60, 0.12);
-}
-
-.submit-status.warning i {
-    color: var(--danger);
-}
-
-.submit-status.hidden { display: none; }
-
-/* ============================================ */
-/* ВКЛАДКИ                                      */
+/* ВКЛАДКИ - MATERIAL TABS                     */
 /* ============================================ */
 .tabs-container {
     background: var(--bg-card);
@@ -509,7 +472,7 @@ body {
 .tab-pane.active { display: block; }
 
 /* ============================================ */
-/* МОДАЛЬНЫЕ ОКНА                               */
+/* МОДАЛЬНЫЕ ОКНА - MATERIAL                    */
 /* ============================================ */
 .auth-modal, .property-modal, .property-add-modal, .reading-modal {
     display: none;
@@ -757,7 +720,7 @@ body {
 .property-add-btn:active, .property-save-btn:active { transform: scale(0.97); }
 
 /* ============================================ */
-/* ПОЛЯ ВВОДА                                   */
+/* ПОЛЯ ВВОДА - MATERIAL FLOATING LABELS       */
 /* ============================================ */
 .input-field {
     position: relative;
@@ -819,6 +782,156 @@ body {
     font-size: 10px;
     color: var(--primary);
     font-weight: 600;
+}
+
+/* ============================================ */
+/* MATERIAL DESIGN FLOATING INPUT               */
+/* ============================================ */
+.form-group {
+    position: relative;
+    margin-bottom: 24px;
+    padding-top: 8px;
+}
+
+.form-group .form-control {
+    width: 100%;
+    height: 48px;
+    padding: 12px 16px 4px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--border-color);
+    border-radius: 0;
+    outline: none;
+    transition: all 0.25s ease;
+    box-shadow: none;
+}
+
+.form-group .form-control:focus {
+    border-bottom-color: var(--primary);
+    box-shadow: 0 1px 0 0 var(--primary);
+}
+
+.form-group .form-control:focus ~ .form-control-feedback {
+    color: var(--primary);
+}
+
+.form-group .form-control:focus ~ .control-label,
+.form-group .form-control:not(:placeholder-shown) ~ .control-label {
+    top: -4px;
+    font-size: 11px;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.form-group .control-label {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: all 0.25s ease;
+    transform-origin: left top;
+    background: var(--bg-card);
+    padding: 0 4px;
+}
+
+.form-group .form-control-feedback {
+    position: absolute;
+    right: 0;
+    bottom: 8px;
+    font-size: 20px;
+    color: var(--text-muted);
+    transition: all 0.25s ease;
+    pointer-events: none;
+}
+
+.form-group .form-control:focus ~ .form-control-feedback {
+    color: var(--primary);
+}
+
+/* Состояние успеха */
+.form-group.has-success .form-control {
+    border-bottom-color: var(--success);
+    box-shadow: 0 1px 0 0 var(--success);
+}
+
+.form-group.has-success .form-control ~ .control-label {
+    color: var(--success);
+}
+
+.form-group.has-success .form-control-feedback {
+    color: var(--success);
+}
+
+/* Состояние ошибки */
+.form-group.has-error .form-control {
+    border-bottom-color: var(--danger);
+    box-shadow: 0 1px 0 0 var(--danger);
+}
+
+.form-group.has-error .form-control ~ .control-label {
+    color: var(--danger);
+}
+
+.form-group.has-error .form-control-feedback {
+    color: var(--danger);
+}
+
+/* Для тёмной темы */
+[data-theme="dark"] .form-group .control-label {
+    background: var(--bg-card);
+}
+
+[data-theme="dark"] .form-group .form-control {
+    color: var(--text-primary);
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .form-group .form-control:focus {
+    border-bottom-color: var(--primary);
+    box-shadow: 0 1px 0 0 var(--primary);
+}
+
+[data-theme="dark"] .form-group .form-control:focus ~ .control-label {
+    color: var(--primary-light);
+}
+
+[data-theme="dark"] .form-group .form-control:focus ~ .form-control-feedback {
+    color: var(--primary-light);
+}
+
+/* Адаптивность для модального окна */
+.reading-modal-body .form-group {
+    margin-bottom: 20px;
+}
+
+.reading-modal-body .form-group .form-control {
+    height: 44px;
+    padding: 10px 14px 2px 14px;
+    font-size: 14px;
+}
+
+.reading-modal-body .form-group .control-label {
+    left: 14px;
+    top: 12px;
+    font-size: 13px;
+}
+
+.reading-modal-body .form-group .form-control:focus ~ .control-label,
+.reading-modal-body .form-group .form-control:not(:placeholder-shown) ~ .control-label {
+    top: -4px;
+    font-size: 10px;
+}
+
+.reading-modal-body .form-group .form-control-feedback {
+    bottom: 4px;
+    font-size: 18px;
 }
 
 /* ============================================ */
@@ -1142,7 +1255,7 @@ tbody td strong { color: var(--text-primary); font-weight: 700; }
     font-size: 13px;
     font-weight: 500;
 }
-.setting-info i { color: var(--accent); width: 18px; }
+.setting-info i { color: var(--primary); width: 18px; }
 .setting-value {
     font-size: 13px;
     font-weight: 600;
@@ -1199,17 +1312,17 @@ tbody td strong { color: var(--text-primary); font-weight: 700; }
 .nav-item:active { transform: scale(0.92); }
 
 /* ============================================ */
-/* УВЕДОМЛЕНИЯ                                  */
+/* УВЕДОМЛЕНИЯ - ТОЛЬКО ИКОНКИ                  */
 /* ============================================ */
 .notification {
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    padding: 14px 24px;
+    padding: 12px 20px;
     border-radius: var(--radius-sm);
-    font-weight: 600;
-    font-size: 15px;
+    font-weight: 500;
+    font-size: 14px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
     z-index: 1000;
     animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1224,7 +1337,7 @@ tbody td strong { color: var(--text-primary); font-weight: 700; }
 }
 
 .notification i {
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .notification.success {
@@ -1271,41 +1384,9 @@ tbody td strong { color: var(--text-primary); font-weight: 700; }
     .reading-actions { grid-template-columns: 1fr; }
     .dropdown-menu { min-width: 180px; right: -10px; }
     .dropdown-item { font-size: 13px; padding: 8px 14px; }
-    .submit-all-btn { font-size: 15px; padding: 14px 16px; }
     .confirm-actions { grid-template-columns: 1fr; }
 }
 
 @media (min-width: 481px) {
     .app-container { padding: 0 24px 80px; }
-}
-
-/* ============================================ */
-/* РАСХОД ЗА МЕСЯЦ - ЦВЕТА                      */
-/* ============================================ */
-.meter-btn .meter-month {
-    font-size: 11px;
-    font-weight: 600;
-    color: #7F8C8D;
-    margin-top: 2px;
-    transition: color 0.3s ease;
-}
-
-.meter-btn .meter-month i {
-    font-size: 12px;
-    margin-right: 4px;
-}
-
-/* Отправлено - зеленый */
-.meter-btn .meter-month.sent {
-    color: #2ECC71;
-}
-
-/* В очереди (не отправлено) - оранжевый */
-.meter-btn .meter-month.pending {
-    color: #E67E22;
-}
-
-/* Нет данных - серый */
-.meter-btn .meter-month.no-data {
-    color: #BDC3C7;
 }

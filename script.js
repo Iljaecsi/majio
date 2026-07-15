@@ -1,6 +1,6 @@
 /**
  * ============================================
- * MAJIO v0.12
+ * MAJIO v0.14
  * ============================================
  */
 
@@ -10,16 +10,14 @@
 const translations = {
     ru: {
         subtitle: 'Умный учёт в вашем доме',
-        readings: 'показаний',
-        apartments: 'квартир',
         tab_submit: 'Счетчики',
         tab_history: 'История',
         tab_stats: 'Статистика',
-        tab_profile: 'Профиль',
+        tab_settings: 'Настройки',
         nav_submit: 'Счетчики',
         nav_history: 'История',
         nav_stats: 'Статистика',
-        nav_profile: 'Профиль',
+        nav_settings: 'Настройки',
         empty_message: 'Нет показаний',
         delete_confirm: 'Удалить это показание?',
         deleted: 'Показание удалено',
@@ -35,13 +33,13 @@ const translations = {
         stats_today: 'За сегодня',
         stats_consumption: 'Потребление по счетчикам',
         stats_no_data: 'Нет данных',
-        profile_role: 'Пользователь Majio',
-        profile_readings: 'показаний',
-        profile_properties: 'квартир',
-        profile_settings: 'Настройки',
-        profile_lang: 'Язык',
-        profile_theme: 'Тема',
-        profile_credit: '© 2026 — Умный учёт в вашем доме',
+        settings_role: 'Пользователь Majio',
+        settings_readings: 'показаний',
+        settings_properties: 'квартир',
+        settings_options: 'Настройки',
+        settings_lang: 'Язык',
+        settings_theme: 'Тема',
+        settings_credit: '© 2026 — Умный учёт в вашем доме',
         theme_light: 'Светлая',
         theme_dark: 'Тёмная',
         lang_ru: 'Русский',
@@ -71,7 +69,6 @@ const translations = {
         property_address_label: 'Адрес (ул. д-кв, город, индекс)',
         property_owner_label: 'Имя собственника',
         property_save: 'Сохранить',
-        meters_title: 'Счетчики',
         reading_previous: 'Предыдущие показания:',
         reading_new_label: 'Новые показания',
         reading_submit: 'Добавить показание',
@@ -87,28 +84,32 @@ const translations = {
         invalid_number: 'Введите корректное число',
         comma_replaced: 'Запятая заменена на точку',
         announcement_title: 'Объявления',
-        announcement_water_title: '⚠️ Отключение воды',
+        announcement_water_title: 'Отключение воды',
         announcement_water_text: 'С 15 июля по 20 июля будет отключена горячая вода для плановых ремонтных работ.',
         announcement_water_date: '15.07.2026 — 20.07.2026',
-        announcement_repair_title: '🔧 Ремонт лифта',
+        announcement_repair_title: 'Ремонт лифта',
         announcement_repair_text: 'С 10 по 12 июля будет проводиться плановое техническое обслуживание лифта.',
         announcement_repair_date: '10.07.2026 — 12.07.2026',
-        announcement_garden_title: '🌳 Озеленение двора',
+        announcement_garden_title: 'Озеленение двора',
         announcement_garden_text: 'Приглашаем жителей на субботник по озеленению двора 25 июля в 10:00.',
-        announcement_garden_date: '25.07.2026, 10:00'
+        announcement_garden_date: '25.07.2026, 10:00',
+        // Названия счетчиков
+        meter_day: 'Электричество (дневной)',
+        meter_night: 'Электричество (льготный)',
+        meter_water_cold: 'Холодная вода',
+        meter_water_hot: 'Горячая вода',
+        meter_gas: 'Газ'
     },
     et: {
         subtitle: 'Tark arvestus teie kodus',
-        readings: 'näitu',
-        apartments: 'korterit',
         tab_submit: 'Arvestid',
         tab_history: 'Ajalugu',
         tab_stats: 'Statistika',
-        tab_profile: 'Profiil',
+        tab_settings: 'Seaded',
         nav_submit: 'Arvestid',
         nav_history: 'Ajalugu',
         nav_stats: 'Statistika',
-        nav_profile: 'Profiil',
+        nav_settings: 'Seaded',
         empty_message: 'Näidud puuduvad',
         delete_confirm: 'Kas soovite selle näidu kustutada?',
         deleted: 'Näidud kustutatud',
@@ -124,13 +125,13 @@ const translations = {
         stats_today: 'Täna',
         stats_consumption: 'Tarbimine arvestite kaupa',
         stats_no_data: 'Andmed puuduvad',
-        profile_role: 'Majio kasutaja',
-        profile_readings: 'näitu',
-        profile_properties: 'korterit',
-        profile_settings: 'Seaded',
-        profile_lang: 'Keel',
-        profile_theme: 'Teema',
-        profile_credit: '© 2026 — Tark arvestus teie kodus',
+        settings_role: 'Majio kasutaja',
+        settings_readings: 'näitu',
+        settings_properties: 'korterit',
+        settings_options: 'Seaded',
+        settings_lang: 'Keel',
+        settings_theme: 'Teema',
+        settings_credit: '© 2026 — Tark arvestus teie kodus',
         theme_light: 'Hele',
         theme_dark: 'Tume',
         lang_ru: 'Vene',
@@ -160,7 +161,6 @@ const translations = {
         property_address_label: 'Aadress (tänav maja-korter, linn, indeks)',
         property_owner_label: 'Omaniku nimi',
         property_save: 'Salvesta',
-        meters_title: 'Arvestid',
         reading_previous: 'Eelmised näidud:',
         reading_new_label: 'Uued näidud',
         reading_submit: 'Lisa näit',
@@ -176,15 +176,21 @@ const translations = {
         invalid_number: 'Sisestage korrektne number',
         comma_replaced: 'Koma asendati punktiga',
         announcement_title: 'Teadaanded',
-        announcement_water_title: '⚠️ Vee väljalülitamine',
+        announcement_water_title: 'Vee väljalülitamine',
         announcement_water_text: '15. juulist kuni 20. juulini lülitatakse plaaniliste remonditööde tõttu soe vesi välja.',
         announcement_water_date: '15.07.2026 — 20.07.2026',
-        announcement_repair_title: '🔧 Lifti remont',
+        announcement_repair_title: 'Lifti remont',
         announcement_repair_text: '10.–12. juulil tehakse lifti plaanilist tehnohooldust.',
         announcement_repair_date: '10.07.2026 — 12.07.2026',
-        announcement_garden_title: '🌳 Hoovi haljastus',
+        announcement_garden_title: 'Hoovi haljastus',
         announcement_garden_text: 'Kutsume elanikke hoovi haljastustalgutele 25. juulil kell 10:00.',
-        announcement_garden_date: '25.07.2026, 10:00'
+        announcement_garden_date: '25.07.2026, 10:00',
+        // Названия счетчиков
+        meter_day: 'Elekter (päev)',
+        meter_night: 'Elekter (öö)',
+        meter_water_cold: 'Külm vesi',
+        meter_water_hot: 'Soe vesi',
+        meter_gas: 'Gaas'
     }
 };
 
@@ -205,15 +211,15 @@ let announcementInterval = null;
 const DEFAULT_PROPERTY = {
     id: 'prop_001',
     address: 'Kangelaste 41-38, Narva, 20607',
-    owner: 'Иванов Иван Иванович'
+    owner: 'Иванов Иван'
 };
 
 const DEFAULT_METERS = [
-    { id: 'meter_001', name: 'Электричество (дневной)', icon: 'fa-sun', unit: 'кВт·ч', type: 'electricity-day', value: 245.30, hasWarning: true },
-    { id: 'meter_002', name: 'Электричество (льготный)', icon: 'fa-moon', unit: 'кВт·ч', type: 'electricity-night', value: 123.70, hasWarning: false },
-    { id: 'meter_003', name: 'Холодная вода', icon: 'fa-droplet', unit: 'м³', type: 'water-cold', value: 56.20, hasWarning: true },
-    { id: 'meter_004', name: 'Горячая вода', icon: 'fa-fire', unit: 'м³', type: 'water-hot', value: 34.80, hasWarning: false },
-    { id: 'meter_005', name: 'Газ', icon: 'fa-fire-flame-curved', unit: 'м³', type: 'gas', value: 12.50, hasWarning: true }
+    { id: 'meter_001', name: 'meter_day', icon: 'fa-sun', unit: 'кВт·ч', type: 'electricity-day', value: 245.30, hasWarning: true },
+    { id: 'meter_002', name: 'meter_night', icon: 'fa-moon', unit: 'кВт·ч', type: 'electricity-night', value: 123.70, hasWarning: false },
+    { id: 'meter_003', name: 'meter_water_cold', icon: 'fa-droplet', unit: 'м³', type: 'water-cold', value: 56.20, hasWarning: true },
+    { id: 'meter_004', name: 'meter_water_hot', icon: 'fa-fire', unit: 'м³', type: 'water-hot', value: 34.80, hasWarning: false },
+    { id: 'meter_005', name: 'meter_gas', icon: 'fa-fire-flame-curved', unit: 'м³', type: 'gas', value: 12.50, hasWarning: true }
 ];
 
 // ============================================
@@ -332,7 +338,7 @@ function refreshUI() {
     renderMeters();
     renderTable();
     updateStatsPage();
-    updateProfile();
+    updateSettings();
     updateAuthUI();
 }
 
@@ -347,7 +353,7 @@ function switchTab(tabId) {
         item.classList.toggle('active', item.dataset.tab === tabId);
     });
     if (tabId === 'stats') updateStatsPage();
-    if (tabId === 'profile') updateProfile();
+    if (tabId === 'settings') updateSettings();
 }
 
 // ============================================
@@ -699,7 +705,7 @@ document.getElementById('propertySaveBtn').addEventListener('click', function() 
 });
 
 // ============================================
-// СЧЕТЧИКИ
+// СЧЕТЧИКИ (С ПЕРЕВОДАМИ НАЗВАНИЙ)
 // ============================================
 function renderMeters() {
     const prop = getCurrentProperty();
@@ -716,6 +722,9 @@ function renderMeters() {
     grid.innerHTML = prop.meters.map(meter => {
         const value = (meter.value !== undefined && meter.value !== null) ? meter.value : 0;
         const showWarning = meter.hasWarning === true;
+        
+        // Получаем переведенное название
+        const meterName = t[meter.name] || meter.name;
         
         let monthUsage = 0;
         let hasMonthData = false;
@@ -746,7 +755,7 @@ function renderMeters() {
         return `
             <button class="meter-btn ${meter.type || 'electricity-day'}" data-id="${meter.id}">
                 <div class="meter-top">
-                    <span class="meter-name">${meter.name || 'Счетчик'}</span>
+                    <span class="meter-name">${meterName}</span>
                     ${showWarning ? '<span class="meter-warning"><i class="fas fa-exclamation-triangle"></i></span>' : ''}
                 </div>
                 <i class="fas ${meter.icon || 'fa-bolt'} meter-bg-icon"></i>
@@ -839,12 +848,14 @@ function openReadingModal(meterId) {
     const formGroup = input.closest('.form-group');
     
     const currentValue = meter.value;
+    const t = translations[currentLang];
+    const meterName = t[meter.name] || meter.name;
     
     if (icon) {
         icon.className = `reading-modal-icon ${meter.type || 'electricity-day'}`;
         icon.innerHTML = `<i class="fas ${meter.icon || 'fa-bolt'}"></i>`;
     }
-    if (name) name.textContent = meter.name || 'Счетчик';
+    if (name) name.textContent = meterName;
     if (idEl) idEl.textContent = `ID: ${meter.id.slice(-3)}`;
     if (previous) previous.textContent = currentValue.toFixed(2);
     
@@ -898,7 +909,7 @@ function submitMeterReading(property, meterId, newValue) {
     const reading = {
         id: 'read_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
         meterId: meter.id,
-        meterName: meter.name,
+        meterName: t[meter.name] || meter.name,
         meterType: meter.type,
         meterIcon: meter.icon,
         previousValue: meter.value,
@@ -924,7 +935,7 @@ function submitMeterReading(property, meterId, newValue) {
     
     refreshUI();
     
-    const message = t.meter_sent.replace('{meter}', meter.name);
+    const message = t.meter_sent.replace('{meter}', t[meter.name] || meter.name);
     showNotification(message, 'success');
 }
 
@@ -1156,15 +1167,18 @@ function updateStatsPage() {
     if (todayEl) todayEl.textContent = stats.today;
     
     if (consumptionEl) {
-        consumptionEl.innerHTML = (prop.meters || []).map(m => `
-            <div class="consumption-item">
-                <span class="consumption-icon"><i class="fas ${m.icon}" style="color:var(--meter-color);"></i></span>
-                <div class="consumption-info">
-                    <span class="consumption-label">${m.name}</span>
-                    <span class="consumption-value">${(stats.totals[m.id] || 0).toFixed(2)} ${m.unit}</span>
+        consumptionEl.innerHTML = (prop.meters || []).map(m => {
+            const meterName = t[m.name] || m.name;
+            return `
+                <div class="consumption-item">
+                    <span class="consumption-icon"><i class="fas ${m.icon}" style="color:var(--meter-color);"></i></span>
+                    <div class="consumption-info">
+                        <span class="consumption-label">${meterName}</span>
+                        <span class="consumption-value">${(stats.totals[m.id] || 0).toFixed(2)} ${m.unit}</span>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 }
 
@@ -1194,24 +1208,24 @@ function getStats(prop) {
 }
 
 // ============================================
-// ПРОФИЛЬ
+// НАСТРОЙКИ
 // ============================================
-function updateProfile() {
+function updateSettings() {
     const prop = getCurrentProperty();
     const t = translations[currentLang];
     
-    const nameEl = document.getElementById('profileName');
-    const roleEl = document.getElementById('profileRole');
-    const readingsEl = document.getElementById('profileReadings');
-    const propertiesEl = document.getElementById('profileProperties');
-    const langDisplay = document.getElementById('profileLangDisplay');
-    const themeDisplay = document.getElementById('profileThemeDisplay');
+    const nameEl = document.getElementById('settingsName');
+    const roleEl = document.getElementById('settingsRole');
+    const readingsEl = document.getElementById('settingsReadings');
+    const propertiesEl = document.getElementById('settingsProperties');
+    const langDisplay = document.getElementById('settingsLangDisplay');
+    const themeDisplay = document.getElementById('settingsThemeDisplay');
     
     if (nameEl) nameEl.textContent = isAuthenticated() ? currentUser : 'Гость';
     if (roleEl) {
         roleEl.textContent = isAuthenticated() 
             ? t.auth_welcome.replace('{name}', currentUser) 
-            : t.profile_role;
+            : t.settings_role;
     }
     
     const stats = prop ? getStats(prop) : { total: 0 };
@@ -1373,10 +1387,9 @@ applyTranslations(currentLang);
 switchTab('submit');
 refreshUI();
 
-// Запускаем карусель
 setTimeout(initAnnouncements, 100);
 
-console.log('🏠 Majio v0.26 - Announcements Carousel');
+console.log('🏠 Majio v0.14 - Fixed version');
 console.log(`🌓 Theme: ${currentTheme}, Language: ${currentLang}`);
 console.log(`👤 User: ${currentUser || 'guest'}`);
 console.log(`📍 Property: ${currentProperty ? currentProperty.address : 'none'}`);

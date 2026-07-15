@@ -96,7 +96,7 @@
                             <i class="fas fa-triangle-exclamation"></i>
                         </div>
                         <div class="announcement-item-content">
-                            <div class="announcement-item-title" data-key="announcement_water_title">⚠️ Отключение воды</div>
+                            <div class="announcement-item-title" data-key="announcement_water_title">Отключение воды</div>
                             <div class="announcement-item-text" data-key="announcement_water_text">
                                 С 15 июля по 20 июля будет отключена горячая вода для плановых ремонтных работ.
                             </div>
@@ -111,7 +111,7 @@
                             <i class="fas fa-wrench"></i>
                         </div>
                         <div class="announcement-item-content">
-                            <div class="announcement-item-title" data-key="announcement_repair_title">🔧 Ремонт лифта</div>
+                            <div class="announcement-item-title" data-key="announcement_repair_title">Ремонт лифта</div>
                             <div class="announcement-item-text" data-key="announcement_repair_text">
                                 С 10 по 12 июля будет проводиться плановое техническое обслуживание лифта.
                             </div>
@@ -126,7 +126,7 @@
                             <i class="fas fa-tree"></i>
                         </div>
                         <div class="announcement-item-content">
-                            <div class="announcement-item-title" data-key="announcement_garden_title">🌳 Озеленение двора</div>
+                            <div class="announcement-item-title" data-key="announcement_garden_title">Озеленение двора</div>
                             <div class="announcement-item-text" data-key="announcement_garden_text">
                                 Приглашаем жителей на субботник по озеленению двора 25 июля в 10:00.
                             </div>
@@ -278,8 +278,8 @@
                 <button class="tab-btn" data-tab="stats">
                     <i class="fas fa-chart-pie"></i> <span data-key="tab_stats">Статистика</span>
                 </button>
-                <button class="tab-btn" data-tab="profile">
-                    <i class="fas fa-user"></i> <span data-key="tab_profile">Профиль</span>
+                <button class="tab-btn" data-tab="settings">
+                    <i class="fas fa-gear"></i> <span data-key="tab_settings">Настройки</span>
                 </button>
             </div>
 
@@ -361,40 +361,42 @@
                 </div>
 
                 <!-- ================================== -->
-                <!-- ВКЛАДКА 4: ПРОФИЛЬ                 -->
+                <!-- ВКЛАДКА 4: НАСТРОЙКИ                -->
                 <!-- ================================== -->
-                <div class="tab-pane" id="tab-profile">
-                    <section class="profile-section">
-                        <div class="profile-card">
-                            <div class="profile-avatar"><i class="fas fa-user-circle"></i></div>
-                            <h2 class="profile-name" id="profileName">Гость</h2>
-                            <p class="profile-role" id="profileRole" data-key="profile_role">Пользователь Majio</p>
-                            <div class="profile-divider"></div>
-                            <div class="profile-stats">
-                                <div class="profile-stat-item">
-                                    <span class="profile-stat-number" id="profileReadings">0</span>
-                                    <span class="profile-stat-label" data-key="profile_readings">показаний</span>
+                <div class="tab-pane" id="tab-settings">
+                    <section class="settings-section">
+                        <div class="settings-card">
+                            <div class="settings-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <h2 class="settings-name" id="settingsName">Гость</h2>
+                            <p class="settings-role" id="settingsRole" data-key="settings_role">Пользователь Majio</p>
+                            <div class="settings-divider"></div>
+                            <div class="settings-stats">
+                                <div class="settings-stat-item">
+                                    <span class="settings-stat-number" id="settingsReadings">0</span>
+                                    <span class="settings-stat-label" data-key="settings_readings">показаний</span>
                                 </div>
-                                <div class="profile-stat-item">
-                                    <span class="profile-stat-number" id="profileProperties">0</span>
-                                    <span class="profile-stat-label" data-key="profile_properties">квартир</span>
+                                <div class="settings-stat-item">
+                                    <span class="settings-stat-number" id="settingsProperties">0</span>
+                                    <span class="settings-stat-label" data-key="settings_properties">квартир</span>
                                 </div>
                             </div>
-                            <div class="profile-divider"></div>
-                            <div class="profile-settings">
-                                <h3 data-key="profile_settings">Настройки</h3>
+                            <div class="settings-divider"></div>
+                            <div class="settings-options">
+                                <h3 data-key="settings_options">Настройки</h3>
                                 <div class="setting-item">
-                                    <div class="setting-info"><i class="fas fa-globe"></i><span data-key="profile_lang">Язык</span></div>
-                                    <span class="setting-value" id="profileLangDisplay">Русский</span>
+                                    <div class="setting-info"><i class="fas fa-globe"></i><span data-key="settings_lang">Язык</span></div>
+                                    <span class="setting-value" id="settingsLangDisplay">Русский</span>
                                 </div>
                                 <div class="setting-item">
-                                    <div class="setting-info"><i class="fas fa-palette"></i><span data-key="profile_theme">Тема</span></div>
-                                    <span class="setting-value" id="profileThemeDisplay">Светлая</span>
+                                    <div class="setting-info"><i class="fas fa-palette"></i><span data-key="settings_theme">Тема</span></div>
+                                    <span class="setting-value" id="settingsThemeDisplay">Светлая</span>
                                 </div>
                             </div>
-                            <div class="profile-footer">
-                                <p>Majio v0.25</p>
-                                <p data-key="profile_credit">© 2026 — Умный учёт в вашем доме</p>
+                            <div class="settings-footer">
+                                <p>Majio v0.14</p>
+                                <p data-key="settings_credit">© 2026 — Умный учёт в вашем доме</p>
                             </div>
                         </div>
                     </section>
@@ -459,9 +461,9 @@
                 <i class="fas fa-chart-pie"></i>
                 <span data-key="nav_stats">Статистика</span>
             </button>
-            <button class="nav-item" data-tab="profile">
-                <i class="fas fa-user"></i>
-                <span data-key="nav_profile">Профиль</span>
+            <button class="nav-item" data-tab="settings">
+                <i class="fas fa-gear"></i>
+                <span data-key="nav_settings">Настройки</span>
             </button>
         </nav>
     </div>

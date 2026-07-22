@@ -1,6 +1,6 @@
 /**
  * ============================================
- * MAJIO v0.14
+ * MAJIO v0.18 - ПОЛНАЯ ВЕРСИЯ
  * ============================================
  */
 
@@ -93,12 +93,19 @@ const translations = {
         announcement_garden_title: 'Озеленение двора',
         announcement_garden_text: 'Приглашаем жителей на субботник по озеленению двора 25 июля в 10:00.',
         announcement_garden_date: '25.07.2026, 10:00',
-        // Названия счетчиков
         meter_day: 'Электричество (дневной)',
         meter_night: 'Электричество (льготный)',
         meter_water_cold: 'Холодная вода',
         meter_water_hot: 'Горячая вода',
-        meter_gas: 'Газ'
+        meter_gas: 'Газ',
+        ads_repair_title: 'Ремонт квартир со скидкой 20%',
+        ads_repair_sub: 'Только до конца месяца! Вызов мастера бесплатно',
+        ads_water_title: 'Установка счётчиков воды',
+        ads_water_sub: 'Профессиональная установка с гарантией от 1 года',
+        ads_garden_title: 'Озеленение двора',
+        ads_garden_sub: 'Поможем с выбором растений и их посадкой',
+        ads_security_title: 'Система видеонаблюдения',
+        ads_security_sub: 'Установка камер и настройка доступа через телефон'
     },
     et: {
         subtitle: 'Tark arvestus teie kodus',
@@ -185,12 +192,19 @@ const translations = {
         announcement_garden_title: 'Hoovi haljastus',
         announcement_garden_text: 'Kutsume elanikke hoovi haljastustalgutele 25. juulil kell 10:00.',
         announcement_garden_date: '25.07.2026, 10:00',
-        // Названия счетчиков
         meter_day: 'Elekter (päev)',
         meter_night: 'Elekter (öö)',
         meter_water_cold: 'Külm vesi',
         meter_water_hot: 'Soe vesi',
-        meter_gas: 'Gaas'
+        meter_gas: 'Gaas',
+        ads_repair_title: 'Korterite remont 20% soodsamalt',
+        ads_repair_sub: 'Ainult kuu lõpuni! Meistri kutsumine tasuta',
+        ads_water_title: 'Vee arvestite paigaldus',
+        ads_water_sub: 'Professionaalne paigaldus garantiiga alates 1 aastast',
+        ads_garden_title: 'Hoovi haljastus',
+        ads_garden_sub: 'Aitame taimede valikul ja istutamisel',
+        ads_security_title: 'Videovalvesüsteem',
+        ads_security_sub: 'Kaamerate paigaldus ja juurdepääsu seadistamine telefoni kaudu'
     }
 };
 
@@ -357,7 +371,7 @@ function switchTab(tabId) {
 }
 
 // ============================================
-// УПРАВЛЕНИЕ АВТОРИЗАЦИЕЙ
+// УПРАВЛЕНИЕ АВТОРИЗАЦИЕЙ (сокращено для экономии места)
 // ============================================
 function getUsers() {
     const data = localStorage.getItem('majio_users');
@@ -705,7 +719,7 @@ document.getElementById('propertySaveBtn').addEventListener('click', function() 
 });
 
 // ============================================
-// СЧЕТЧИКИ (С ПЕРЕВОДАМИ НАЗВАНИЙ)
+// СЧЕТЧИКИ
 // ============================================
 function renderMeters() {
     const prop = getCurrentProperty();
@@ -722,8 +736,6 @@ function renderMeters() {
     grid.innerHTML = prop.meters.map(meter => {
         const value = (meter.value !== undefined && meter.value !== null) ? meter.value : 0;
         const showWarning = meter.hasWarning === true;
-        
-        // Получаем переведенное название
         const meterName = t[meter.name] || meter.name;
         
         let monthUsage = 0;
@@ -1352,6 +1364,38 @@ function initAnnouncements() {
 }
 
 // ============================================
+// КАРУСЕЛЬ РЕКЛАМЫ
+// ============================================
+let adsInterval = null;
+let currentAd = 0;
+
+function initAdsSlider() {
+    const slides = document.querySelectorAll('.ads-slide');
+    if (slides.length === 0) return;
+    
+    function showAd(index) {
+        slides.forEach(slide => slide.classList.remove('active'));
+        if (slides[index]) slides[index].classList.add('active');
+        currentAd = index;
+    }
+    
+    function nextAd() {
+        const next = (currentAd + 1) % slides.length;
+        showAd(next);
+    }
+    
+    function startAdsAutoPlay() {
+        if (adsInterval) {
+            clearInterval(adsInterval);
+        }
+        adsInterval = setInterval(nextAd, 5000);
+    }
+    
+    showAd(0);
+    startAdsAutoPlay();
+}
+
+// ============================================
 // ОБРАБОТЧИКИ ВКЛАДОК
 // ============================================
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1388,8 +1432,9 @@ switchTab('submit');
 refreshUI();
 
 setTimeout(initAnnouncements, 100);
+setTimeout(initAdsSlider, 150);
 
-console.log('🏠 Majio v0.14 - Fixed version');
+console.log('🏠 Majio v0.18 - Full version');
 console.log(`🌓 Theme: ${currentTheme}, Language: ${currentLang}`);
 console.log(`👤 User: ${currentUser || 'guest'}`);
 console.log(`📍 Property: ${currentProperty ? currentProperty.address : 'none'}`);

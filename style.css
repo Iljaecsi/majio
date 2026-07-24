@@ -1702,3 +1702,181 @@ tbody td strong { color: var(--text-primary); font-weight: 700; }
 @media (min-width: 481px) {
     .app-container { padding: 0 24px 80px; }
 }
+/* ============================================ */
+/* СТРАНИЦА ДЕТАЛЬНОГО ОБЪЯВЛЕНИЯ              */
+/* ============================================ */
+.announcement-detail {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg-primary);
+    z-index: 3000;
+    padding: 20px;
+    overflow-y: auto;
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.announcement-detail.active {
+    display: block;
+}
+
+.announcement-detail-content {
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    min-height: 80vh;
+}
+
+.announcement-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.announcement-detail-back {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+}
+
+.announcement-detail-back:hover {
+    background: var(--bg-input);
+}
+
+.announcement-detail-back:active {
+    transform: scale(0.95);
+}
+
+.announcement-detail-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.announcement-detail-close:active {
+    background: var(--bg-input);
+    transform: scale(0.9);
+}
+
+.announcement-detail-body {
+    padding: 4px 0;
+}
+
+.announcement-detail-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--primary-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: var(--primary);
+    margin-bottom: 16px;
+}
+
+.announcement-detail-body h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.announcement-detail-date {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.announcement-detail-date i {
+    font-size: 14px;
+}
+
+.announcement-detail-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text-secondary);
+}
+
+.announcement-detail-text p {
+    margin-bottom: 12px;
+}
+
+.announcement-detail-text strong {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.announcement-detail-text ul {
+    margin: 12px 0 16px 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.announcement-detail-text ul li {
+    padding: 6px 0 6px 24px;
+    position: relative;
+}
+
+.announcement-detail-text ul li::before {
+    content: '•';
+    position: absolute;
+    left: 4px;
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* ============================================ */
+/* АДАПТИВНОСТЬ ДЛЯ СТРАНИЦЫ ОБЪЯВЛЕНИЯ        */
+/* ============================================ */
+@media (max-width: 420px) {
+    .announcement-detail {
+        padding: 12px;
+    }
+    
+    .announcement-detail-content {
+        padding: 16px;
+        min-height: 70vh;
+    }
+    
+    .announcement-detail-body h2 {
+        font-size: 20px;
+    }
+    
+    .announcement-detail-text {
+        font-size: 14px;
+    }
+    
+    .announcement-detail-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+}

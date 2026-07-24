@@ -1,6 +1,6 @@
 /**
  * ============================================
- * MAJIO v0.18 - ПОЛНАЯ ВЕРСИЯ
+ * MAJIO
  * ============================================
  */
 
@@ -1418,6 +1418,112 @@ document.getElementById('themeToggle').addEventListener('click', function() {
 document.getElementById('langToggle').addEventListener('click', function() {
     const newLang = currentLang === 'et' ? 'ru' : 'et';
     applyTranslations(newLang);
+});
+
+// ============================================
+// СТРАНИЦА ДЕТАЛЬНОГО ОБЪЯВЛЕНИЯ
+// ============================================
+const announcementData = [
+    {
+        icon: 'fa-triangle-exclamation',
+        title: 'Отключение воды',
+        date: '15.07.2026 — 20.07.2026',
+        text: `
+            <p>Уважаемые жители!</p>
+            <p>В связи с плановыми ремонтными работами на центральной теплотрассе, с <strong>15 июля по 20 июля 2026 года</strong> будет временно отключена подача горячей воды во все дома нашего жилого комплекса.</p>
+            <p><strong>Что нужно знать:</strong></p>
+            <ul>
+                <li>Отключение начнется в <strong>09:00 15 июля</strong></li>
+                <li>Подача воды возобновится <strong>18:00 20 июля</strong></li>
+                <li>Просим запастись водой на этот период</li>
+                <li>В случае аварийных ситуаций звонить в аварийную службу по телефону <strong>+372 123 4567</strong></li>
+            </ul>
+            <p><strong>Важно!</strong> После возобновления подачи воды возможны временные перебои и появление мутной воды. Рекомендуем сливать воду до появления чистой.</p>
+            <p>Приносим извинения за доставленные неудобства. Спасибо за понимание!</p>
+            <p style="margin-top:12px; color:var(--text-muted); font-size:12px; text-align:right;">С уважением, <br>Управляющая компания</p>
+        `
+    },
+    {
+        icon: 'fa-wrench',
+        title: 'Ремонт лифта',
+        date: '10.07.2026 — 12.07.2026',
+        text: `
+            <p>Уважаемые жители!</p>
+            <p>С <strong>10 по 12 июля 2026 года</strong> будет проводиться плановое техническое обслуживание лифтов в нашем доме.</p>
+            <p><strong>График работ:</strong></p>
+            <ul>
+                <li><strong>10 июля:</strong> 1-й подъезд (09:00 - 18:00)</li>
+                <li><strong>11 июля:</strong> 2-й подъезд (09:00 - 18:00)</li>
+                <li><strong>12 июля:</strong> 3-й подъезд (09:00 - 18:00)</li>
+            </ul>
+            <p>Просим жителей заранее спланировать свои дела и пользоваться лестницей в указанные дни.</p>
+            <p>Приносим извинения за временные неудобства.</p>
+            <p style="margin-top:12px; color:var(--text-muted); font-size:12px; text-align:right;">С уважением, <br>Управляющая компания</p>
+        `
+    },
+    {
+        icon: 'fa-tree',
+        title: 'Озеленение двора',
+        date: '25.07.2026, 10:00',
+        text: `
+            <p>Уважаемые жители!</p>
+            <p>Приглашаем всех желающих на <strong>субботник по озеленению двора</strong>, который состоится <strong>25 июля 2026 года в 10:00</strong>.</p>
+            <p><strong>Что будем делать:</strong></p>
+            <ul>
+                <li>Посадка новых деревьев и кустарников</li>
+                <li>Разбивка цветников и клумб</li>
+                <li>Установка новых скамеек и урн</li>
+                <li>Обновление детской площадки</li>
+            </ul>
+            <p><strong>Что нужно взять с собой:</strong></p>
+            <ul>
+                <li>Рабочие перчатки</li>
+                <li>Садовые инструменты (лопаты, грабли)</li>
+                <li>Хорошее настроение!</li>
+            </ul>
+            <p>Ждем всех! Вместе сделаем наш двор уютнее и красивее!</p>
+            <p style="margin-top:12px; color:var(--text-muted); font-size:12px; text-align:right;">С уважением, <br>Совет дома</p>
+        `
+    }
+];
+
+function openAnnouncementDetail(index) {
+    const data = announcementData[index];
+    if (!data) return;
+    
+    const detail = document.getElementById('announcementDetail');
+    document.getElementById('detailIcon').innerHTML = `<i class="fas ${data.icon}"></i>`;
+    document.getElementById('detailTitle').textContent = data.title;
+    document.getElementById('detailDate').innerHTML = `<i class="far fa-calendar-alt"></i> <span>${data.date}</span>`;
+    document.getElementById('detailText').innerHTML = data.text;
+    
+    detail.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAnnouncementDetail() {
+    const detail = document.getElementById('announcementDetail');
+    detail.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+document.getElementById('announcementDetailBack').addEventListener('click', closeAnnouncementDetail);
+document.getElementById('announcementDetailClose').addEventListener('click', closeAnnouncementDetail);
+document.getElementById('announcementDetail').addEventListener('click', function(e) {
+    if (e.target === this) closeAnnouncementDetail();
+});
+
+// Добавляем обработчики на объявления
+document.querySelectorAll('.announcement-item').forEach(item => {
+    item.addEventListener('click', function() {
+        const index = parseInt(this.dataset.id);
+        if (!isNaN(index)) {
+            openAnnouncementDetail(index);
+        }
+    });
+    
+    // Добавляем cursor: pointer
+    item.style.cursor = 'pointer';
 });
 
 // ============================================

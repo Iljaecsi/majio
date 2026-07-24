@@ -84,7 +84,7 @@
             <!-- ====================================== -->
             <div class="announcement-card" id="announcementCard">
                 <div class="announcement-body" id="announcementBody">
-                    <div class="announcement-item active">
+                    <div class="announcement-item active" data-id="0">
                         <div class="announcement-item-icon">
                             <i class="fas fa-triangle-exclamation"></i>
                         </div>
@@ -99,7 +99,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="announcement-item">
+                    <div class="announcement-item" data-id="1">
                         <div class="announcement-item-icon">
                             <i class="fas fa-wrench"></i>
                         </div>
@@ -114,7 +114,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="announcement-item">
+                    <div class="announcement-item" data-id="2">
                         <div class="announcement-item-icon">
                             <i class="fas fa-tree"></i>
                         </div>
@@ -258,6 +258,47 @@
         </div>
 
         <!-- ====================================== -->
+        <!-- СТРАНИЦА ДЕТАЛЬНОГО ОБЪЯВЛЕНИЯ         -->
+        <!-- ====================================== -->
+        <div class="announcement-detail" id="announcementDetail">
+            <div class="announcement-detail-content">
+                <div class="announcement-detail-header">
+                    <button class="announcement-detail-back" id="announcementDetailBack">
+                        <i class="fas fa-arrow-left"></i>
+                        <span data-key="back">Назад</span>
+                    </button>
+                    <button class="announcement-detail-close" id="announcementDetailClose">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="announcement-detail-body" id="announcementDetailBody">
+                    <div class="announcement-detail-icon" id="detailIcon">
+                        <i class="fas fa-triangle-exclamation"></i>
+                    </div>
+                    <h2 id="detailTitle">Отключение воды</h2>
+                    <div class="announcement-detail-date" id="detailDate">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>15.07.2026 — 20.07.2026</span>
+                    </div>
+                    <div class="announcement-detail-text" id="detailText">
+                        <p>Уважаемые жители!</p>
+                        <p>В связи с плановыми ремонтными работами на центральной теплотрассе, с <strong>15 июля по 20 июля 2026 года</strong> будет временно отключена подача горячей воды во все дома нашего жилого комплекса.</p>
+                        <p><strong>Что нужно знать:</strong></p>
+                        <ul>
+                            <li>Отключение начнется в <strong>09:00 15 июля</strong></li>
+                            <li>Подача воды возобновится <strong>18:00 20 июля</strong></li>
+                            <li>Просим запастись водой на этот период</li>
+                            <li>В случае аварийных ситуаций звонить в аварийную службу по телефону <strong>+372 123 4567</strong></li>
+                        </ul>
+                        <p><strong>Важно!</strong> После возобновления подачи воды возможны временные перебои и появление мутной воды. Рекомендуем сливать воду до появления чистой.</p>
+                        <p>Приносим извинения за доставленные неудобства. Спасибо за понимание!</p>
+                        <p style="margin-top:12px; color:var(--text-muted); font-size:12px; text-align:right;">С уважением, <br>Управляющая компания</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================================== -->
         <!-- ВКЛАДКИ                                -->
         <!-- ====================================== -->
         <div class="tabs-container" id="tabsContainer">
@@ -316,7 +357,7 @@
                 </div>
 
                 <!-- ================================== -->
-                <!-- ВКЛАДКА 3: СТАТИСТИКА               -->
+                <!-- ВКЛАДКА 3: СТАТИСТИКА              -->
                 <!-- ================================== -->
                 <div class="tab-pane" id="tab-stats">
                     <section class="stats-section">
@@ -392,7 +433,7 @@
                                 </div>
                             </div>
                             <div class="settings-footer">
-                                <p>Majio v0.19</p>
+                                <p>Majio v0.21</p>
                                 <p data-key="settings_credit">© 2026 — Умный учёт в вашем доме</p>
                             </div>
                         </div>

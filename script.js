@@ -1,6 +1,6 @@
 /**
  * ============================================
- * MAJIO - С corsproxy.io
+ * MAJIO - ПРЯМОЕ ПОДКЛЮЧЕНИЕ К API
  * ============================================
  */
 
@@ -8,7 +8,7 @@
 // КОНФИГУРАЦИЯ API
 // ============================================
 const API_CONFIG = {
-    baseUrl: 'https://proxy.cors.sh/https://v2.prima.ee:9002/',
+    baseUrl: 'https://v2.prima.ee:9002/',
     superUserKey: 'qwerty121314QWERtYY567890ghjxk',
     accessKey: null,
     memberPath: null,
@@ -17,7 +17,7 @@ const API_CONFIG = {
     membersList: null
 };
 
-const DEV_MODE = false;
+const DEV_MODE = false
 
 // ============================================
 // ПЕРЕВОДЫ

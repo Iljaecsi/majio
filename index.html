@@ -65,16 +65,16 @@
             <div class="property-card" id="propertyCard">
                 <div class="property-header">
                     <i class="fas fa-building property-icon"></i>
-                    <span class="property-title" data-key="property_title">Моя квартира</span>
+                    <span class="property-title" id="propertyTitle" data-key="property_title">Моя квартира</span>
                 </div>
                 <div class="property-body">
                     <div class="property-address" id="propertyAddress">
                         <i class="fas fa-map-pin"></i>
-                        <span>Kangelaste 41-38, Narva, 20607</span>
+                        <span id="propertyAddressText">Загрузка...</span>
                     </div>
                     <div class="property-owner" id="propertyOwner">
                         <i class="fas fa-user"></i>
-                        <span>Иванов Иван</span>
+                        <span id="propertyOwnerText">Загрузка...</span>
                     </div>
                 </div>
             </div>
@@ -163,13 +163,13 @@
                         <div class="auth-pane active" id="auth-login">
                             <div class="input-field">
                                 <i class="fas fa-user input-icon"></i>
-                                <input type="text" id="loginUsername" required placeholder=" ">
-                                <label data-key="auth_username">Имя пользователя</label>
+                                <input type="text" id="loginPath" required placeholder=" " value="t7">
+                                <label>Путь (например: t7 или t7/89)</label>
                             </div>
                             <div class="input-field">
-                                <i class="fas fa-lock input-icon"></i>
-                                <input type="password" id="loginPassword" required placeholder=" ">
-                                <label data-key="auth_password">Пароль</label>
+                                <i class="fas fa-key input-icon"></i>
+                                <input type="password" id="loginKey" required placeholder=" " value="gQdOjbXDRkqbJuEL4butoQ">
+                                <label>Ключ доступа</label>
                             </div>
                             <button type="submit" class="auth-submit-btn" data-auth-mode="login">
                                 <i class="fas fa-sign-in-alt"></i>
@@ -323,8 +323,9 @@
                 <!-- ================================== -->
                 <div class="tab-pane active" id="tab-submit">
                     <section class="meters-section" id="metersSection">
-                        <div class="meters-grid" id="metersGrid"></div>
-                        <!-- Фоновая иконка Meters -->
+                        <div class="meters-grid" id="metersGrid">
+                            <div class="loading-message">Загрузка счетчиков...</div>
+                        </div>
                         <div class="meters-bg-icon">
                             <i class="fas fa-building"></i>
                         </div>
@@ -433,7 +434,7 @@
                                 </div>
                             </div>
                             <div class="settings-footer">
-                                <p>Majio v0.21</p>
+                                <p>Majio v0.23</p>
                                 <p data-key="settings_credit">© 2026 — Умный учёт в вашем доме</p>
                             </div>
                         </div>
@@ -466,7 +467,7 @@
                         <input type="text" id="readingInput" class="form-control" 
                                inputmode="decimal" autocomplete="off"
                                placeholder=" ">
-                        <span class="material-icons form-control-feedback">edit</span>
+                        <span class="material-icons form-control-feedback"><i class="fas fa-edit"></i></span>
                     </div>
                     
                     <div class="reading-actions">
@@ -534,6 +535,11 @@
         </div>
     </div>
 
+    <!-- Включаем режим разработки -->
+    <script>
+        window.__DEV_MODE__ = true;
+        console.log('🛠️ Режим разработки ВКЛЮЧЕН');
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

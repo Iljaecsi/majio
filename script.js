@@ -1,7 +1,6 @@
 /**
  * ============================================
- * MAJIO - Полная интеграция с API
- * Версия 0.23 с поддержкой иерархии товарищества
+ * MAJIO - С corsproxy.io
  * ============================================
  */
 
@@ -9,7 +8,7 @@
 // КОНФИГУРАЦИЯ API
 // ============================================
 const API_CONFIG = {
-    baseUrl: 'https://v2.prima.ee:9002/',
+    baseUrl: 'https://proxy.cors.sh/https://v2.prima.ee:9002/',
     superUserKey: 'qwerty121314QWERtYY567890ghjxk',
     accessKey: null,
     memberPath: null,
@@ -18,87 +17,7 @@ const API_CONFIG = {
     membersList: null
 };
 
-// Режим разработки
 const DEV_MODE = false;
-
-// ============================================
-// ДЕМО-ДАННЫЕ ДЛЯ ЛОКАЛЬНОГО РЕЖИМА
-// ============================================
-const DEMO_DATA = {
-    association: {
-        name: 'Tiimani 7',
-        owner: '',
-        type: 0,
-        permission: 2,
-        settings: { code: 5789 },
-        members: {
-            '87': {
-                name: 'Soldina 7-87',
-                type: 2,
-                permission: 1,
-                access_key: 'DARwaekqTpSyzta8ynPjtQ'
-            },
-            '88': {
-                name: 'Soldina 88',
-                type: 2,
-                permission: 1,
-                access_key: 'xZXZTHH2R_m1FKfQslSKAw'
-            },
-            '89': {
-                name: '7-89',
-                type: 2,
-                permission: 1,
-                email: 'vadim@magicnet.ee',
-                language: 'ru',
-                access_key: 'iD7jLoGcRE-Y3dEu6mVYaA'
-            }
-        },
-        counters: {}
-    },
-    member: {
-        '87': {
-            name: 'Soldina 7-87',
-            type: 2,
-            permission: 1,
-            counters: {
-                'hot1': {
-                    name: 'Горячая вода',
-                    type: 4,
-                    past: [60, 70],
-                    previous: 80,
-                    current: 100
-                }
-            }
-        },
-        '88': {
-            name: 'Soldina 88',
-            type: 2,
-            permission: 1,
-            counters: {}
-        },
-        '89': {
-            name: '7-89',
-            type: 2,
-            permission: 1,
-            counters: {
-                'hot1': {
-                    name: 'Горячая вода',
-                    type: 4,
-                    past: [60, 70],
-                    previous: 80,
-                    current: 100
-                },
-                'cold1': {
-                    name: 'Холодная вода',
-                    type: 5,
-                    past: [120, 130],
-                    previous: 140,
-                    current: 155
-                }
-            }
-        }
-    }
-};
 
 // ============================================
 // ПЕРЕВОДЫ
@@ -317,7 +236,7 @@ let currentMemberData = null;
 let currentMemberPath = null;
 
 // ============================================
-// API ФУНКЦИИ (с демо-режимом)
+// API ФУНКЦИИ
 // ============================================
 
 async function generateSignature() {
@@ -335,56 +254,13 @@ async function generateSignature() {
 }
 
 async function apiRequest(endpoint, method = 'POST', data = null) {
-    if (DEV_MODE) {
-        console.log(`🔄 [DEV] ${method} ${endpoint}`, data);
-        await new Promise(resolve => setTimeout(resolve, 300));
-        
-        const path = data?.path || API_CONFIG.memberPath || '';
-        const isAssociation = path.split('/').length === 1;
-        const memberTag = isAssociation ? null : path.split('/')[1];
-        
-        if (endpoint === 'association/member/get') {
-            if (isAssociation) {
-                return { ...DEMO_DATA.association };
-            } else if (memberTag && DEMO_DATA.member[memberTag]) {
-                return { ...DEMO_DATA.member[memberTag] };
-            }
-            return { ...DEMO_DATA.member['89'] };
-        }
-        
-        if (endpoint === 'association/counter/get' && data?.tag) {
-            const memberData = memberTag ? DEMO_DATA.member[memberTag] : DEMO_DATA.member['89'];
-            const counter = memberData?.counters?.[data.tag];
-            if (counter) return { ...counter };
-            throw new Error('Счетчик не найден');
-        }
-        
-        if (endpoint === 'association/counter/modify') {
-            const memberData = memberTag ? DEMO_DATA.member[memberTag] : DEMO_DATA.member['89'];
-            const counter = memberData?.counters?.[data?.tag];
-            if (counter) {
-                counter.past.push(counter.current);
-                counter.previous = counter.current;
-                counter.current = Number(data.current);
-                return { success: true };
-            }
-            throw new Error('Счетчик не найден');
-        }
-        return { success: true };
-    }
-
     const url = API_CONFIG.baseUrl + endpoint;
-    const headers = {
-        'Content-Type': 'application/json',
-    };
-
-    if (API_CONFIG.superUserKey) {
-        headers['X-Api-Super-User-Key'] = API_CONFIG.superUserKey;
-    }
-
+    
     const options = {
         method: method,
-        headers: headers,
+        headers: {
+            'Content-Type': 'application/json',
+        },
     };
 
     if (data) {
@@ -392,12 +268,15 @@ async function apiRequest(endpoint, method = 'POST', data = null) {
     }
 
     try {
+        console.log(`🌐 Запрос к API: ${url}`);
         const response = await fetch(url, options);
-        if (response.status === 204) return null;
-        const responseData = await response.json();
+        
         if (!response.ok) {
-            throw new Error(responseData.error || `Ошибка HTTP: ${response.status}`);
+            const text = await response.text();
+            throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
         }
+        
+        const responseData = await response.json();
         return responseData;
     } catch (error) {
         console.error('API Error:', error);
@@ -408,14 +287,6 @@ async function apiRequest(endpoint, method = 'POST', data = null) {
 async function fetchMemberData(path = null) {
     if (!path) path = API_CONFIG.memberPath;
     if (!path) throw new Error('Путь не указан');
-
-    if (DEV_MODE) {
-        const data = await apiRequest('association/member/get', 'POST', { path, signature: 'dev' });
-        API_CONFIG.currentMemberData = data;
-        currentMemberData = data;
-        currentMemberPath = path;
-        return data;
-    }
 
     const signature = await generateSignature();
     const data = await apiRequest('association/member/get', 'POST', {
@@ -430,12 +301,6 @@ async function fetchMemberData(path = null) {
 }
 
 async function fetchCounterData(tag) {
-    if (DEV_MODE) {
-        return await apiRequest('association/counter/get', 'POST', { 
-            path: API_CONFIG.memberPath, 
-            tag: tag 
-        });
-    }
     const signature = await generateSignature();
     return await apiRequest('association/counter/get', 'POST', {
         path: API_CONFIG.memberPath,
@@ -445,13 +310,6 @@ async function fetchCounterData(tag) {
 }
 
 async function submitReading(tag, currentValue) {
-    if (DEV_MODE) {
-        return await apiRequest('association/counter/modify', 'POST', {
-            path: API_CONFIG.memberPath,
-            tag: tag,
-            current: Number(currentValue)
-        });
-    }
     const signature = await generateSignature();
     return await apiRequest('association/counter/modify', 'POST', {
         path: API_CONFIG.memberPath,
@@ -485,10 +343,7 @@ async function loginAPI(path, accessKey) {
 async function switchMember(memberTag) {
     if (!API_CONFIG.isAdmin) return;
     
-    // Формируем новый путь: текущий путь + / + тег квартиры
-    // Если текущий путь уже содержит /, берем базовый путь
     let basePath = API_CONFIG.memberPath;
-    // Если мы уже в квартире, берем родительский путь (товарищество)
     if (basePath.includes('/')) {
         basePath = basePath.split('/')[0];
     }
@@ -509,7 +364,6 @@ async function switchMember(memberTag) {
 async function switchToAssociation() {
     if (!API_CONFIG.isAdmin) return;
     
-    // Берем базовый путь (товарищество)
     const basePath = API_CONFIG.memberPath.split('/')[0];
     
     try {
@@ -607,7 +461,6 @@ function renderPropertyCard(data) {
     const ownerEl = document.getElementById('propertyOwnerText');
     const t = translations[currentLang];
     
-    // Админская карточка
     if (API_CONFIG.isAdmin) {
         card.classList.add('admin-card');
         titleEl.textContent = t.property_title_admin || 'Моё товарищество';
@@ -797,7 +650,7 @@ function renderTable(data, filterTag = null) {
 }
 
 // ============================================
-// АДМИН-ПАНЕЛЬ (фиолетовая)
+// АДМИН-ПАНЕЛЬ
 // ============================================
 function renderAdminPanel(data) {
     let adminPanel = document.getElementById('adminPanel');
@@ -1687,6 +1540,9 @@ document.querySelectorAll('.announcement-item').forEach(item => {
 // ИНИЦИАЛИЗАЦИЯ
 // ============================================
 async function initApp() {
+    console.log('🚀 Запуск Majio...');
+    console.log(`🌐 Прокси: corsproxy.io`);
+    
     const savedPath = localStorage.getItem('majio_member_path');
     const savedKey = localStorage.getItem('majio_access_key');
     const savedUser = localStorage.getItem('majio_user');
@@ -1713,10 +1569,9 @@ async function initApp() {
     setTimeout(initAnnouncements, 100);
     setTimeout(initAdsSlider, 150);
     
-    console.log('🏠 Majio v0.23 - Association Management');
+    console.log('🏠 Majio v0.26 - corsproxy.io');
     console.log(`🌓 Theme: ${currentTheme}, Language: ${currentLang}`);
     console.log(`🔑 Authenticated: ${isAuthenticated()}`);
-    console.log(`🛠️ Mode: ${DEV_MODE ? 'DEVELOPMENT (DEMO DATA)' : 'PRODUCTION'}`);
     if (isAuthenticated()) {
         console.log(`📍 Path: ${API_CONFIG.memberPath}`);
         console.log(`👑 Admin: ${API_CONFIG.isAdmin}`);

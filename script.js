@@ -17,7 +17,7 @@ const API_CONFIG = {
     membersList: null
 };
 
-const DEV_MODE = false
+const DEV_MODE = false;
 
 // ============================================
 // ПЕРЕВОДЫ
@@ -117,7 +117,7 @@ const translations = {
         apartment: 'Квартира',
         members_count: 'Квартир в товариществе',
         switch_to_member: 'Переключиться на квартиру',
-        switch_to_association: 'Переключиться на товарищество',
+        switch_to_association: 'Вернуться в товарищество',
         current_member: 'Текущая квартира',
         no_members: 'Нет квартир в товариществе',
         admin_badge: 'АДМИН'
@@ -216,7 +216,7 @@ const translations = {
         apartment: 'Korter',
         members_count: 'Korterit ühistus',
         switch_to_member: 'Lülitu korterile',
-        switch_to_association: 'Lülitu ühistule',
+        switch_to_association: 'Tagasi ühistusse',
         current_member: 'Praegune korter',
         no_members: 'Ühistus pole kortereid',
         admin_badge: 'ADMIN'
@@ -260,6 +260,7 @@ async function apiRequest(endpoint, method = 'POST', data = null) {
         method: method,
         headers: {
             'Content-Type': 'application/json',
+            'X-Api-Super-User-Key': API_CONFIG.superUserKey,
         },
     };
 
@@ -271,12 +272,14 @@ async function apiRequest(endpoint, method = 'POST', data = null) {
         console.log(`🌐 Запрос к API: ${url}`);
         const response = await fetch(url, options);
         
-        if (!response.ok) {
-            const text = await response.text();
-            throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
-        }
+        if (response.status === 204) return null;
         
         const responseData = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(responseData.error || `Ошибка HTTP: ${response.status}`);
+        }
+        
         return responseData;
     } catch (error) {
         console.error('API Error:', error);
@@ -353,6 +356,10 @@ async function switchMember(memberTag) {
         const data = await fetchMemberData(newPath);
         localStorage.setItem('majio_member_path', newPath);
         API_CONFIG.memberPath = newPath;
+        
+        // Скрываем объявления при просмотре квартиры
+        document.getElementById('announcementCard').classList.add('hidden');
+        
         await refreshUI();
         return data;
     } catch (error) {
@@ -370,6 +377,10 @@ async function switchToAssociation() {
         const data = await fetchMemberData(basePath);
         localStorage.setItem('majio_member_path', basePath);
         API_CONFIG.memberPath = basePath;
+        
+        // Показываем объявления при просмотре товарищества
+        document.getElementById('announcementCard').classList.remove('hidden');
+        
         await refreshUI();
         return data;
     } catch (error) {
@@ -415,11 +426,13 @@ async function refreshUI() {
         updateSettings(data);
         updateAuthUI();
         
-        const adminPanel = document.getElementById('adminPanel');
+        // Управление админ-панелью
         if (API_CONFIG.isAdmin) {
             renderAdminPanel(data);
         } else {
-            if (adminPanel) adminPanel.remove();
+            document.getElementById('adminPanelContainer').style.display = 'none';
+            // Показываем объявления для обычного пользователя
+            document.getElementById('announcementCard').classList.remove('hidden');
         }
     } catch (error) {
         console.error('Error refreshing UI:', error);
@@ -444,8 +457,8 @@ function showAuthRequired() {
             </div>
         `;
     }
-    const adminPanel = document.getElementById('adminPanel');
-    if (adminPanel) adminPanel.remove();
+    const adminPanel = document.getElementById('adminPanelContainer');
+    if (adminPanel) adminPanel.style.display = 'none';
     updateAuthUI();
 }
 
@@ -461,21 +474,20 @@ function renderPropertyCard(data) {
     const ownerEl = document.getElementById('propertyOwnerText');
     const t = translations[currentLang];
     
+    // Убираем старый бейдж
+    const oldBadge = card.querySelector('.admin-badge');
+    if (oldBadge) oldBadge.remove();
+    
     if (API_CONFIG.isAdmin) {
         card.classList.add('admin-card');
         titleEl.textContent = t.property_title_admin || 'Моё товарищество';
-        let badge = card.querySelector('.admin-badge');
-        if (!badge) {
-            badge = document.createElement('span');
-            badge.className = 'admin-badge';
-            badge.innerHTML = '<i class="fas fa-crown"></i> ' + (t.admin_badge || 'АДМИН');
-            titleEl.parentNode.appendChild(badge);
-        }
+        const badge = document.createElement('span');
+        badge.className = 'admin-badge';
+        badge.innerHTML = '<i class="fas fa-crown"></i> ' + (t.admin_badge || 'АДМИН');
+        titleEl.parentNode.appendChild(badge);
     } else {
         card.classList.remove('admin-card');
         titleEl.textContent = t.property_title || 'Моя квартира';
-        const badge = card.querySelector('.admin-badge');
-        if (badge) badge.remove();
     }
     
     let displayName = data.name || 'Без названия';
@@ -653,109 +665,122 @@ function renderTable(data, filterTag = null) {
 // АДМИН-ПАНЕЛЬ
 // ============================================
 function renderAdminPanel(data) {
-    let adminPanel = document.getElementById('adminPanel');
+    if (!data) return;
     
-    if (!adminPanel) {
-        adminPanel = document.createElement('div');
-        adminPanel.id = 'adminPanel';
-        adminPanel.className = 'admin-panel';
-        const propertyCard = document.getElementById('propertyCard');
-        if (propertyCard) {
-            propertyCard.parentNode.insertBefore(adminPanel, propertyCard.nextSibling);
-        }
-    }
-
-    const t = translations[currentLang];
-    const members = data.members || {};
-    const memberKeys = Object.keys(members);
+    const container = document.getElementById('adminPanelContainer');
+    const list = document.getElementById('adminMemberList');
+    const countBadge = document.getElementById('adminCountBadge');
+    const backBtn = document.getElementById('backToAssociationBtn');
+    const membersSection = document.getElementById('adminMembersSection');
+    const apartmentCard = document.getElementById('adminApartmentCard');
+    const apartmentName = document.getElementById('adminApartmentName');
+    const apartmentPath = document.getElementById('adminApartmentPath');
+    
     const isAssociation = data.type === 0;
     const isMemberView = data.type === 2;
+    const members = data.members || {};
+    const memberKeys = Object.keys(members);
+    const currentPathStr = currentMemberPath || API_CONFIG.memberPath;
+    const pathParts = currentPathStr.split('/');
+    const currentTag = pathParts.length > 1 ? pathParts[pathParts.length - 1] : null;
     
-    let html = `
-        <div class="admin-panel-header">
-            <h3><i class="fas fa-users-cog"></i> ${t.admin_panel}</h3>
-            <span class="admin-badge-large"><i class="fas fa-crown"></i> ${t.admin_badge || 'АДМИН'}</span>
-        </div>
-    `;
-
-    if (isAssociation && memberKeys.length > 0) {
-        html += `
-            <div style="margin-bottom: 10px;">
-                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
-                    <i class="fas fa-door-open"></i> ${t.members_count}: ${memberKeys.length}
-                </div>
-                <div class="admin-member-list">
-        `;
-        
-        memberKeys.forEach(tag => {
-            const member = members[tag];
-            const isActive = currentMemberPath === API_CONFIG.memberPath + '/' + tag;
-            const roleIcon = member.permission === 2 ? '<i class="fas fa-crown" style="color: var(--admin-primary);"></i>' : 
-                           member.permission === 1 ? '<i class="fas fa-user" style="color: var(--success);"></i>' : 
-                           '<i class="fas fa-eye" style="color: var(--text-muted);"></i>';
-            const roleText = member.permission === 2 ? 'Админ' : 
-                           member.permission === 1 ? 'Жилец' : 'Гость';
-            
-            html += `
-                <button class="admin-member-item ${isActive ? 'active' : ''}" data-tag="${tag}">
-                    <div class="member-info">
-                        <i class="fas fa-door-open" style="color: var(--admin-primary);"></i>
-                        <span>${member.name || 'Квартира ' + tag}</span>
-                        <span class="member-tag">${tag}</span>
-                    </div>
-                    <span class="member-role" style="font-size: 11px; color: var(--text-muted);">
-                        ${roleIcon} ${roleText}
-                    </span>
-                </button>
-            `;
-        });
-        
-        html += `
-                </div>
-            </div>
-        `;
+    // Показываем контейнер
+    container.style.display = 'block';
+    
+    // Обновляем карточку
+    const card = document.getElementById('propertyCard');
+    card.classList.add('admin-card');
+    
+    // Обновляем заголовок с бейджем
+    const titleEl = document.getElementById('propertyTitle');
+    titleEl.textContent = translations[currentLang].property_title_admin || 'Моё товарищество';
+    
+    // Добавляем бейдж если нет
+    let badge = card.querySelector('.admin-badge');
+    if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'admin-badge';
+        badge.innerHTML = '<i class="fas fa-crown"></i> ' + (translations[currentLang].admin_badge || 'АДМИН');
+        titleEl.parentNode.appendChild(badge);
     }
     
+    // Показываем/скрываем кнопку возврата
+    backBtn.style.display = isMemberView ? 'block' : 'none';
+    
+    // Управление отображением секций
     if (isMemberView) {
-        html += `
-            <button class="admin-back-btn" id="backToAssociationBtn">
-                <i class="fas fa-arrow-left"></i> 
-                ${t.switch_to_association || 'Переключиться на товарищество'}
-            </button>
-        `;
+        // Показываем крупную карточку квартиры, скрываем список
+        membersSection.style.display = 'none';
+        apartmentCard.style.display = 'block';
+        
+        const member = members[currentTag];
+        apartmentName.textContent = member?.name || 'Квартира ' + currentTag;
+        apartmentPath.textContent = currentPathStr;
+    } else {
+        // Показываем список квартир, скрываем карточку
+        membersSection.style.display = 'block';
+        apartmentCard.style.display = 'none';
+        
+        // Строим список квартир
+        if (isAssociation && memberKeys.length > 0) {
+            countBadge.textContent = memberKeys.length;
+            
+            list.innerHTML = memberKeys.map(tag => {
+                const member = members[tag];
+                const isActive = currentPathStr === API_CONFIG.memberPath + '/' + tag;
+                const roleIcon = member.permission === 2 ? '<i class="fas fa-crown"></i>' : 
+                               member.permission === 1 ? '<i class="fas fa-user"></i>' : 
+                               '<i class="fas fa-eye"></i>';
+                const roleText = member.permission === 2 ? 'Админ' : 
+                               member.permission === 1 ? 'Жилец' : 'Гость';
+                
+                return `
+                    <button class="admin-member-item ${isActive ? 'active' : ''}" data-tag="${tag}">
+                        <div class="member-info">
+                            <i class="fas fa-door-open" style="color: var(--admin-primary);"></i>
+                            <span>${member.name || 'Квартира ' + tag}</span>
+                            <span class="member-tag">${tag}</span>
+                        </div>
+                        <span class="member-role" style="font-size: 11px; color: var(--text-muted);">
+                            ${roleIcon} ${roleText}
+                        </span>
+                    </button>
+                `;
+            }).join('');
+            
+            // Добавляем обработчики
+            list.querySelectorAll('.admin-member-item').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const tag = this.dataset.tag;
+                    try {
+                        await switchMember(tag);
+                        document.getElementById('announcementCard').classList.add('hidden');
+                        showNotification('Переключено на квартиру ' + tag, 'success');
+                    } catch (error) {
+                        showNotification('Ошибка переключения: ' + error.message, 'error');
+                    }
+                });
+            });
+        } else {
+            countBadge.textContent = '0';
+            list.innerHTML = `
+                <div style="text-align:center; color:var(--text-muted); padding:16px 0; font-size:13px;">
+                    <i class="fas fa-info-circle"></i> Нет квартир в товариществе
+                </div>
+            `;
+        }
     }
     
-    html += `
-        <div class="admin-path-info">
-            <i class="fas fa-link"></i> ${t.current_member}: ${currentMemberPath || API_CONFIG.memberPath}
-        </div>
-    `;
-    
-    adminPanel.innerHTML = html;
-    
-    adminPanel.querySelectorAll('.admin-member-item').forEach(btn => {
-        btn.addEventListener('click', async function() {
-            const tag = this.dataset.tag;
-            try {
-                await switchMember(tag);
-                showNotification('Переключено на квартиру ' + tag, 'success');
-            } catch (error) {
-                showNotification('Ошибка переключения: ' + error.message, 'error');
-            }
-        });
-    });
-    
-    const backBtn = document.getElementById('backToAssociationBtn');
-    if (backBtn) {
-        backBtn.addEventListener('click', async function() {
-            try {
-                await switchToAssociation();
-                showNotification('Переключено на товарищество', 'success');
-            } catch (error) {
-                showNotification('Ошибка: ' + error.message, 'error');
-            }
-        });
-    }
+    // Обработчик кнопки возврата
+    backBtn.onclick = async function() {
+        try {
+            await switchToAssociation();
+            document.getElementById('announcementCard').classList.remove('hidden');
+            showNotification(translations[currentLang].switch_to_association || 'Переключено на товарищество', 'success');
+        } catch (error) {
+            showNotification('Ошибка: ' + error.message, 'error');
+        }
+    };
 }
 
 // ============================================
@@ -1177,7 +1202,7 @@ document.getElementById('dropdownRegister')?.addEventListener('click', function(
 document.getElementById('dropdownProperties')?.addEventListener('click', function() {
     document.getElementById('dropdownMenu').classList.remove('active');
     if (API_CONFIG.isAdmin) {
-        const adminPanel = document.getElementById('adminPanel');
+        const adminPanel = document.getElementById('adminPanelContainer');
         if (adminPanel) {
             adminPanel.scrollIntoView({ behavior: 'smooth' });
         }
@@ -1541,7 +1566,6 @@ document.querySelectorAll('.announcement-item').forEach(item => {
 // ============================================
 async function initApp() {
     console.log('🚀 Запуск Majio...');
-    console.log(`🌐 Прокси: corsproxy.io`);
     
     const savedPath = localStorage.getItem('majio_member_path');
     const savedKey = localStorage.getItem('majio_access_key');
@@ -1569,7 +1593,7 @@ async function initApp() {
     setTimeout(initAnnouncements, 100);
     setTimeout(initAdsSlider, 150);
     
-    console.log('🏠 Majio v0.26 - corsproxy.io');
+    console.log('🏠 KorterInfo v0.29 - Управление недвижимостью');
     console.log(`🌓 Theme: ${currentTheme}, Language: ${currentLang}`);
     console.log(`🔑 Authenticated: ${isAuthenticated()}`);
     if (isAuthenticated()) {

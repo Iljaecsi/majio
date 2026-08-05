@@ -234,7 +234,7 @@ body {
 .dropdown-item.admin-item:hover { background: var(--admin-bg); }
 
 /* ============================================ */
-/* КАРТОЧКА НЕДВИЖИМОСТИ / ТОВАРИЩЕСТВА         */
+/* ОБЪЕДИНЁННЫЙ БЛОК КАРТОЧКИ + АДМИН-ПАНЕЛЬ  */
 /* ============================================ */
 .property-card {
     background: var(--bg-card);
@@ -293,24 +293,27 @@ body {
 
 .property-address i, .property-owner i { color: var(--primary); width: 16px; font-size: 14px; }
 
-/* ============================================ */
-/* АДМИН-ПАНЕЛЬ (фиолетовая)                   */
-/* ============================================ */
+/* Разделитель между карточкой и админ-панелью */
+.admin-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 16px 0 12px 0;
+}
+
+/* Админ-панель внутри карточки */
 .admin-panel {
-    margin-top: 16px;
-    background: var(--bg-card);
-    border-radius: var(--radius);
-    padding: 16px;
-    border: var(--admin-border);
-    box-shadow: var(--admin-glow);
-    transition: all var(--transition);
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin-top: 0;
 }
 
 .admin-panel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     padding-bottom: 8px;
     border-bottom: 2px solid var(--admin-primary);
 }
@@ -327,27 +330,51 @@ body {
     gap: 6px;
     background: var(--admin-gradient);
     color: white;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
-    padding: 4px 14px;
+    padding: 3px 12px;
     border-radius: 20px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
+/* Секция списка квартир */
+.admin-section-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    padding: 0 4px;
+}
+
+.admin-section-label .admin-count-badge {
+    background: var(--admin-bg);
+    color: var(--admin-primary);
+    padding: 0 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: auto;
+}
+
+/* Список квартир */
 .admin-member-list {
     display: grid;
     grid-template-columns: 1fr;
     gap: 6px;
-    max-height: 250px;
+    max-height: 200px;
     overflow-y: auto;
+    margin-bottom: 12px;
 }
 
 .admin-member-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 14px;
+    padding: 8px 14px;
     background: var(--bg-input);
     border: 1px solid transparent;
     border-radius: var(--radius-xs);
@@ -372,6 +399,14 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-member-item .member-info span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .admin-member-item .member-tag {
@@ -380,39 +415,106 @@ body {
     background: var(--bg-card);
     padding: 1px 8px;
     border-radius: 10px;
+    flex-shrink: 0;
 }
 
 .admin-member-item .member-role {
-    font-size: 12px;
+    font-size: 11px;
+    flex-shrink: 0;
 }
 
+.admin-member-item .member-role i {
+    margin-right: 2px;
+}
+
+/* Крупная карточка квартиры */
+.admin-apartment-card {
+    background: var(--admin-bg);
+    border: 2px solid var(--admin-primary);
+    border-radius: var(--radius-sm);
+    padding: 24px 20px;
+    text-align: center;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+}
+
+.admin-apartment-card .admin-apartment-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--admin-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 28px;
+    margin: 0 auto 12px;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+}
+
+.admin-apartment-card .admin-apartment-name {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.admin-apartment-card .admin-apartment-path {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.admin-apartment-card .admin-apartment-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--success-bg);
+    color: var(--success);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 16px;
+    border-radius: 20px;
+}
+
+.admin-apartment-card .admin-apartment-badge i {
+    font-size: 16px;
+}
+
+/* Кнопка возврата */
 .admin-back-btn {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     background: var(--admin-bg);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-xs);
+    border-radius: var(--radius-sm);
     cursor: pointer;
     font-family: 'Inter', sans-serif;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--admin-primary);
     transition: all 0.2s ease;
-    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .admin-back-btn:hover {
     background: var(--admin-gradient);
     color: white;
+    border-color: var(--admin-primary);
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
 }
 
-.admin-path-info {
-    margin-top: 8px;
-    font-size: 11px;
-    color: var(--text-muted);
-    text-align: right;
-    padding-top: 8px;
-    border-top: 1px solid var(--border-color);
+.admin-back-btn:active {
+    transform: scale(0.97);
+}
+
+/* Скрытие объявлений в режиме квартиры */
+.announcement-card.hidden {
+    display: none;
 }
 
 /* ============================================ */
@@ -1842,9 +1944,36 @@ tbody td strong { color: var(--text-primary); font-weight: 700; }
     .ads-slider {
         min-height: 80px;
     }
+    .admin-current-block {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px 12px;
+    }
+    .admin-current-block .admin-current-status {
+        font-size: 12px;
+        margin-left: auto;
+    }
+    .admin-apartment-card {
+        padding: 16px;
+    }
+    .admin-apartment-card .admin-apartment-name {
+        font-size: 18px;
+    }
+    .admin-apartment-card .admin-apartment-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 22px;
+    }
     .admin-member-item {
         font-size: 12px;
-        padding: 8px 12px;
+        padding: 7px 10px;
+    }
+    .admin-member-item .member-tag {
+        font-size: 9px;
+        padding: 0 6px;
+    }
+    .admin-panel-header h3 {
+        font-size: 13px;
     }
 }
 
@@ -1879,6 +2008,16 @@ tbody td strong { color: var(--text-primary); font-weight: 700; }
     }
     .admin-member-item .member-tag {
         display: none;
+    }
+    .admin-member-item .member-role {
+        display: none;
+    }
+    .admin-current-block .admin-current-info {
+        flex: 1;
+        min-width: 0;
+    }
+    .admin-current-block .admin-current-name {
+        font-size: 13px;
     }
 }
 

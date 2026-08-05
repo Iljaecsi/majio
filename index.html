@@ -102,7 +102,7 @@
                             </div>
                         </div>
                         
-                        <!-- Крупная карточка квартиры (показывается при просмотре квартиры) -->
+                        <!-- Крупная карточка квартиры с компактными кнопками внутри -->
                         <div id="adminApartmentCard" style="display:none;">
                             <div class="admin-apartment-card">
                                 <div class="admin-apartment-icon">
@@ -112,6 +112,10 @@
                                 <div class="admin-apartment-path" id="adminApartmentPath">t7/89</div>
                                 <div class="admin-apartment-badge">
                                     <i class="fas fa-check-circle"></i> Текущая квартира
+                                </div>
+                                <!-- Компактные кнопки управления внутри карточки -->
+                                <div class="admin-apartment-actions" id="adminApartmentActions">
+                                    <!-- Заполняется динамически -->
                                 </div>
                             </div>
                         </div>
@@ -246,6 +250,23 @@
                     </div>
                 </form>
                 <div class="auth-modal-footer"><span id="authStatus"></span></div>
+            </div>
+        </div>
+
+        <!-- Админ модальное окно -->
+        <div class="admin-modal" id="adminModal">
+            <div class="admin-modal-content">
+                <div class="admin-modal-header">
+                    <h2 id="adminModalTitle">Управление</h2>
+                    <button class="admin-close-btn" id="adminCloseBtn"><i class="fas fa-times"></i></button>
+                </div>
+                <div id="adminModalBody">
+                    <!-- Заполняется динамически -->
+                </div>
+                <div id="adminModalFooter">
+                    <!-- Заполняется динамически -->
+                </div>
+                <div class="admin-modal-footer"><span id="adminModalStatus"></span></div>
             </div>
         </div>
 
@@ -480,7 +501,7 @@
                                 </div>
                             </div>
                             <div class="settings-footer">
-                                <p>KorterInfo v0.29</p>
+                                <p>KorterInfo v0.31</p>
                                 <p data-key="settings_credit">© 2026 — Умный учёт в вашем доме</p>
                             </div>
                         </div>

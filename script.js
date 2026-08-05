@@ -120,7 +120,51 @@ const translations = {
         switch_to_association: 'Вернуться в товарищество',
         current_member: 'Текущая квартира',
         no_members: 'Нет квартир в товариществе',
-        admin_badge: 'АДМИН'
+        admin_badge: 'АДМИН',
+        add_member: 'Добавить квартиру',
+        delete_member: 'Удалить квартиру',
+        add_counter: 'Добавить счётчик',
+        delete_counter: 'Удалить счётчик',
+        edit_member: 'Редактировать квартиру',
+        edit_counter: 'Редактировать счётчик',
+        member_tag: 'Тег квартиры',
+        member_name: 'Название квартиры',
+        member_type: 'Тип',
+        member_permission: 'Права',
+        counter_tag: 'Тег счётчика',
+        counter_name: 'Название счётчика',
+        counter_type: 'Тип счётчика',
+        counter_current: 'Текущее значение',
+        type_home: 'Дом',
+        type_apartment: 'Квартира',
+        type_room: 'Комната',
+        permission_guest: 'Гость',
+        permission_user: 'Пользователь',
+        permission_admin: 'Администратор',
+        counter_type_1: 'Электричество (день)',
+        counter_type_2: 'Электричество (ночь)',
+        counter_type_3: 'Газ',
+        counter_type_4: 'Горячая вода',
+        counter_type_5: 'Холодная вода',
+        member_added: 'Квартира добавлена',
+        member_deleted: 'Квартира удалена',
+        member_updated: 'Квартира обновлена',
+        counter_added: 'Счётчик добавлен',
+        counter_deleted: 'Счётчик удалён',
+        counter_updated: 'Счётчик обновлён',
+        confirm_delete_member: 'Удалить квартиру "{name}"?',
+        confirm_delete_counter: 'Удалить счётчик "{name}"?',
+        enter_tag: 'Введите тег',
+        enter_name: 'Введите название',
+        enter_current: 'Введите текущее значение',
+        counter_edit_title: 'Редактирование счётчика',
+        member_edit_title: 'Редактирование квартиры',
+        member_type_apartment: 'Квартира',
+        member_type_room: 'Комната',
+        apartment_actions: 'Управление квартирой',
+        counter_actions: 'Управление счётчиками',
+        back: 'Назад',
+        cancel: 'Отмена',
     },
     et: {
         subtitle: 'Tark arvestus teie kodus',
@@ -219,7 +263,51 @@ const translations = {
         switch_to_association: 'Tagasi ühistusse',
         current_member: 'Praegune korter',
         no_members: 'Ühistus pole kortereid',
-        admin_badge: 'ADMIN'
+        admin_badge: 'ADMIN',
+        add_member: 'Lisa korter',
+        delete_member: 'Kustuta korter',
+        add_counter: 'Lisa arvesti',
+        delete_counter: 'Kustuta arvesti',
+        edit_member: 'Muuda korterit',
+        edit_counter: 'Muuda arvestit',
+        member_tag: 'Korteri tag',
+        member_name: 'Korteri nimi',
+        member_type: 'Tüüp',
+        member_permission: 'Õigused',
+        counter_tag: 'Arvesti tag',
+        counter_name: 'Arvesti nimi',
+        counter_type: 'Arvesti tüüp',
+        counter_current: 'Praegune väärtus',
+        type_home: 'Maja',
+        type_apartment: 'Korter',
+        type_room: 'Tuba',
+        permission_guest: 'Külaline',
+        permission_user: 'Kasutaja',
+        permission_admin: 'Administraator',
+        counter_type_1: 'Elekter (päev)',
+        counter_type_2: 'Elekter (öö)',
+        counter_type_3: 'Gaas',
+        counter_type_4: 'Soe vesi',
+        counter_type_5: 'Külm vesi',
+        member_added: 'Korter lisatud',
+        member_deleted: 'Korter kustutatud',
+        member_updated: 'Korter uuendatud',
+        counter_added: 'Arvesti lisatud',
+        counter_deleted: 'Arvesti kustutatud',
+        counter_updated: 'Arvesti uuendatud',
+        confirm_delete_member: 'Kas kustutada korter "{name}"?',
+        confirm_delete_counter: 'Kas kustutada arvesti "{name}"?',
+        enter_tag: 'Sisestage tag',
+        enter_name: 'Sisestage nimi',
+        enter_current: 'Sisestage praegune väärtus',
+        counter_edit_title: 'Arvesti redigeerimine',
+        member_edit_title: 'Korteri redigeerimine',
+        member_type_apartment: 'Korter',
+        member_type_room: 'Tuba',
+        apartment_actions: 'Korteri haldus',
+        counter_actions: 'Arvestite haldus',
+        back: 'Tagasi',
+        cancel: 'Tühista',
     }
 };
 
@@ -234,6 +322,7 @@ let currentAnnouncement = 0;
 let announcementInterval = null;
 let currentMemberData = null;
 let currentMemberPath = null;
+let isInitialized = false;
 
 // ============================================
 // API ФУНКЦИИ
@@ -287,6 +376,19 @@ async function apiRequest(endpoint, method = 'POST', data = null) {
     }
 }
 
+async function apiRequestWithSignature(endpoint, method = 'POST', data = null) {
+    if (!API_CONFIG.memberPath) {
+        throw new Error('Путь не указан');
+    }
+    const signature = await generateSignature();
+    const requestData = {
+        path: API_CONFIG.memberPath,
+        signature: signature,
+        ...data
+    };
+    return await apiRequest(endpoint, method, requestData);
+}
+
 async function fetchMemberData(path = null) {
     if (!path) path = API_CONFIG.memberPath;
     if (!path) throw new Error('Путь не указан');
@@ -300,7 +402,54 @@ async function fetchMemberData(path = null) {
     API_CONFIG.currentMemberData = data;
     currentMemberData = data;
     currentMemberPath = path;
+    
+    // Сохраняем состояние в localStorage
+    saveFullState(path, data);
+    
     return data;
+}
+
+// Сохранение полного состояния
+function saveFullState(path, data) {
+    try {
+        const isAdmin = data.permission === 2;
+        const isMemberView = data.type === 2;
+        const currentTag = path.includes('/') ? path.split('/').pop() : null;
+        
+        const stateToSave = {
+            memberPath: path,
+            accessKey: API_CONFIG.accessKey,
+            isAdmin: isAdmin,
+            members: data.members || {},
+            memberName: data.name || '',
+            memberType: data.type,
+            isMemberView: isMemberView,
+            currentTag: currentTag,
+            timestamp: Date.now()
+        };
+        localStorage.setItem('majio_full_state', JSON.stringify(stateToSave));
+        console.log('💾 Состояние сохранено:', stateToSave);
+    } catch (e) {
+        console.warn('Не удалось сохранить состояние:', e);
+    }
+}
+
+// Восстановление состояния из localStorage
+function restoreFullState() {
+    const savedState = localStorage.getItem('majio_full_state');
+    if (!savedState) {
+        console.log('ℹ️ Нет сохранённого состояния');
+        return null;
+    }
+    
+    try {
+        const state = JSON.parse(savedState);
+        console.log('🔄 Восстановление состояния из localStorage:', state);
+        return state;
+    } catch (e) {
+        console.warn('Ошибка восстановления состояния:', e);
+        return null;
+    }
 }
 
 async function fetchCounterData(tag) {
@@ -357,7 +506,6 @@ async function switchMember(memberTag) {
         localStorage.setItem('majio_member_path', newPath);
         API_CONFIG.memberPath = newPath;
         
-        // Скрываем объявления при просмотре квартиры
         document.getElementById('announcementCard').classList.add('hidden');
         
         await refreshUI();
@@ -378,7 +526,6 @@ async function switchToAssociation() {
         localStorage.setItem('majio_member_path', basePath);
         API_CONFIG.memberPath = basePath;
         
-        // Показываем объявления при просмотре товарищества
         document.getElementById('announcementCard').classList.remove('hidden');
         
         await refreshUI();
@@ -400,11 +547,265 @@ function logoutAPI() {
     localStorage.removeItem('majio_member_path');
     localStorage.removeItem('majio_access_key');
     localStorage.removeItem('majio_user');
+    localStorage.removeItem('majio_full_state');
     currentUser = null;
 }
 
 function isAuthenticated() {
     return API_CONFIG.accessKey !== null && API_CONFIG.memberPath !== null;
+}
+
+// ============================================
+// АДМИН API ФУНКЦИИ
+// ============================================
+
+async function addMember(tag, name, type, permission) {
+    const data = {
+        tag: tag,
+        name: name,
+        type: type,
+        permission: permission
+    };
+    return await apiRequestWithSignature('association/member/add', 'POST', data);
+}
+
+async function deleteMember(tag) {
+    return await apiRequestWithSignature('association/member/delete', 'POST', { tag: tag });
+}
+
+async function modifyMember(tag, data) {
+    const requestData = {
+        tag: tag,
+        ...data
+    };
+    return await apiRequestWithSignature('association/member/modify', 'POST', requestData);
+}
+
+async function addCounter(tag, name, type, current) {
+    const data = {
+        tag: tag,
+        name: name,
+        type: type,
+        current: current || 0
+    };
+    return await apiRequestWithSignature('association/counter/add', 'POST', data);
+}
+
+async function deleteCounter(tag) {
+    return await apiRequestWithSignature('association/counter/delete', 'POST', { tag: tag });
+}
+
+async function modifyCounter(tag, data) {
+    const requestData = {
+        tag: tag,
+        ...data
+    };
+    return await apiRequestWithSignature('association/counter/modify', 'POST', requestData);
+}
+
+// ============================================
+// ВОССТАНОВЛЕНИЕ UI ИЗ СОХРАНЁННОГО СОСТОЯНИЯ
+// ============================================
+function restoreUIFromState() {
+    const state = restoreFullState();
+    if (!state) return false;
+    
+    // Восстанавливаем API_CONFIG
+    if (state.memberPath) {
+        API_CONFIG.memberPath = state.memberPath;
+    }
+    if (state.accessKey) {
+        API_CONFIG.accessKey = state.accessKey;
+    }
+    if (state.isAdmin !== undefined) {
+        API_CONFIG.isAdmin = state.isAdmin;
+    }
+    if (state.members) {
+        API_CONFIG.membersList = state.members;
+    }
+    
+    // Если пользователь не админ - скрываем админ-панель
+    if (!API_CONFIG.isAdmin) {
+        document.getElementById('adminPanelContainer').style.display = 'none';
+        document.getElementById('announcementCard').classList.remove('hidden');
+        return true;
+    }
+    
+    // Показываем админ-панель
+    document.getElementById('adminPanelContainer').style.display = 'block';
+    document.getElementById('propertyCard').classList.add('admin-card');
+    
+    // Обновляем заголовок
+    const titleEl = document.getElementById('propertyTitle');
+    titleEl.textContent = translations[currentLang].property_title_admin || 'Моё товарищество';
+    
+    // Добавляем бейдж
+    let badge = document.getElementById('propertyCard').querySelector('.admin-badge');
+    if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'admin-badge';
+        badge.innerHTML = '<i class="fas fa-crown"></i> ' + (translations[currentLang].admin_badge || 'АДМИН');
+        titleEl.parentNode.appendChild(badge);
+    }
+    
+    // Если есть данные о квартирах
+    if (state.members && Object.keys(state.members).length > 0) {
+        const members = state.members;
+        
+        // Если мы в режиме просмотра квартиры
+        if (state.isMemberView && state.currentTag && members[state.currentTag]) {
+            // Показываем карточку квартиры
+            document.getElementById('adminApartmentCard').style.display = 'block';
+            document.getElementById('adminMembersSection').style.display = 'none';
+            document.getElementById('backToAssociationBtn').style.display = 'block';
+            document.getElementById('announcementCard').classList.add('hidden');
+            
+            const member = members[state.currentTag];
+            document.getElementById('adminApartmentName').textContent = member.name || 'Квартира ' + state.currentTag;
+            document.getElementById('adminApartmentPath').textContent = state.memberPath;
+            
+            // Рендерим кнопки
+            renderApartmentActionsFromData(state.currentTag, member);
+            
+            // Обновляем property-body
+            const addressEl = document.getElementById('propertyAddressText');
+            if (addressEl) addressEl.textContent = member.name || 'Квартира ' + state.currentTag;
+            
+            return true;
+        } else {
+            // Показываем список квартир
+            document.getElementById('adminApartmentCard').style.display = 'none';
+            document.getElementById('adminMembersSection').style.display = 'block';
+            document.getElementById('backToAssociationBtn').style.display = 'none';
+            document.getElementById('announcementCard').classList.remove('hidden');
+            
+            renderMemberListFromState(members);
+            return true;
+        }
+    }
+    
+    return true;
+}
+
+// Рендеринг списка квартир из сохранённых данных
+function renderMemberListFromState(members) {
+    const list = document.getElementById('adminMemberList');
+    const countBadge = document.getElementById('adminCountBadge');
+    const memberKeys = Object.keys(members);
+    
+    countBadge.textContent = memberKeys.length;
+    
+    if (memberKeys.length > 0) {
+        list.innerHTML = memberKeys.map(tag => {
+            const member = members[tag];
+            const roleIcon = member.permission === 2 ? '<i class="fas fa-crown"></i>' : 
+                           member.permission === 1 ? '<i class="fas fa-user"></i>' : 
+                           '<i class="fas fa-eye"></i>';
+            const roleText = member.permission === 2 ? 'Админ' : 
+                           member.permission === 1 ? 'Жилец' : 'Гость';
+            
+            return `
+                <button class="admin-member-item" data-tag="${tag}">
+                    <div class="member-info">
+                        <i class="fas fa-door-open" style="color: var(--admin-primary);"></i>
+                        <span>${member.name || 'Квартира ' + tag}</span>
+                        <span class="member-tag">${tag}</span>
+                    </div>
+                    <span class="member-role" style="font-size: 11px; color: var(--text-muted);">
+                        ${roleIcon} ${roleText}
+                    </span>
+                </button>
+            `;
+        }).join('');
+        
+        list.querySelectorAll('.admin-member-item').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const tag = this.dataset.tag;
+                try {
+                    await switchMember(tag);
+                    document.getElementById('announcementCard').classList.add('hidden');
+                    showNotification('Переключено на квартиру ' + tag, 'success');
+                } catch (error) {
+                    showNotification('Ошибка переключения: ' + error.message, 'error');
+                }
+            });
+        });
+    } else {
+        list.innerHTML = `
+            <div style="text-align:center; color:var(--text-muted); padding:16px 0; font-size:13px;">
+                <i class="fas fa-info-circle"></i> ${translations[currentLang].no_members}
+            </div>
+        `;
+    }
+    
+    // Кнопка добавления квартиры
+    const addBtn = document.createElement('button');
+    addBtn.className = 'admin-action-btn success';
+    addBtn.innerHTML = `<i class="fas fa-plus"></i> ${translations[currentLang].add_member || 'Добавить квартиру'}`;
+    addBtn.style.marginTop = '8px';
+    addBtn.style.width = '100%';
+    addBtn.addEventListener('click', () => openAddMemberModal());
+    
+    const existingAddBtn = list.parentElement.querySelector('.admin-add-member-btn');
+    if (existingAddBtn) existingAddBtn.remove();
+    addBtn.className += ' admin-add-member-btn';
+    list.parentElement.appendChild(addBtn);
+}
+
+// Функция для рендеринга кнопок из сохранённых данных
+function renderApartmentActionsFromData(memberTag, memberData) {
+    const actionsContainer = document.getElementById('adminApartmentActions');
+    if (!actionsContainer) return;
+    
+    const t = translations[currentLang];
+    
+    actionsContainer.innerHTML = `
+        <div class="action-group-label">${t.apartment_actions || 'Управление квартирой'}</div>
+        <div class="action-group">
+            <button class="admin-apartment-action-btn primary" data-action="edit-member">
+                <i class="fas fa-pen"></i> <span>${t.edit_member || 'Редактировать'}</span>
+            </button>
+            <button class="admin-apartment-action-btn danger" data-action="delete-member">
+                <i class="fas fa-trash"></i> <span>${t.delete_member || 'Удалить'}</span>
+            </button>
+        </div>
+        <div class="action-group-label">${t.counter_actions || 'Управление счётчиками'}</div>
+        <div class="action-group">
+            <button class="admin-apartment-action-btn success" data-action="add-counter">
+                <i class="fas fa-plus"></i> <span>${t.add_counter || 'Добавить'}</span>
+            </button>
+            <button class="admin-apartment-action-btn warning" data-action="delete-counter">
+                <i class="fas fa-minus"></i> <span>${t.delete_counter || 'Удалить'}</span>
+            </button>
+        </div>
+    `;
+    
+    // Обработчики для кнопок
+    actionsContainer.querySelector('[data-action="edit-member"]')?.addEventListener('click', () => {
+        openEditMemberModal(memberTag, memberData);
+    });
+    
+    actionsContainer.querySelector('[data-action="delete-member"]')?.addEventListener('click', async () => {
+        const t = translations[currentLang];
+        if (confirm(t.confirm_delete_member.replace('{name}', memberData?.name || memberTag))) {
+            try {
+                await deleteMember(memberTag);
+                showNotification(t.member_deleted, 'success');
+                // Переключаемся на товарищество
+                await switchToAssociation();
+            } catch (error) {
+                showNotification('Ошибка удаления: ' + error.message, 'error');
+            }
+        }
+    });
+    
+    actionsContainer.querySelector('[data-action="add-counter"]')?.addEventListener('click', () => {
+        openAddCounterModal();
+    });
+    
+    actionsContainer.querySelector('[data-action="delete-counter"]')?.addEventListener('click', () => {
+        openDeleteCounterModal();
+    });
 }
 
 // ============================================
@@ -426,12 +827,10 @@ async function refreshUI() {
         updateSettings(data);
         updateAuthUI();
         
-        // Управление админ-панелью
         if (API_CONFIG.isAdmin) {
             renderAdminPanel(data);
         } else {
             document.getElementById('adminPanelContainer').style.display = 'none';
-            // Показываем объявления для обычного пользователя
             document.getElementById('announcementCard').classList.remove('hidden');
         }
     } catch (error) {
@@ -474,7 +873,6 @@ function renderPropertyCard(data) {
     const ownerEl = document.getElementById('propertyOwnerText');
     const t = translations[currentLang];
     
-    // Убираем старый бейдж
     const oldBadge = card.querySelector('.admin-badge');
     if (oldBadge) oldBadge.remove();
     
@@ -684,18 +1082,15 @@ function renderAdminPanel(data) {
     const pathParts = currentPathStr.split('/');
     const currentTag = pathParts.length > 1 ? pathParts[pathParts.length - 1] : null;
     
-    // Показываем контейнер
+    // Всегда показываем контейнер для админа
     container.style.display = 'block';
     
-    // Обновляем карточку
     const card = document.getElementById('propertyCard');
     card.classList.add('admin-card');
     
-    // Обновляем заголовок с бейджем
     const titleEl = document.getElementById('propertyTitle');
     titleEl.textContent = translations[currentLang].property_title_admin || 'Моё товарищество';
     
-    // Добавляем бейдж если нет
     let badge = card.querySelector('.admin-badge');
     if (!badge) {
         badge = document.createElement('span');
@@ -704,24 +1099,73 @@ function renderAdminPanel(data) {
         titleEl.parentNode.appendChild(badge);
     }
     
-    // Показываем/скрываем кнопку возврата
     backBtn.style.display = isMemberView ? 'block' : 'none';
     
-    // Управление отображением секций
     if (isMemberView) {
-        // Показываем крупную карточку квартиры, скрываем список
         membersSection.style.display = 'none';
         apartmentCard.style.display = 'block';
         
         const member = members[currentTag];
         apartmentName.textContent = member?.name || 'Квартира ' + currentTag;
         apartmentPath.textContent = currentPathStr;
+        
+        // Рендерим кнопки
+        const actionsContainer = document.getElementById('adminApartmentActions');
+        if (actionsContainer) {
+            const t = translations[currentLang];
+            actionsContainer.innerHTML = `
+                <div class="action-group-label">${t.apartment_actions || 'Управление квартирой'}</div>
+                <div class="action-group">
+                    <button class="admin-apartment-action-btn primary" data-action="edit-member">
+                        <i class="fas fa-pen"></i> <span>${t.edit_member || 'Редактировать'}</span>
+                    </button>
+                    <button class="admin-apartment-action-btn danger" data-action="delete-member">
+                        <i class="fas fa-trash"></i> <span>${t.delete_member || 'Удалить'}</span>
+                    </button>
+                </div>
+                <div class="action-group-label">${t.counter_actions || 'Управление счётчиками'}</div>
+                <div class="action-group">
+                    <button class="admin-apartment-action-btn success" data-action="add-counter">
+                        <i class="fas fa-plus"></i> <span>${t.add_counter || 'Добавить'}</span>
+                    </button>
+                    <button class="admin-apartment-action-btn warning" data-action="delete-counter">
+                        <i class="fas fa-minus"></i> <span>${t.delete_counter || 'Удалить'}</span>
+                    </button>
+                </div>
+            `;
+            
+            actionsContainer.querySelector('[data-action="edit-member"]')?.addEventListener('click', () => {
+                const member = members[currentTag];
+                openEditMemberModal(currentTag, member);
+            });
+            
+            actionsContainer.querySelector('[data-action="delete-member"]')?.addEventListener('click', async () => {
+                const member = members[currentTag];
+                const t = translations[currentLang];
+                if (confirm(t.confirm_delete_member.replace('{name}', member?.name || currentTag))) {
+                    try {
+                        await deleteMember(currentTag);
+                        showNotification(t.member_deleted, 'success');
+                        await switchToAssociation();
+                    } catch (error) {
+                        showNotification('Ошибка удаления: ' + error.message, 'error');
+                    }
+                }
+            });
+            
+            actionsContainer.querySelector('[data-action="add-counter"]')?.addEventListener('click', () => {
+                openAddCounterModal();
+            });
+            
+            actionsContainer.querySelector('[data-action="delete-counter"]')?.addEventListener('click', () => {
+                openDeleteCounterModal();
+            });
+        }
+        
     } else {
-        // Показываем список квартир, скрываем карточку
         membersSection.style.display = 'block';
         apartmentCard.style.display = 'none';
         
-        // Строим список квартир
         if (isAssociation && memberKeys.length > 0) {
             countBadge.textContent = memberKeys.length;
             
@@ -748,7 +1192,6 @@ function renderAdminPanel(data) {
                 `;
             }).join('');
             
-            // Добавляем обработчики
             list.querySelectorAll('.admin-member-item').forEach(btn => {
                 btn.addEventListener('click', async function() {
                     const tag = this.dataset.tag;
@@ -765,13 +1208,25 @@ function renderAdminPanel(data) {
             countBadge.textContent = '0';
             list.innerHTML = `
                 <div style="text-align:center; color:var(--text-muted); padding:16px 0; font-size:13px;">
-                    <i class="fas fa-info-circle"></i> Нет квартир в товариществе
+                    <i class="fas fa-info-circle"></i> ${translations[currentLang].no_members}
                 </div>
             `;
         }
+        
+        // Кнопка добавления квартиры
+        const addBtn = document.createElement('button');
+        addBtn.className = 'admin-action-btn success';
+        addBtn.innerHTML = `<i class="fas fa-plus"></i> ${translations[currentLang].add_member || 'Добавить квартиру'}`;
+        addBtn.style.marginTop = '8px';
+        addBtn.style.width = '100%';
+        addBtn.addEventListener('click', () => openAddMemberModal());
+        
+        const existingAddBtn = list.parentElement.querySelector('.admin-add-member-btn');
+        if (existingAddBtn) existingAddBtn.remove();
+        addBtn.className += ' admin-add-member-btn';
+        list.parentElement.appendChild(addBtn);
     }
     
-    // Обработчик кнопки возврата
     backBtn.onclick = async function() {
         try {
             await switchToAssociation();
@@ -781,6 +1236,289 @@ function renderAdminPanel(data) {
             showNotification('Ошибка: ' + error.message, 'error');
         }
     };
+}
+
+// ============================================
+// МОДАЛЬНЫЕ ОКНА АДМИНА
+// ============================================
+
+function openAddMemberModal() {
+    const modal = document.getElementById('adminModal');
+    const title = document.getElementById('adminModalTitle');
+    const body = document.getElementById('adminModalBody');
+    const footer = document.getElementById('adminModalFooter');
+    const t = translations[currentLang];
+    
+    title.textContent = t.add_member || 'Добавить квартиру';
+    
+    body.innerHTML = `
+        <div class="input-field">
+            <i class="fas fa-tag input-icon"></i>
+            <input type="text" id="adminMemberTag" required placeholder=" ">
+            <label>${t.member_tag}</label>
+        </div>
+        <div class="input-field">
+            <i class="fas fa-building input-icon"></i>
+            <input type="text" id="adminMemberName" required placeholder=" ">
+            <label>${t.member_name}</label>
+        </div>
+        <div class="input-field" style="padding: 0 14px; background: transparent; border: none;">
+            <select id="adminMemberType" style="width:100%; padding:14px 14px 6px 14px; background:var(--bg-input); border:2px solid var(--border-color); border-radius:var(--radius-sm); font-size:15px; font-family:'Inter',sans-serif; color:var(--text-primary); outline:none; transition:all 0.2s ease; appearance:none;">
+                <option value="2">${t.type_apartment || 'Квартира'}</option>
+                <option value="3">${t.type_room || 'Комната'}</option>
+            </select>
+        </div>
+        <div class="input-field" style="padding: 0 14px; background: transparent; border: none;">
+            <select id="adminMemberPermission" style="width:100%; padding:14px 14px 6px 14px; background:var(--bg-input); border:2px solid var(--border-color); border-radius:var(--radius-sm); font-size:15px; font-family:'Inter',sans-serif; color:var(--text-primary); outline:none; transition:all 0.2s ease; appearance:none;">
+                <option value="0">${t.permission_guest || 'Гость'}</option>
+                <option value="1" selected>${t.permission_user || 'Пользователь'}</option>
+                <option value="2">${t.permission_admin || 'Администратор'}</option>
+            </select>
+        </div>
+    `;
+    
+    footer.innerHTML = `
+        <button class="admin-submit-btn success" id="adminSubmitBtn">
+            <i class="fas fa-plus"></i> ${t.add_member || 'Добавить'}
+        </button>
+        <button class="admin-submit-btn" id="adminCancelBtn" style="background:var(--bg-input);color:var(--text-secondary);box-shadow:none;margin-top:8px;">
+            ${t.cancel || 'Отмена'}
+        </button>
+    `;
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    document.getElementById('adminSubmitBtn')?.addEventListener('click', async () => {
+        const tag = document.getElementById('adminMemberTag').value.trim();
+        const name = document.getElementById('adminMemberName').value.trim();
+        const type = parseInt(document.getElementById('adminMemberType').value);
+        const permission = parseInt(document.getElementById('adminMemberPermission').value);
+        
+        if (!tag || !name) {
+            showNotification(t.enter_tag + ' и ' + t.enter_name, 'error');
+            return;
+        }
+        
+        try {
+            await addMember(tag, name, type, permission);
+            showNotification(t.member_added, 'success');
+            closeAdminModal();
+            refreshUI();
+        } catch (error) {
+            showNotification(error.message, 'error');
+        }
+    });
+    
+    document.getElementById('adminCancelBtn')?.addEventListener('click', closeAdminModal);
+}
+
+function openEditMemberModal(tag, member) {
+    const modal = document.getElementById('adminModal');
+    const title = document.getElementById('adminModalTitle');
+    const body = document.getElementById('adminModalBody');
+    const footer = document.getElementById('adminModalFooter');
+    const t = translations[currentLang];
+    
+    title.textContent = t.edit_member || 'Редактировать квартиру';
+    
+    body.innerHTML = `
+        <div class="input-field">
+            <i class="fas fa-tag input-icon"></i>
+            <input type="text" id="adminMemberTag" value="${tag}" disabled required placeholder=" ">
+            <label>${t.member_tag}</label>
+        </div>
+        <div class="input-field">
+            <i class="fas fa-building input-icon"></i>
+            <input type="text" id="adminMemberName" value="${member?.name || ''}" required placeholder=" ">
+            <label>${t.member_name}</label>
+        </div>
+        <div class="input-field" style="padding: 0 14px; background: transparent; border: none;">
+            <select id="adminMemberType" style="width:100%; padding:14px 14px 6px 14px; background:var(--bg-input); border:2px solid var(--border-color); border-radius:var(--radius-sm); font-size:15px; font-family:'Inter',sans-serif; color:var(--text-primary); outline:none; transition:all 0.2s ease; appearance:none;">
+                <option value="2" ${member?.type === 2 ? 'selected' : ''}>${t.type_apartment || 'Квартира'}</option>
+                <option value="3" ${member?.type === 3 ? 'selected' : ''}>${t.type_room || 'Комната'}</option>
+            </select>
+        </div>
+        <div class="input-field" style="padding: 0 14px; background: transparent; border: none;">
+            <select id="adminMemberPermission" style="width:100%; padding:14px 14px 6px 14px; background:var(--bg-input); border:2px solid var(--border-color); border-radius:var(--radius-sm); font-size:15px; font-family:'Inter',sans-serif; color:var(--text-primary); outline:none; transition:all 0.2s ease; appearance:none;">
+                <option value="0" ${member?.permission === 0 ? 'selected' : ''}>${t.permission_guest || 'Гость'}</option>
+                <option value="1" ${member?.permission === 1 ? 'selected' : ''}>${t.permission_user || 'Пользователь'}</option>
+                <option value="2" ${member?.permission === 2 ? 'selected' : ''}>${t.permission_admin || 'Администратор'}</option>
+            </select>
+        </div>
+    `;
+    
+    footer.innerHTML = `
+        <button class="admin-submit-btn success" id="adminSubmitBtn">
+            <i class="fas fa-save"></i> ${t.property_save || 'Сохранить'}
+        </button>
+        <button class="admin-submit-btn" id="adminCancelBtn" style="background:var(--bg-input);color:var(--text-secondary);box-shadow:none;margin-top:8px;">
+            ${t.cancel || 'Отмена'}
+        </button>
+    `;
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    document.getElementById('adminSubmitBtn')?.addEventListener('click', async () => {
+        const name = document.getElementById('adminMemberName').value.trim();
+        const type = parseInt(document.getElementById('adminMemberType').value);
+        const permission = parseInt(document.getElementById('adminMemberPermission').value);
+        
+        if (!name) {
+            showNotification(t.enter_name, 'error');
+            return;
+        }
+        
+        try {
+            await modifyMember(tag, { name, type, permission });
+            showNotification(t.member_updated, 'success');
+            closeAdminModal();
+            refreshUI();
+        } catch (error) {
+            showNotification(error.message, 'error');
+        }
+    });
+    
+    document.getElementById('adminCancelBtn')?.addEventListener('click', closeAdminModal);
+}
+
+function openAddCounterModal() {
+    const modal = document.getElementById('adminModal');
+    const title = document.getElementById('adminModalTitle');
+    const body = document.getElementById('adminModalBody');
+    const footer = document.getElementById('adminModalFooter');
+    const t = translations[currentLang];
+    
+    title.textContent = t.add_counter || 'Добавить счётчик';
+    
+    body.innerHTML = `
+        <div class="input-field">
+            <i class="fas fa-tag input-icon"></i>
+            <input type="text" id="adminCounterTag" required placeholder=" ">
+            <label>${t.counter_tag}</label>
+        </div>
+        <div class="input-field">
+            <i class="fas fa-gauge-high input-icon"></i>
+            <input type="text" id="adminCounterName" required placeholder=" ">
+            <label>${t.counter_name}</label>
+        </div>
+        <div class="input-field" style="padding: 0 14px; background: transparent; border: none;">
+            <select id="adminCounterType" style="width:100%; padding:14px 14px 6px 14px; background:var(--bg-input); border:2px solid var(--border-color); border-radius:var(--radius-sm); font-size:15px; font-family:'Inter',sans-serif; color:var(--text-primary); outline:none; transition:all 0.2s ease; appearance:none;">
+                <option value="1">${t.counter_type_1 || 'Электричество (день)'}</option>
+                <option value="2">${t.counter_type_2 || 'Электричество (ночь)'}</option>
+                <option value="3">${t.counter_type_3 || 'Газ'}</option>
+                <option value="4">${t.counter_type_4 || 'Горячая вода'}</option>
+                <option value="5">${t.counter_type_5 || 'Холодная вода'}</option>
+            </select>
+        </div>
+        <div class="input-field">
+            <i class="fas fa-numbers input-icon"></i>
+            <input type="text" id="adminCounterCurrent" value="0" required placeholder=" ">
+            <label>${t.counter_current}</label>
+        </div>
+    `;
+    
+    footer.innerHTML = `
+        <button class="admin-submit-btn success" id="adminSubmitBtn">
+            <i class="fas fa-plus"></i> ${t.add_counter || 'Добавить'}
+        </button>
+        <button class="admin-submit-btn" id="adminCancelBtn" style="background:var(--bg-input);color:var(--text-secondary);box-shadow:none;margin-top:8px;">
+            ${t.cancel || 'Отмена'}
+        </button>
+    `;
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    document.getElementById('adminSubmitBtn')?.addEventListener('click', async () => {
+        const tag = document.getElementById('adminCounterTag').value.trim();
+        const name = document.getElementById('adminCounterName').value.trim();
+        const type = parseInt(document.getElementById('adminCounterType').value);
+        const current = parseFloat(document.getElementById('adminCounterCurrent').value) || 0;
+        
+        if (!tag || !name) {
+            showNotification(t.enter_tag + ' и ' + t.enter_name, 'error');
+            return;
+        }
+        
+        try {
+            await addCounter(tag, name, type, current);
+            showNotification(t.counter_added, 'success');
+            closeAdminModal();
+            refreshUI();
+        } catch (error) {
+            showNotification(error.message, 'error');
+        }
+    });
+    
+    document.getElementById('adminCancelBtn')?.addEventListener('click', closeAdminModal);
+}
+
+function openDeleteCounterModal() {
+    const modal = document.getElementById('adminModal');
+    const title = document.getElementById('adminModalTitle');
+    const body = document.getElementById('adminModalBody');
+    const footer = document.getElementById('adminModalFooter');
+    const t = translations[currentLang];
+    
+    title.textContent = t.delete_counter || 'Удалить счётчик';
+    
+    const counters = API_CONFIG.currentMemberData?.counters || {};
+    const counterOptions = Object.entries(counters).map(([tag, counter]) => {
+        const name = counter.name || tag;
+        return `<option value="${tag}">${name} (${tag})</option>`;
+    }).join('');
+    
+    body.innerHTML = `
+        <div class="input-field" style="padding: 0 14px; background: transparent; border: none;">
+            <select id="adminCounterSelect" style="width:100%; padding:14px 14px 6px 14px; background:var(--bg-input); border:2px solid var(--border-color); border-radius:var(--radius-sm); font-size:15px; font-family:'Inter',sans-serif; color:var(--text-primary); outline:none; transition:all 0.2s ease; appearance:none;">
+                ${counterOptions || '<option value="">Нет счётчиков</option>'}
+            </select>
+        </div>
+    `;
+    
+    footer.innerHTML = `
+        <button class="admin-submit-btn danger" id="adminSubmitBtn">
+            <i class="fas fa-trash"></i> ${t.delete_counter || 'Удалить'}
+        </button>
+        <button class="admin-submit-btn" id="adminCancelBtn" style="background:var(--bg-input);color:var(--text-secondary);box-shadow:none;margin-top:8px;">
+            ${t.cancel || 'Отмена'}
+        </button>
+    `;
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    document.getElementById('adminSubmitBtn')?.addEventListener('click', async () => {
+        const tag = document.getElementById('adminCounterSelect').value;
+        if (!tag) {
+            showNotification('Выберите счётчик', 'error');
+            return;
+        }
+        
+        const counter = API_CONFIG.currentMemberData?.counters?.[tag];
+        if (confirm(t.confirm_delete_counter.replace('{name}', counter?.name || tag))) {
+            try {
+                await deleteCounter(tag);
+                showNotification(t.counter_deleted, 'success');
+                closeAdminModal();
+                refreshUI();
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        }
+    });
+    
+    document.getElementById('adminCancelBtn')?.addEventListener('click', closeAdminModal);
+}
+
+function closeAdminModal() {
+    const modal = document.getElementById('adminModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
 }
 
 // ============================================
@@ -1212,6 +1950,17 @@ document.getElementById('dropdownProperties')?.addEventListener('click', functio
 document.getElementById('dropdownLogout')?.addEventListener('click', function() {
     document.getElementById('dropdownMenu').classList.remove('active');
     logoutAPI();
+    // Очищаем UI
+    document.getElementById('adminPanelContainer').style.display = 'none';
+    document.getElementById('announcementCard').classList.remove('hidden');
+    document.getElementById('propertyCard').classList.remove('admin-card');
+    document.getElementById('propertyTitle').textContent = translations[currentLang].property_title || 'Моя квартира';
+    document.getElementById('propertyAddressText').textContent = 'Загрузка...';
+    document.getElementById('propertyOwnerText').textContent = 'Загрузка...';
+    // Удаляем бейдж
+    const badge = document.getElementById('propertyCard').querySelector('.admin-badge');
+    if (badge) badge.remove();
+    
     showNotification('Выход выполнен', 'warning');
     showAuthRequired();
     updateAuthUI();
@@ -1347,17 +2096,25 @@ document.getElementById('readingHistoryBtn')?.addEventListener('click', function
     refreshUI();
 });
 
-document.getElementById('confirmModal')?.addEventListener('click', function(e) {
-    if (e.target === this) closeConfirmModal();
+// ============================================
+// ОБРАБОТЧИКИ АДМИН-МОДАЛЕЙ
+// ============================================
+
+document.getElementById('adminModal')?.addEventListener('click', function(e) {
+    if (e.target === this) closeAdminModal();
 });
 
-function closeConfirmModal() {
-    const modal = document.getElementById('confirmModal');
-    if (modal) {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
+document.getElementById('adminCloseBtn')?.addEventListener('click', closeAdminModal);
+
+// Закрытие по ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeAdminModal();
+        closeAuthModal();
+        closeReadingModal();
+        closeConfirmModal();
     }
-}
+});
 
 // ============================================
 // КАРУСЕЛЬ ОБЪЯВЛЕНИЙ
@@ -1562,10 +2319,47 @@ document.querySelectorAll('.announcement-item').forEach(item => {
 });
 
 // ============================================
+// МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ
+// ============================================
+function openConfirmModal(title, message, onConfirm) {
+    const modal = document.getElementById('confirmModal');
+    const titleEl = document.getElementById('confirmTitle');
+    const messageEl = document.getElementById('confirmMessage');
+    
+    if (titleEl) titleEl.textContent = title || translations[currentLang].confirm_title;
+    if (messageEl) messageEl.textContent = message || translations[currentLang].confirm_message;
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    document.getElementById('confirmOk').onclick = function() {
+        closeConfirmModal();
+        if (typeof onConfirm === 'function') onConfirm();
+    };
+    document.getElementById('confirmCancel').onclick = closeConfirmModal;
+}
+
+function closeConfirmModal() {
+    const modal = document.getElementById('confirmModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+document.getElementById('confirmModal')?.addEventListener('click', function(e) {
+    if (e.target === this) closeConfirmModal();
+});
+
+// ============================================
 // ИНИЦИАЛИЗАЦИЯ
 // ============================================
 async function initApp() {
     console.log('🚀 Запуск Majio...');
+    
+    // Сначала пробуем восстановить UI из сохранённого состояния
+    const stateRestored = restoreUIFromState();
+    console.log(`🔄 Восстановление UI: ${stateRestored ? 'успешно' : 'нет данных'}`);
     
     const savedPath = localStorage.getItem('majio_member_path');
     const savedKey = localStorage.getItem('majio_access_key');
@@ -1593,12 +2387,14 @@ async function initApp() {
     setTimeout(initAnnouncements, 100);
     setTimeout(initAdsSlider, 150);
     
-    console.log('🏠 KorterInfo v0.29 - Управление недвижимостью');
+    console.log('🏠 KorterInfo v0.35 - Управление недвижимостью');
     console.log(`🌓 Theme: ${currentTheme}, Language: ${currentLang}`);
     console.log(`🔑 Authenticated: ${isAuthenticated()}`);
     if (isAuthenticated()) {
         console.log(`📍 Path: ${API_CONFIG.memberPath}`);
         console.log(`👑 Admin: ${API_CONFIG.isAdmin}`);
+        const hasFullState = !!localStorage.getItem('majio_full_state');
+        console.log(`📂 Полное состояние сохранено: ${hasFullState ? 'да' : 'нет'}`);
     }
 }
 

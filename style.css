@@ -45,23 +45,29 @@
     --admin-glow: 0 0 30px rgba(124, 58, 237, 0.25);
     --admin-border: 2px solid #7C3AED;
     --admin-bg: rgba(124, 58, 237, 0.08);
+    --admin-text: #7C3AED;
 }
 
 [data-theme="dark"] {
-    --bg-primary: #121212;
-    --bg-secondary: #1E1E1E;
-    --bg-card: #1E1E1E;
-    --bg-input: #2D2D2D;
-    --text-primary: #E8E8E8;
-    --text-secondary: #B0B0B0;
-    --text-muted: #7A7A7A;
-    --border-color: #3D3D3D;
-    --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.4);
-    --primary-bg: rgba(52, 73, 94, 0.2);
-    --accent-bg: rgba(230, 126, 34, 0.15);
-    --success-bg: rgba(46, 204, 113, 0.15);
-    --admin-bg: rgba(124, 58, 237, 0.15);
+    --bg-primary: #0D1117;
+    --bg-secondary: #161B22;
+    --bg-card: #1C2333;
+    --bg-input: #0D1117;
+    --text-primary: #E6EDF3;
+    --text-secondary: #8B949E;
+    --text-muted: #484F58;
+    --border-color: #30363D;
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
+    --primary-bg: rgba(52, 73, 94, 0.25);
+    --accent-bg: rgba(230, 126, 34, 0.2);
+    --success-bg: rgba(46, 204, 113, 0.2);
+    --admin-bg: rgba(124, 58, 237, 0.2);
+    --admin-text: #A78BFA;
+    --admin-primary: #A78BFA;
+    --admin-primary-dark: #8B5CF6;
+    --admin-border: 2px solid #A78BFA;
+    --admin-gradient: linear-gradient(135deg, #8B5CF6, #7C3AED);
 }
 
 /* ============================================ */
@@ -166,8 +172,9 @@ body {
 .icon-btn.auth-btn:active { opacity: 0.8; }
 
 .icon-btn.auth-btn.admin-mode {
-    background: var(--admin-gradient);
-    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+    background: var(--admin-gradient) !important;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4) !important;
+    color: white !important;
     animation: adminPulse 2s infinite;
 }
 
@@ -223,12 +230,12 @@ body {
 .dropdown-item i { width: 20px; font-size: 16px; text-align: center; color: var(--primary); }
 
 .dropdown-item.admin-item {
-    color: var(--admin-primary);
+    color: var(--admin-text);
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 12px;
     margin-bottom: 4px;
 }
-.dropdown-item.admin-item i { color: var(--admin-primary); }
+.dropdown-item.admin-item i { color: var(--admin-text); }
 .dropdown-item.admin-item:hover { background: var(--admin-bg); }
 
 /* ============================================ */
@@ -247,21 +254,6 @@ body {
     border: var(--admin-border);
     background: linear-gradient(135deg, var(--bg-card), var(--admin-bg));
     box-shadow: var(--admin-glow);
-}
-
-.property-card .admin-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: var(--admin-gradient);
-    color: white;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 12px;
-    border-radius: 20px;
-    margin-left: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .property-header {
@@ -320,20 +312,6 @@ body {
     font-size: 14px;
     font-weight: 700;
     color: var(--admin-primary);
-}
-
-.admin-panel-header .admin-badge-large {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--admin-gradient);
-    color: white;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 3px 12px;
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .admin-section-label {
@@ -1278,8 +1256,9 @@ body {
 .admin-modal select {
     width: 100%;
     padding: 14px 14px 6px 14px;
-    background: transparent;
-    border: none;
+    background: var(--bg-input);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
     outline: none;
     color: var(--text-primary);
     font-size: 15px;
@@ -1293,6 +1272,7 @@ body {
     background-position: right 12px center;
     background-size: 16px;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .admin-modal select:focus {
@@ -1345,7 +1325,7 @@ body {
 .property-add-btn:active, .property-save-btn:active { transform: scale(0.97); }
 
 /* ============================================ */
-/* ПОЛЯ ВВОДА - FLOATING LABELS                 */
+/* ПОЛЯ ВВОМА - FLOATING LABELS                 */
 /* ============================================ */
 .input-field {
     position: relative;
@@ -1503,7 +1483,7 @@ body {
 
 [data-theme="dark"] .form-group .control-label { background: var(--bg-card); }
 [data-theme="dark"] .form-group .form-control { color: var(--text-primary); border-bottom-color: var(--border-color); }
-[data-theme="dark"] .form-group .form-control:focus { border-bottom-color: var(--primary); }
+[data-theme="dark"] .form-group .form-control:focus { border-bottom-color: var(--primary-light); }
 [data-theme="dark"] .form-group .form-control:focus ~ .control-label { color: var(--primary-light); }
 [data-theme="dark"] .form-group .form-control:focus ~ .form-control-feedback { color: var(--primary-light); }
 

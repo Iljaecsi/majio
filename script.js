@@ -38,6 +38,7 @@ const translations = {
         equal_to_previous: 'Новое показание совпадает с предыдущим ({prev})',
         confirm_title: 'Внимание!',
         confirm_message: 'Вы уверены, что показания правильные? ({value})',
+        confirm_ok: 'Да, уверен',
         stats_total: 'Всего показаний',
         stats_properties: 'Квартир',
         stats_meters: 'Счетчиков',
@@ -57,6 +58,8 @@ const translations = {
         lang_et: 'Эстонский',
         auth_login: 'Вход',
         auth_register: 'Регистрация',
+        auth_path: 'Путь (например: t7 или t7/89)',
+        auth_key: 'Ключ доступа',
         auth_username: 'Имя пользователя',
         auth_password: 'Пароль',
         auth_password_confirm: 'Подтвердите пароль',
@@ -112,7 +115,7 @@ const translations = {
         auth_required: 'Требуется авторизация',
         admin_panel: 'Панель администратора',
         select_member: 'Выберите квартиру',
-        member_list: 'Список квартир',
+        member_list: 'Квартиры в товариществе',
         association_name: 'Товарищество',
         apartment: 'Квартира',
         members_count: 'Квартир в товариществе',
@@ -120,7 +123,6 @@ const translations = {
         switch_to_association: 'Вернуться в товарищество',
         current_member: 'Текущая квартира',
         no_members: 'Нет квартир в товариществе',
-        admin_badge: 'АДМИН',
         add_member: 'Добавить квартиру',
         delete_member: 'Удалить квартиру',
         add_counter: 'Добавить счётчик',
@@ -165,6 +167,16 @@ const translations = {
         counter_actions: 'Управление счётчиками',
         back: 'Назад',
         cancel: 'Отмена',
+        loading: 'Загрузка счетчиков...',
+        announcement_water_title: 'Отключение воды',
+        announcement_water_text: 'С 15 июля по 20 июля будет отключена горячая вода для плановых ремонтных работ.',
+        announcement_water_date: '15.07.2026 — 20.07.2026',
+        announcement_repair_title: 'Ремонт лифта',
+        announcement_repair_text: 'С 10 по 12 июля будет проводиться плановое техническое обслуживание лифта.',
+        announcement_repair_date: '10.07.2026 — 12.07.2026',
+        announcement_garden_title: 'Озеленение двора',
+        announcement_garden_text: 'Приглашаем жителей на субботник по озеленению двора 25 июля в 10:00.',
+        announcement_garden_date: '25.07.2026, 10:00',
     },
     et: {
         subtitle: 'Tark arvestus teie kodus',
@@ -181,6 +193,7 @@ const translations = {
         equal_to_previous: 'Uus näit on sama mis eelmine ({prev})',
         confirm_title: 'Tähelepanu!',
         confirm_message: 'Kas olete kindel, et näidud on õiged? ({value})',
+        confirm_ok: 'Jah, olen kindel',
         stats_total: 'Näite kokku',
         stats_properties: 'Korterit',
         stats_meters: 'Arvestit',
@@ -200,6 +213,8 @@ const translations = {
         lang_et: 'Eesti',
         auth_login: 'Logi sisse',
         auth_register: 'Registreeru',
+        auth_path: 'Tee (nt: t7 või t7/89)',
+        auth_key: 'Juurdepääsuvõti',
         auth_username: 'Kasutajanimi',
         auth_password: 'Parool',
         auth_password_confirm: 'Kinnita parool',
@@ -255,7 +270,7 @@ const translations = {
         auth_required: 'Autentimine on vajalik',
         admin_panel: 'Administraatori paneel',
         select_member: 'Vali korter',
-        member_list: 'Korterite nimekiri',
+        member_list: 'Korterid ühistus',
         association_name: 'Ühistu',
         apartment: 'Korter',
         members_count: 'Korterit ühistus',
@@ -263,7 +278,6 @@ const translations = {
         switch_to_association: 'Tagasi ühistusse',
         current_member: 'Praegune korter',
         no_members: 'Ühistus pole kortereid',
-        admin_badge: 'ADMIN',
         add_member: 'Lisa korter',
         delete_member: 'Kustuta korter',
         add_counter: 'Lisa arvesti',
@@ -308,6 +322,16 @@ const translations = {
         counter_actions: 'Arvestite haldus',
         back: 'Tagasi',
         cancel: 'Tühista',
+        loading: 'Arvestite laadimine...',
+        announcement_water_title: 'Vee väljalülitamine',
+        announcement_water_text: '15. juulist kuni 20. juulini lülitatakse plaaniliste remonditööde tõttu soe vesi välja.',
+        announcement_water_date: '15.07.2026 — 20.07.2026',
+        announcement_repair_title: 'Lifti remont',
+        announcement_repair_text: '10. kuni 12. juulini toimub lifti plaaniline hooldus.',
+        announcement_repair_date: '10.07.2026 — 12.07.2026',
+        announcement_garden_title: 'Hoovi haljastus',
+        announcement_garden_text: 'Kutsume elanikke 25. juulil kell 10:00 hoovi haljastustalgutele.',
+        announcement_garden_date: '25.07.2026, 10:00',
     }
 };
 
@@ -549,6 +573,7 @@ function logoutAPI() {
     localStorage.removeItem('majio_user');
     localStorage.removeItem('majio_full_state');
     currentUser = null;
+    updateProfileIcon();
 }
 
 function isAuthenticated() {
@@ -604,6 +629,33 @@ async function modifyCounter(tag, data) {
 }
 
 // ============================================
+// ОБНОВЛЕНИЕ ИКОНКИ ПРОФИЛЯ
+// ============================================
+function updateProfileIcon() {
+    const profileToggle = document.getElementById('profileToggle');
+    const icon = profileToggle?.querySelector('i');
+    
+    if (!profileToggle || !icon) return;
+    
+    if (isAuthenticated() && API_CONFIG.isAdmin) {
+        profileToggle.className = 'icon-btn auth-btn admin-mode';
+        icon.className = 'fas fa-crown';
+        profileToggle.style.background = 'var(--admin-gradient)';
+        profileToggle.style.color = 'white';
+    } else if (isAuthenticated()) {
+        profileToggle.className = 'icon-btn auth-btn';
+        profileToggle.style.background = '#2ECC71';
+        profileToggle.style.color = 'white';
+        icon.className = 'fas fa-user-check';
+    } else {
+        profileToggle.className = 'icon-btn auth-btn';
+        profileToggle.style.background = '#34495E';
+        profileToggle.style.color = 'white';
+        icon.className = 'fas fa-user';
+    }
+}
+
+// ============================================
 // ВОССТАНОВЛЕНИЕ UI ИЗ СОХРАНЁННОГО СОСТОЯНИЯ
 // ============================================
 function restoreUIFromState() {
@@ -624,6 +676,9 @@ function restoreUIFromState() {
         API_CONFIG.membersList = state.members;
     }
     
+    // Обновляем иконку профиля
+    updateProfileIcon();
+    
     // Если пользователь не админ - скрываем админ-панель
     if (!API_CONFIG.isAdmin) {
         document.getElementById('adminPanelContainer').style.display = 'none';
@@ -638,15 +693,6 @@ function restoreUIFromState() {
     // Обновляем заголовок
     const titleEl = document.getElementById('propertyTitle');
     titleEl.textContent = translations[currentLang].property_title_admin || 'Моё товарищество';
-    
-    // Добавляем бейдж
-    let badge = document.getElementById('propertyCard').querySelector('.admin-badge');
-    if (!badge) {
-        badge = document.createElement('span');
-        badge.className = 'admin-badge';
-        badge.innerHTML = '<i class="fas fa-crown"></i> ' + (translations[currentLang].admin_badge || 'АДМИН');
-        titleEl.parentNode.appendChild(badge);
-    }
     
     // Если есть данные о квартирах
     if (state.members && Object.keys(state.members).length > 0) {
@@ -815,6 +861,7 @@ function renderApartmentActionsFromData(memberTag, memberData) {
 async function refreshUI() {
     if (!isAuthenticated()) {
         showAuthRequired();
+        updateProfileIcon();
         return;
     }
 
@@ -826,6 +873,7 @@ async function refreshUI() {
         updateStatsPage(data);
         updateSettings(data);
         updateAuthUI();
+        updateProfileIcon();
         
         if (API_CONFIG.isAdmin) {
             renderAdminPanel(data);
@@ -859,6 +907,7 @@ function showAuthRequired() {
     const adminPanel = document.getElementById('adminPanelContainer');
     if (adminPanel) adminPanel.style.display = 'none';
     updateAuthUI();
+    updateProfileIcon();
 }
 
 // ============================================
@@ -873,16 +922,9 @@ function renderPropertyCard(data) {
     const ownerEl = document.getElementById('propertyOwnerText');
     const t = translations[currentLang];
     
-    const oldBadge = card.querySelector('.admin-badge');
-    if (oldBadge) oldBadge.remove();
-    
     if (API_CONFIG.isAdmin) {
         card.classList.add('admin-card');
         titleEl.textContent = t.property_title_admin || 'Моё товарищество';
-        const badge = document.createElement('span');
-        badge.className = 'admin-badge';
-        badge.innerHTML = '<i class="fas fa-crown"></i> ' + (t.admin_badge || 'АДМИН');
-        titleEl.parentNode.appendChild(badge);
     } else {
         card.classList.remove('admin-card');
         titleEl.textContent = t.property_title || 'Моя квартира';
@@ -1091,14 +1133,6 @@ function renderAdminPanel(data) {
     const titleEl = document.getElementById('propertyTitle');
     titleEl.textContent = translations[currentLang].property_title_admin || 'Моё товарищество';
     
-    let badge = card.querySelector('.admin-badge');
-    if (!badge) {
-        badge = document.createElement('span');
-        badge.className = 'admin-badge';
-        badge.innerHTML = '<i class="fas fa-crown"></i> ' + (translations[currentLang].admin_badge || 'АДМИН');
-        titleEl.parentNode.appendChild(badge);
-    }
-    
     backBtn.style.display = isMemberView ? 'block' : 'none';
     
     if (isMemberView) {
@@ -1262,18 +1296,22 @@ function openAddMemberModal() {
             <input type="text" id="adminMemberName" required placeholder=" ">
             <label>${t.member_name}</label>
         </div>
-        <div class="input-field" style="padding: 0 14px; background: transparent; border: none;">
-            <select id="adminMemberType" style="width:100%; padding:14px 14px 6px 14px; background:var(--bg-input); border:2px solid var(--border-color); border-radius:var(--radius-sm); font-size:15px; font-family:'Inter',sans-serif; color:var(--text-primary); outline:none; transition:all 0.2s ease; appearance:none;">
+        <div class="input-field" style="padding: 0;">
+            <i class="fas fa-tag input-icon" style="top:22px; transform:none;"></i>
+            <select id="adminMemberType" style="width:100%; padding:18px 14px 6px 42px; background:var(--bg-input); border:none; outline:none; color:var(--text-primary); font-size:15px; font-family:'Inter',sans-serif; font-weight:500; min-height:56px; appearance:none; -webkit-appearance:none; cursor:pointer;">
                 <option value="2">${t.type_apartment || 'Квартира'}</option>
                 <option value="3">${t.type_room || 'Комната'}</option>
             </select>
+            <label style="left:42px; top:8px; transform:translateY(0); font-size:10px; color:var(--admin-primary); font-weight:600;">${t.member_type}</label>
         </div>
-        <div class="input-field" style="padding: 0 14px; background: transparent; border: none;">
-            <select id="adminMemberPermission" style="width:100%; padding:14px 14px 6px 14px; background:var(--bg-input); border:2px solid var(--border-color); border-radius:var(--radius-sm); font-size:15px; font-family:'Inter',sans-serif; color:var(--text-primary); outline:none; transition:all 0.2s ease; appearance:none;">
+        <div class="input-field" style="padding: 0;">
+            <i class="fas fa-user-shield input-icon" style="top:22px; transform:none;"></i>
+            <select id="adminMemberPermission" style="width:100%; padding:18px 14px 6px 42px; background:var(--bg-input); border:none; outline:none; color:var(--text-primary); font-size:15px; font-family:'Inter',sans-serif; font-weight:500; min-height:56px; appearance:none; -webkit-appearance:none; cursor:pointer;">
                 <option value="0">${t.permission_guest || 'Гость'}</option>
                 <option value="1" selected>${t.permission_user || 'Пользователь'}</option>
                 <option value="2">${t.permission_admin || 'Администратор'}</option>
             </select>
+            <label style="left:42px; top:8px; transform:translateY(0); font-size:10px; color:var(--admin-primary); font-weight:600;">${t.member_permission}</label>
         </div>
     `;
     
@@ -1333,18 +1371,22 @@ function openEditMemberModal(tag, member) {
             <input type="text" id="adminMemberName" value="${member?.name || ''}" required placeholder=" ">
             <label>${t.member_name}</label>
         </div>
-        <div class="input-field" style="padding: 0 14px; background: transparent; border: none;">
-            <select id="adminMemberType" style="width:100%; padding:14px 14px 6px 14px; background:var(--bg-input); border:2px solid var(--border-color); border-radius:var(--radius-sm); font-size:15px; font-family:'Inter',sans-serif; color:var(--text-primary); outline:none; transition:all 0.2s ease; appearance:none;">
+        <div class="input-field" style="padding: 0;">
+            <i class="fas fa-tag input-icon" style="top:22px; transform:none;"></i>
+            <select id="adminMemberType" style="width:100%; padding:18px 14px 6px 42px; background:var(--bg-input); border:none; outline:none; color:var(--text-primary); font-size:15px; font-family:'Inter',sans-serif; font-weight:500; min-height:56px; appearance:none; -webkit-appearance:none; cursor:pointer;">
                 <option value="2" ${member?.type === 2 ? 'selected' : ''}>${t.type_apartment || 'Квартира'}</option>
                 <option value="3" ${member?.type === 3 ? 'selected' : ''}>${t.type_room || 'Комната'}</option>
             </select>
+            <label style="left:42px; top:8px; transform:translateY(0); font-size:10px; color:var(--admin-primary); font-weight:600;">${t.member_type}</label>
         </div>
-        <div class="input-field" style="padding: 0 14px; background: transparent; border: none;">
-            <select id="adminMemberPermission" style="width:100%; padding:14px 14px 6px 14px; background:var(--bg-input); border:2px solid var(--border-color); border-radius:var(--radius-sm); font-size:15px; font-family:'Inter',sans-serif; color:var(--text-primary); outline:none; transition:all 0.2s ease; appearance:none;">
+        <div class="input-field" style="padding: 0;">
+            <i class="fas fa-user-shield input-icon" style="top:22px; transform:none;"></i>
+            <select id="adminMemberPermission" style="width:100%; padding:18px 14px 6px 42px; background:var(--bg-input); border:none; outline:none; color:var(--text-primary); font-size:15px; font-family:'Inter',sans-serif; font-weight:500; min-height:56px; appearance:none; -webkit-appearance:none; cursor:pointer;">
                 <option value="0" ${member?.permission === 0 ? 'selected' : ''}>${t.permission_guest || 'Гость'}</option>
                 <option value="1" ${member?.permission === 1 ? 'selected' : ''}>${t.permission_user || 'Пользователь'}</option>
                 <option value="2" ${member?.permission === 2 ? 'selected' : ''}>${t.permission_admin || 'Администратор'}</option>
             </select>
+            <label style="left:42px; top:8px; transform:translateY(0); font-size:10px; color:var(--admin-primary); font-weight:600;">${t.member_permission}</label>
         </div>
     `;
     
@@ -1403,14 +1445,16 @@ function openAddCounterModal() {
             <input type="text" id="adminCounterName" required placeholder=" ">
             <label>${t.counter_name}</label>
         </div>
-        <div class="input-field" style="padding: 0 14px; background: transparent; border: none;">
-            <select id="adminCounterType" style="width:100%; padding:14px 14px 6px 14px; background:var(--bg-input); border:2px solid var(--border-color); border-radius:var(--radius-sm); font-size:15px; font-family:'Inter',sans-serif; color:var(--text-primary); outline:none; transition:all 0.2s ease; appearance:none;">
+        <div class="input-field" style="padding: 0;">
+            <i class="fas fa-bolt input-icon" style="top:22px; transform:none;"></i>
+            <select id="adminCounterType" style="width:100%; padding:18px 14px 6px 42px; background:var(--bg-input); border:none; outline:none; color:var(--text-primary); font-size:15px; font-family:'Inter',sans-serif; font-weight:500; min-height:56px; appearance:none; -webkit-appearance:none; cursor:pointer;">
                 <option value="1">${t.counter_type_1 || 'Электричество (день)'}</option>
                 <option value="2">${t.counter_type_2 || 'Электричество (ночь)'}</option>
                 <option value="3">${t.counter_type_3 || 'Газ'}</option>
                 <option value="4">${t.counter_type_4 || 'Горячая вода'}</option>
                 <option value="5">${t.counter_type_5 || 'Холодная вода'}</option>
             </select>
+            <label style="left:42px; top:8px; transform:translateY(0); font-size:10px; color:var(--admin-primary); font-weight:600;">${t.counter_type}</label>
         </div>
         <div class="input-field">
             <i class="fas fa-numbers input-icon"></i>
@@ -1471,10 +1515,12 @@ function openDeleteCounterModal() {
     }).join('');
     
     body.innerHTML = `
-        <div class="input-field" style="padding: 0 14px; background: transparent; border: none;">
-            <select id="adminCounterSelect" style="width:100%; padding:14px 14px 6px 14px; background:var(--bg-input); border:2px solid var(--border-color); border-radius:var(--radius-sm); font-size:15px; font-family:'Inter',sans-serif; color:var(--text-primary); outline:none; transition:all 0.2s ease; appearance:none;">
+        <div class="input-field" style="padding: 0;">
+            <i class="fas fa-bolt input-icon" style="top:22px; transform:none;"></i>
+            <select id="adminCounterSelect" style="width:100%; padding:18px 14px 6px 42px; background:var(--bg-input); border:none; outline:none; color:var(--text-primary); font-size:15px; font-family:'Inter',sans-serif; font-weight:500; min-height:56px; appearance:none; -webkit-appearance:none; cursor:pointer;">
                 ${counterOptions || '<option value="">Нет счётчиков</option>'}
             </select>
+            <label style="left:42px; top:8px; transform:translateY(0); font-size:10px; color:var(--admin-primary); font-weight:600;">${t.counter_name}</label>
         </div>
     `;
     
@@ -1612,8 +1658,6 @@ function updateAuthUI() {
     const dropdownRegister = document.getElementById('dropdownRegister');
     const dropdownLogout = document.getElementById('dropdownLogout');
     const dropdownProperties = document.getElementById('dropdownProperties');
-    const profileToggle = document.getElementById('profileToggle');
-    const icon = profileToggle?.querySelector('i');
     
     if (isAuthenticated()) {
         if (dropdownLogin) dropdownLogin.style.display = 'none';
@@ -1622,21 +1666,11 @@ function updateAuthUI() {
         if (dropdownProperties) {
             dropdownProperties.style.display = 'flex';
             if (API_CONFIG.isAdmin) {
-                dropdownProperties.innerHTML = `<i class="fas fa-crown"></i><span>Квартиры</span>`;
+                dropdownProperties.innerHTML = `<i class="fas fa-crown"></i><span>${translations[currentLang].dropdown_properties}</span>`;
                 dropdownProperties.className = 'dropdown-item admin-item';
             } else {
-                dropdownProperties.innerHTML = `<i class="fas fa-building"></i><span>Моя квартира</span>`;
+                dropdownProperties.innerHTML = `<i class="fas fa-building"></i><span>${translations[currentLang].dropdown_properties}</span>`;
                 dropdownProperties.className = 'dropdown-item';
-            }
-        }
-        if (icon) icon.className = 'fas fa-user-check';
-        if (profileToggle) {
-            if (API_CONFIG.isAdmin) {
-                profileToggle.className = 'icon-btn auth-btn admin-mode';
-            } else {
-                profileToggle.className = 'icon-btn auth-btn';
-                profileToggle.style.background = '#2ECC71';
-                profileToggle.style.color = 'white';
             }
         }
     } else {
@@ -1647,12 +1681,6 @@ function updateAuthUI() {
             dropdownProperties.style.display = 'flex';
             dropdownProperties.innerHTML = `<i class="fas fa-building"></i><span>${translations[currentLang].dropdown_properties}</span>`;
             dropdownProperties.className = 'dropdown-item';
-        }
-        if (icon) icon.className = 'fas fa-user';
-        if (profileToggle) {
-            profileToggle.className = 'icon-btn auth-btn';
-            profileToggle.style.background = '#34495E';
-            profileToggle.style.color = 'white';
         }
     }
 }
@@ -1876,7 +1904,7 @@ function applyTheme(theme) {
     
     const metaColor = document.getElementById('themeColor');
     if (metaColor) {
-        metaColor.content = theme === 'dark' ? '#121212' : '#F5F7FA';
+        metaColor.content = theme === 'dark' ? '#0D1117' : '#F5F7FA';
     }
 }
 
@@ -1957,13 +1985,11 @@ document.getElementById('dropdownLogout')?.addEventListener('click', function() 
     document.getElementById('propertyTitle').textContent = translations[currentLang].property_title || 'Моя квартира';
     document.getElementById('propertyAddressText').textContent = 'Загрузка...';
     document.getElementById('propertyOwnerText').textContent = 'Загрузка...';
-    // Удаляем бейдж
-    const badge = document.getElementById('propertyCard').querySelector('.admin-badge');
-    if (badge) badge.remove();
     
     showNotification('Выход выполнен', 'warning');
     showAuthRequired();
     updateAuthUI();
+    updateProfileIcon();
 });
 
 document.getElementById('authCloseBtn')?.addEventListener('click', closeAuthModal);
@@ -2022,6 +2048,7 @@ document.getElementById('authForm')?.addEventListener('submit', async function(e
             currentUser = data.name || 'Пользователь';
             localStorage.setItem('majio_user', currentUser);
             await refreshUI();
+            updateProfileIcon();
             setTimeout(closeAuthModal, 1000);
         } catch (error) {
             if (statusEl) {

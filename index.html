@@ -86,15 +86,14 @@
                     <div class="admin-divider"></div>
                     <div class="admin-panel">
                         <div class="admin-panel-header">
-                            <h3><i class="fas fa-users-cog"></i> Панель администратора</h3>
-                            <span class="admin-badge-large"><i class="fas fa-crown"></i> АДМИН</span>
+                            <h3><i class="fas fa-users-cog"></i> <span data-key="admin_panel">Панель администратора</span></h3>
                         </div>
                         
                         <!-- Список квартир (показывается только в товариществе) -->
                         <div id="adminMembersSection">
                             <div class="admin-section-label">
                                 <i class="fas fa-door-open"></i> 
-                                <span>Квартиры в товариществе</span>
+                                <span data-key="member_list">Квартиры в товариществе</span>
                                 <span class="admin-count-badge" id="adminCountBadge">0</span>
                             </div>
                             <div class="admin-member-list" id="adminMemberList">
@@ -111,7 +110,7 @@
                                 <div class="admin-apartment-name" id="adminApartmentName">Квартира 89</div>
                                 <div class="admin-apartment-path" id="adminApartmentPath">t7/89</div>
                                 <div class="admin-apartment-badge">
-                                    <i class="fas fa-check-circle"></i> Текущая квартира
+                                    <i class="fas fa-check-circle"></i> <span data-key="current_member">Текущая квартира</span>
                                 </div>
                                 <!-- Компактные кнопки управления внутри карточки -->
                                 <div class="admin-apartment-actions" id="adminApartmentActions">
@@ -123,7 +122,7 @@
                         <!-- Кнопка возврата в товарищество -->
                         <button class="admin-back-btn" id="backToAssociationBtn" style="display:none;">
                             <i class="fas fa-arrow-left"></i> 
-                            Вернуться в товарищество
+                            <span data-key="switch_to_association">Вернуться в товарищество</span>
                         </button>
                     </div>
                 </div>
@@ -201,7 +200,7 @@
         <div class="auth-modal" id="authModal">
             <div class="auth-modal-content">
                 <div class="auth-modal-header">
-                    <h2 id="authTitle">Вход</h2>
+                    <h2 id="authTitle" data-key="auth_login">Вход</h2>
                     <button class="auth-close-btn" id="authCloseBtn"><i class="fas fa-times"></i></button>
                 </div>
                 <form id="authForm" novalidate>
@@ -214,12 +213,12 @@
                             <div class="input-field">
                                 <i class="fas fa-user input-icon"></i>
                                 <input type="text" id="loginPath" required placeholder=" " value="t7">
-                                <label>Путь (например: t7 или t7/89)</label>
+                                <label data-key="auth_path">Путь (например: t7 или t7/89)</label>
                             </div>
                             <div class="input-field">
                                 <i class="fas fa-key input-icon"></i>
                                 <input type="password" id="loginKey" required placeholder=" " value="gQdOjbXDRkqbJuEL4butoQ">
-                                <label>Ключ доступа</label>
+                                <label data-key="auth_key">Ключ доступа</label>
                             </div>
                             <button type="submit" class="auth-submit-btn" data-auth-mode="login">
                                 <i class="fas fa-sign-in-alt"></i>
@@ -257,7 +256,7 @@
         <div class="admin-modal" id="adminModal">
             <div class="admin-modal-content">
                 <div class="admin-modal-header">
-                    <h2 id="adminModalTitle">Управление</h2>
+                    <h2 id="adminModalTitle" data-key="admin_panel">Управление</h2>
                     <button class="admin-close-btn" id="adminCloseBtn"><i class="fas fa-times"></i></button>
                 </div>
                 <div id="adminModalBody">
@@ -315,11 +314,11 @@
                 <div class="confirm-icon">
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
-                <h2 id="confirmTitle">Внимание!</h2>
-                <p id="confirmMessage">Вы уверены, что показания правильные?</p>
+                <h2 id="confirmTitle" data-key="confirm_title">Внимание!</h2>
+                <p id="confirmMessage" data-key="confirm_message">Вы уверены, что показания правильные?</p>
                 <div class="confirm-actions">
-                    <button class="confirm-btn confirm-cancel" id="confirmCancel">Отмена</button>
-                    <button class="confirm-btn confirm-ok" id="confirmOk">Да, уверен</button>
+                    <button class="confirm-btn confirm-cancel" id="confirmCancel" data-key="cancel">Отмена</button>
+                    <button class="confirm-btn confirm-ok" id="confirmOk" data-key="confirm_ok">Да, уверен</button>
                 </div>
             </div>
         </div>
@@ -391,7 +390,7 @@
                 <div class="tab-pane active" id="tab-submit">
                     <section class="meters-section" id="metersSection">
                         <div class="meters-grid" id="metersGrid">
-                            <div class="loading-message">Загрузка счетчиков...</div>
+                            <div class="loading-message" data-key="loading">Загрузка счетчиков...</div>
                         </div>
                         <div class="meters-bg-icon">
                             <i class="fas fa-building"></i>
@@ -417,7 +416,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="readingsBody">
-                                    <tr><td colspan="6" class="empty-message">Нет показаний</td></tr>
+                                    <tr><td colspan="6" class="empty-message" data-key="empty_message">Нет показаний</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -501,7 +500,7 @@
                                 </div>
                             </div>
                             <div class="settings-footer">
-                                <p>KorterInfo v0.31</p>
+                                <p>KorterInfo v0.35</p>
                                 <p data-key="settings_credit">© 2026 — Умный учёт в вашем доме</p>
                             </div>
                         </div>
